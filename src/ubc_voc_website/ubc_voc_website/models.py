@@ -57,3 +57,24 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
+    
+class Profile(models.model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.PROTECT,
+        primary_key=True
+    )
+    firstname = models.CharField(max_length=64)
+    lastname = models.CharField(max_length=64)
+    pronouns = models.CharField(max_length=32)
+    phone = models.CharField(max_length=32)
+    student_number = models.CharField(max_length=8)
+    birthdate = models.DateField()
+    blurb = models.TextField()
+    exec_role = models.CharField(max_length=32)
+    acc = models.BooleanField()
+    vocene = models.BooleanField()
+    trip_org_email = models.BooleanField()
+
+    def __str__(self):
+        return self.email
