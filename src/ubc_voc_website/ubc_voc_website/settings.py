@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ubc_voc_website'
+    'ubc_voc_website',
+    'membership'
 ]
 
 MIDDLEWARE = [
