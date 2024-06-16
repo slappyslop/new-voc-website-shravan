@@ -129,4 +129,5 @@ AUTH_USER_MODEL = "ubc_voc_website.User"
 
 AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
 
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
