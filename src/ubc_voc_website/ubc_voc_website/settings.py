@@ -56,7 +56,7 @@ ROOT_URLCONF = 'ubc_voc_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,3 +128,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "ubc_voc_website.User"
 
 AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
+
+LOGIN_REDIRECT_URL = "/"
