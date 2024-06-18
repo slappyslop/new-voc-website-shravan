@@ -7,19 +7,19 @@ class Profile(models.Model):
         on_delete=models.PROTECT,
         primary_key=True
     )
-    firstname = models.CharField(max_length=64)
-    lastname = models.CharField(max_length=64)
-    pronouns = models.CharField(max_length=32)
-    phone = models.CharField(max_length=32)
-    student_number = models.CharField(max_length=8)
-    birthdate = models.DateField()
-    blurb = models.TextField()
-    acc = models.BooleanField()
-    vocene = models.BooleanField()
-    trip_org_email = models.BooleanField()
+    first_name = models.CharField(max_length=64, blank=False)
+    last_name = models.CharField(max_length=64, blank=False)
+    pronouns = models.CharField(max_length=32, null=True)
+    phone = models.CharField(max_length=32, blank=False)
+    student_number = models.CharField(max_length=8, null=True)
+    birthdate = models.DateField(null=True)
+    blurb = models.TextField(null=True)
+    acc = models.BooleanField(default=True)
+    vocene = models.BooleanField(default=True)
+    trip_org_email = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.email
+        return f'{self.first_name} {self.last_name}'
     
 class Membership(models.Model):
     class MembershipType(models.TextChoices):
@@ -31,14 +31,17 @@ class Membership(models.Model):
         settings.AUTH_USER_MODEL, 
         on_delete=models.PROTECT,
     )
-    startdate = models.DateField()
-    enddate = models.DateField()
+    start_date = models.DateField()
+    end_date = models.DateField()
     type = models.CharField(
         max_length=1, 
         choices=MembershipType, 
         default=MembershipType.REGULAR
     )
-    active = models.BooleanField()
+    active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{str(self.user)} - {self.type}'
 
 class Exec(models.Model):
     user = models.OneToOneField(
@@ -48,10 +51,16 @@ class Exec(models.Model):
     )
     exec_role = models.CharField(max_length=32)
 
+    def __str__(self):
+        return f'{self.user} - {self.exec_role}'
+
 class PSG(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         primary_key=True
     )
+
+    def __str__(self):
+        return f'{self.user} (PSG)'
 
