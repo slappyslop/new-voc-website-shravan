@@ -3,8 +3,8 @@
 {% block title %}Join{% endblock %}
 
 {% block content %}
-    <h2>Create an account</h2>
     <div class="container">
+        <h2>Create an account</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
