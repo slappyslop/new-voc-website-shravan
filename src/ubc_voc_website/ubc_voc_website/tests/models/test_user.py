@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from django.contrib.auth import get_user_model
+from django.db.utils import IntegrityError
 
 class UserTests(TestCase):
     def setUp(self):
@@ -53,3 +54,14 @@ class UserTests(TestCase):
     def test_verbose_names(self):
         email_field_label = self.User._meta.get_field('email').verbose_name
         self.assertEqual(email_field_label, 'email')
+
+    def test_no_duplicate_email(self):
+        self.User.objects.create_user(
+            email='example@example.com',
+            password='testpassword123'
+        )
+        with self.assertRaises(IntegrityError):
+            self.User.objects.create_user(
+                email='example@example.com',
+                password='testpassword456'
+            )
