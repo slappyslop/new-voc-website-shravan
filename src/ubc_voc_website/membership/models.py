@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+import datetime
+
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -63,4 +65,34 @@ class PSG(models.Model):
 
     def __str__(self):
         return f'{self.user} (PSG)'
+    
+class Waiver(models.Model):
+    membership = models.OneToOneField(
+        Membership,
+        on_delete=models.PROTECT,
+        primary_key=True
+    )
+    full_name = models.TextField(
+        max_length=256,
+        blank=False
+    )
+    student_number = models.TextField(
+        max_length=8
+    )
+    guardian_name = models.TextField(
+        max_length=256
+    )
+    signature = models.ImageField(
+        upload_to="signatures/",
+        blank=False
+    )
+    paper_waiver = models.BooleanField(
+        default=False,
+        blank=False
+    )
+    created = models.DateTimeField(
+        auto_now_add=True
+    )
 
+    def __str__(self):
+        return f'Waiver for {self.full_name} (Membership {self.membership})'
