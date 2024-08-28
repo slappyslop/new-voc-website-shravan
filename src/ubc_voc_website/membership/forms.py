@@ -1,5 +1,5 @@
 from django import forms
-from .models import Membership
+from .models import Membership, Waiver
 
 from .utils import *
 import datetime
@@ -41,3 +41,20 @@ class MembershipForm(forms.ModelForm):
             if commit:
                 membership.save()
         return membership
+    
+class WaiverForm(forms.ModelForm):
+    class Meta:
+        model = Waiver
+        fields = ('full_name', 'student_number', 'guardian_name', 'paper_waiver')
+
+    full_name = forms.CharField(max_length=128, required=True)
+    student_number = forms.CharField(max_length=8, required=False)
+    guardian_name = forms.CharField(max_length=128, required=False)
+    # signature = forms.ImageField(required=True)
+    paper_waiver = forms.BooleanField()
+
+
+
+
+    
+
