@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}VOC Waiver{% endblock %}
+
+{% block head_content %}
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById('canvas');
+            const signaturePad = new SignaturePad(canvas);
+
+            document.getElementById('reset').addEventListener('click', function () {
+                signaturePad.clear();
+            });
+
+            document.getElementById('save').addEventListener('click', function () {
+                if (signaturePad.isEmpty()) {
+                    alert("Please provide a signature");
+                }
+                else {
+                    const data = signaturePad.toDataURL();
+                    document.getElementById('signature').value = data;
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>VOC Waiver</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="container">
+                <canvas id="canvas" width="200" height="150" style="border: 1px solid black;"></canvas>
+                <button type="button" id="reset">Reset</button>
+                <button type="button" id="save">Save</button>
+            </div>
+            <input type="hidden" id="signature" name="signature">
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
