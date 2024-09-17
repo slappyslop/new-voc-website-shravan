@@ -56,7 +56,7 @@ def member_list(request):
 def profile(request, id):
     user = get_object_or_404(get_user_model(), id=id)
     profile = Profile.objects.get(user=user)
-    return render(request, 'membership/profile.html', {'user': user, 'profile': profile, 'edit': False})
+    return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
 
 @Members
 def edit_profile(request):
@@ -67,7 +67,7 @@ def edit_profile(request):
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect(f'membership/profile/{user.id}')
+            return redirect(f'profile/{user.id}')
     else:
         form = ProfileForm(instance=profile)
 
