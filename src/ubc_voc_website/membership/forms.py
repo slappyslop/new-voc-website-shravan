@@ -14,7 +14,10 @@ class ProfileForm(forms.ModelForm):
     pronouns = forms.CharField(max_length=32, required=False)
     phone = forms.CharField(max_length=32, required=True)
     student_number = forms.CharField(max_length=8, required=False)
-    birthdate = forms.DateField(required=True)
+    birthdate = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
     blurb = forms.CharField(
         required=False,
         widget=forms.TextInput()
@@ -92,5 +95,5 @@ class WaiverForm(forms.ModelForm):
     full_name = forms.CharField(max_length=128, required=True)
     student_number = forms.CharField(max_length=8, required=False)
     guardian_name = forms.CharField(max_length=128, required=False)
-    signature = forms.ImageField(required=False)
+    signature = forms.CharField(required=False, widget=forms.HiddenInput())
 

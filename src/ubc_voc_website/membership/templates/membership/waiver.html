@@ -31,6 +31,12 @@
 {% block content %}
     <div class="container">
         <h2>VOC Waiver</h2>
+
+        <iframe src="{% static 'pdf/BlankVOCWaiver.pdf' %}" width="100%" height="600px">
+            This browser does not support PDFs. Please download the waiver to view it:
+            <a href="{% static 'pdf/waiver.pdf' %}">Download PDF</a>
+        </iframe>
+
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
