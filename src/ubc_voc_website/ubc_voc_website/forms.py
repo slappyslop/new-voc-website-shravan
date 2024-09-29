@@ -9,7 +9,10 @@ class CustomUserCreationForm(UserCreationForm):
     pronouns = forms.CharField(max_length=32, required=False)
     phone = forms.CharField(max_length=32, required=True)
     student_number = forms.CharField(max_length=8, required=False)
-    birthdate = forms.DateField(required=True)
+    birthdate = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
 
     class Meta:
         model = User
