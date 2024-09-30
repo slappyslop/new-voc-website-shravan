@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from .models import Exec, Membership, Profile
+from .models import Exec, Membership, Profile, PSG
 from ubc_voc_website.decorators import Members, Execs
-from .forms import MembershipForm, ProfileForm, WaiverForm
+from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
 from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
 
 import base64
+
+User = get_user_model()
 
 @login_required
 def apply(request):
@@ -55,7 +56,7 @@ def member_list(request):
 
 @Members
 def profile(request, id):
-    user = get_object_or_404(get_user_model(), id=id)
+    user = get_object_or_404(User, id=id)
     profile = Profile.objects.get(user=user)
     return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
 
@@ -77,34 +78,36 @@ def edit_profile(request):
 @Execs
 def manage_roles(request): # for managing who has the exec role
     exec_group, created = Group.objects.get_or_create(name='Exec')
+    psg_group, created = Group.objects.get_or_create(name='PSG')
 
     if request.method == "POST":
-        user_id = request.POST.get('member')
-        exec_role = request.POST.get('position')
+        if 'exec-user' in request.POST:
+            user = get_object_or_404(User, id=request.POST['exec-user'])
+            exec_instance = get_object_or_404(Exec, user=user)
+            form = ExecForm(request.POST, instance=exec_instance, prefix='exec')
 
-        try:
-            User = get_user_model()
-            user = get_object_or_404(User, id=user_id)
-            profile = get_object_or_404(Profile, user=user)
+            if form.is_valid():
+                exec = form.save()
+                exec_group.user_set.add(exec.user)
 
-            if Exec.objects.filter(user=user).exists():
-                messages.error(request, f"{profile.first_name} {profile.last_name} already has an exec position")
-            else:
-                exec = Exec.objects.create(user=user, exec_role=exec_role)
-                exec.save()
+            return redirect('manage_roles')
+        
+        elif 'psg-user' in request.POST:
+            user = get_object_or_404(User, id=request.POST['psg-user'])
+            form  = PSGForm(request.POST, prefix='psg')
 
-                exec_group.user_set.add(user)
+            if form.is_valid():
+                psg = form.save()
+                psg_group.user_set.add(user)
 
-                messages.success(request, f"{profile.first_name} {profile.last_name} has been added to Exec with the role {exec_role}")
-
-        except User.DoesNotExist:
-            messages.error(request, "Selected user does not exist")
-
-        return redirect('manage_roles')
+            return redirect('manage_roles')
 
     else:
+        exec_form = ExecForm(prefix="exec")
+        psg_form = PSGForm(prefix='psg')
+
         # Ignore anyone who has somehow ended up with an entry in the exec table without the group role, although this should (hopefully) never happen
-        execs = Exec.objects.filter(user__groups__id=exec_group.id)
+        execs = Exec.objects.filter(user__groups__id=exec_group.id).order_by('exec_role')
 
         execs_extended_info = []
 
@@ -117,17 +120,23 @@ def manage_roles(request): # for managing who has the exec role
                 'last_name': profile.last_name
             })
 
-        non_execs = Profile.objects.exclude(user__groups=exec_group)
-        non_execs_extended_info = []
+        psg = PSG.objects.filter(user__groups__id=psg_group.id)
+        psg_extended_info = []
 
-        for profile in non_execs:
-            non_execs_extended_info.append({
-                'id': profile.user.id,
+        for member in psg:
+            profile = Profile.objects.get(user=member.user)
+            psg_extended_info.append({
+                'id': member.user.id,
                 'first_name': profile.first_name,
                 'last_name': profile.last_name
             })
 
-        return render(request, 'membership/manage_roles.html', {'execs': execs_extended_info, 'members': non_execs_extended_info})
+        return render(request, 'membership/manage_roles.html', {
+            'execs': execs_extended_info, 
+            'psg': psg_extended_info,
+            'exec_form': exec_form,
+            'psg_form': psg_form
+        })
 
 @Execs
 def membership_stats(request):

@@ -1,8 +1,11 @@
 from django import forms
-from .models import Membership, Profile, Waiver
+from .models import Exec, Membership, Profile, PSG, Waiver
+from django.contrib.auth import get_user_model
 
 from .utils import *
 import datetime
+
+User = get_user_model()
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -97,3 +100,43 @@ class WaiverForm(forms.ModelForm):
     guardian_name = forms.CharField(max_length=128, required=False)
     signature = forms.CharField(required=False, widget=forms.HiddenInput())
 
+class ExecForm(forms.ModelForm):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        label="Member Name",
+        widget=forms.Select,
+        required=True
+    )
+    exec_role = forms.CharField(max_length=32, required=True)
+
+    class Meta:
+        model = Exec
+        fields = ('user', 'exec_role')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].label_from_instance = self.get_user_label
+
+    def get_user_label(self, obj):
+        profile = Profile.objects.get(user=obj)
+        return f"{profile.first_name} {profile.last_name}"
+    
+class PSGForm(forms.ModelForm):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        label="Member Name",
+        widget=forms.Select,
+        required=True
+    )
+
+    class Meta:
+        model = PSG
+        fields = ('user',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].label_from_instance = self.get_user_label
+
+    def get_user_label(self, obj):
+        profile = Profile.objects.get(user=obj)
+        return f"{profile.first_name} {profile.last_name}"
