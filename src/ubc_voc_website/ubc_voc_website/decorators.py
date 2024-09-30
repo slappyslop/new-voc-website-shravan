@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.shortcuts import render
 
 def Members(view_function):
     @login_required
@@ -7,7 +7,7 @@ def Members(view_function):
         if request.user.groups.filter(name='Members').exists():
             return view_function(request, *args, **kwargs)
         else:
-            return HttpResponseForbidden()
+            return render(request, 'access_denied.html', status=403)
     return _view
 
 def Execs(view_function):
@@ -16,7 +16,7 @@ def Execs(view_function):
         if request.user.groups.filter(name='Exec').exists():
             return view_function(request, *args, **kwargs)
         else:
-            return HttpResponseForbidden()
+            return render(request, 'access_denied.html', status=403)
     return _view
 
 def PSG(view_function):
@@ -25,7 +25,7 @@ def PSG(view_function):
         if request.user.groups.filter(name='PSG').exists():
             return view_function(request, *args, **kwargs)
         else:
-            return HttpResponseForbidden()
+            return render(request, 'access_denied.html', status=403)
     return _view
 
 def Admin(view_function):
@@ -34,7 +34,7 @@ def Admin(view_function):
         if request.user.is_superuser:
             return view_function(request, *args, **kwargs)
         else:
-            return HttpResponseForbidden()
+            return render(request, 'access_denied.html', status=403)
     return _view
 
 
