@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from .models import Exec, Membership, Profile, PSG
-from ubc_voc_website.decorators import Members, Execs
+from ubc_voc_website.decorators import Admin, Members, Execs
 from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
 from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
@@ -108,7 +108,7 @@ def edit_profile(request):
 
     return render(request, 'membership/edit_profile.html', {'form': form})
 
-@Execs
+@Admin
 def manage_roles(request): # for managing who has the exec role
     exec_group, created = Group.objects.get_or_create(name='Exec')
     psg_group, created = Group.objects.get_or_create(name='PSG')

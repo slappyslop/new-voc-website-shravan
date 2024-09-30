@@ -28,4 +28,13 @@ def PSG(view_function):
             return HttpResponseForbidden()
     return _view
 
+def Admin(view_function):
+    @login_required
+    def _view(request, *args, **kwargs):
+        if request.user.is_superuser:
+            return view_function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+    return _view
+
 
