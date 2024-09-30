@@ -2,6 +2,32 @@
 
 {% block title %}Member List{% endblock %}
 
+{% block head_content %}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const exec_dropdown = document.getElementById('id_exec-user');
+            if (exec_dropdown) {
+                new Choices(exec_dropdown, {
+                    searchEnabled: true,
+                    placeholder: true,
+                    placeholderValue: "Select a Member"
+                });
+            }
+
+            const psg_dropdown = document.getElementById('id_psg-user');
+            if (psg_dropdown) {
+                new Choices(psg_dropdown, {
+                    searchEnabled: true,
+                    placeholder: true,
+                    placeholderValue: "Select a Member"
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
