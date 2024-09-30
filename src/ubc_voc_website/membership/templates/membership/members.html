@@ -38,7 +38,7 @@
             <tbody>
                 {% for exec in execs %}
                     <tr>
-                        <td>{{ exec.name }}</td>
+                        <td><a href="{% url 'profile' exec.id %}">{{ exec.name }}</a></td>
                         <td>{{ exec.position }}</td>
                         <td>{{ exec.email }}</td>
                         <td>{{ exec.phone }}</td>
@@ -62,7 +62,7 @@
             <tbody>
                 {% for psg in psg_members %}
                     <tr>
-                        <td>{{ psg.name }}</td>
+                        <td><a href="{% url 'profile' psg.id %}">{{ psg.name }}</a></td>
                         <td>{{ psg.email }}</td>
                         <td>{{ psg.phone }}</td>
                     </tr>
@@ -84,7 +84,7 @@
             <tbody>
                 {% for member in members %}
                     <tr>
-                        <td>{{ member.name }}</td>
+                        <td><a href="{% url 'profile' member.id %}">{{ member.name }}</a></td>
                         <td>{{ member.email }}</td>
                         <td>{{ member.phone }}</td>
                     </tr>
