@@ -107,6 +107,14 @@ class WaiverForm(forms.ModelForm):
         else:
             self.fields.pop('guardian_name')
 
+    def clean_signature(self):
+        signature = self.cleaned_data.get('signature')
+
+        if not signature or 'data:image' not in signature:
+            raise forms.ValidationError("Signature is required")
+        
+        return signature
+
     checkbox1 = forms.BooleanField(label="There are several checkboxes throughout this document - PLEASE READ AND CHECK THEM ALL.", required=True)
     checkbox2 = forms.BooleanField(label="I UNDERSTAND THE ABOVE AND AGREE TO READ THE FULL TEXT BELOW.", required=True)
     checkbox3 = forms.BooleanField(label="I AM AWARE OF THE RISKS AND AGREE TO THE ABOVE.", required=True)

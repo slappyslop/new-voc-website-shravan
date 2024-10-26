@@ -8,6 +8,9 @@ from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
 from django.http import HttpResponseForbidden
 from django.core.files.base import ContentFile
 
+from .utils import *
+import datetime
+
 import base64
 
 User = get_user_model()
@@ -31,23 +34,26 @@ def waiver(request, membership_id):
     
     if request.method == "POST":
         form = WaiverForm(request.POST, user=request.user)
+
         if form.is_valid():
             waiver = form.save(commit=False)
             waiver.membership = membership
-            signature_data = request.POST['signature']
 
+            signature_data = form.cleaned_data['signature']
             f, imgstr = signature_data.split(';base64')
-            data = ContentFile(base64.base64decode(imgstr))
+            data = ContentFile(base64.b64decode(imgstr))
 
             waiver.signature.save('signature.png', data, save=False)
 
-            waiver = form.save()
+            waiver.save()
             return redirect('home')
+        else:
+            print("form not valid")
         
     else:
         form = WaiverForm(user=request.user)
 
-    return render(request, 'membership/waiver.html', {'form': form})
+    return render(request, 'membership/waiver.html', {'form': form, 'user_is_minor': is_minor(datetime.datetime.today(), request.user.profile.birthdate)})
 
 @Members
 def member_list(request):
