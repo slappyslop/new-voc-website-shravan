@@ -13,7 +13,7 @@ import base64
 User = get_user_model()
 
 @login_required
-def apply(request):
+def join(request):
     if request.method == 'POST':
         form = MembershipForm(request.POST, user=request.user)
         if form.is_valid():
@@ -21,7 +21,7 @@ def apply(request):
             return redirect(f'waiver/{membership.id}')
     else:
         form = MembershipForm(user=request.user)
-    return render(request, 'membership/apply.html', {'form': form})
+    return render(request, 'membership/join.html', {'form': form})
 
 @login_required
 def waiver(request, membership_id):
