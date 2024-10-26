@@ -1,0 +1,153 @@
+/* CSS mostly yoinked from the old website because I don't like writing CSS */
+
+@page { margin: 1cm; }
+
+@media print {
+  #submit {
+    display: none;
+  }
+  
+  .title {
+    display: none;
+  }
+}
+
+.clear {
+  clear:both;
+  line-height:0;
+}
+
+#submit {
+  font-weight: bold;
+}
+
+#signatureparent {
+    color:darkblue;
+    background-color: #EEE;
+    padding: 10px 10px 20px 10px;
+}
+
+#waiver {
+    /* width: 75%; */
+    font-size: 10pt;
+    font-family: Helvetica;   
+    padding: 0px;
+    margin: 0px 10px;
+    color: black;
+}
+
+td {
+    font-size: 10pt;
+    font-family: Helvetica;    
+}
+
+input {
+    font-size: 10pt;
+    font-family: Helvetica;    
+}
+
+#waiver p {
+  margin-top: 0px;
+  line-height: 120%;
+}
+
+#waiver h2 {
+  text-align: center;
+  font-size: 13pt;
+}
+
+#waiver h3 {
+  margin-bottom: 0px;
+  margin-top:20px;
+}
+
+#waiver ol {
+  margin-bottom: 0px;
+}
+
+#waiver ol.ordered-list li {
+  margin-bottom: 10px;
+}
+
+#waiver .highlight {
+  background: yellow;
+  border: solid 4px red;
+  padding: 10px;
+}
+
+#waiver .highlight-list {
+  margin-left:0px;
+  padding-left:20px;
+}
+
+#waiver b.larger {
+  font-size: 11pt;
+}
+
+#waiver table {
+  border: 0;
+}
+
+#waiver table td {
+  border: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+#waiver .text-input {
+  border: solid 1px #777;
+  padding: 2px 4px;
+}
+
+#waiver .checkbox-block {
+  background: #faf49e;
+  padding: 15px;
+  font-weight: bold;
+}
+
+#waiver .checkbox-block input {
+  display: inline;
+}
+
+#waiver .note {
+  font-size: 9pt;
+}
+
+#waiver .sign-form {
+  background: #EEE;
+  padding: 30px;
+  font-size: 11pt
+}
+
+#canvas {
+  width: 100%;
+  height: 150px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+#form-inputs {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#signature-pad-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+}
+
+#signature-pad-buttons {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+#submit-button-container {
+  display: flex;
+  justify-content: right;
+  width: 100%;
+}

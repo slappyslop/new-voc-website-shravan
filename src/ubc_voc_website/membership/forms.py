@@ -83,7 +83,19 @@ class MembershipForm(forms.ModelForm):
 class WaiverForm(forms.ModelForm):
     class Meta:
         model = Waiver
-        fields = ('full_name', 'student_number', 'guardian_name', 'signature')
+        fields = (
+            'checkbox1', 
+            'checkbox2', 
+            'checkbox3', 
+            'checkbox4', 
+            'checkbox5',
+            'checkbox6',
+            'checkbox7',
+            'full_name',
+            'student_number',
+            'guardian_name',
+            'signature'
+        )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -94,6 +106,15 @@ class WaiverForm(forms.ModelForm):
             self.fields['guardian_name'].required = True
         else:
             self.fields.pop('guardian_name')
+
+    checkbox1 = forms.BooleanField(label="There are several checkboxes throughout this document - PLEASE READ AND CHECK THEM ALL.", required=True)
+    checkbox2 = forms.BooleanField(label="I UNDERSTAND THE ABOVE AND AGREE TO READ THE FULL TEXT BELOW.", required=True)
+    checkbox3 = forms.BooleanField(label="I AM AWARE OF THE RISKS AND AGREE TO THE ABOVE.", required=True)
+    checkbox4 = forms.BooleanField(label="I AM AWARE OF EVACUATION RESPONSIBILITIES AND AGREE TO THE ABOVE.", required=True)
+    checkbox5 = forms.BooleanField(label="I HAVE READ AND AGREE TO THE RESPONSIBILITIES STATED ABOVE.", required=True)
+    checkbox6 = forms.BooleanField(label="I HAVE READ THE ABOVE AND AGREE TO IT.", required=True)
+    checkbox7 = forms.BooleanField(label="I AGREE TO ALL OF THE ABOVE.", required=True)
+    i_agree_text = forms.CharField(max_length=8, required=True)
 
     full_name = forms.CharField(max_length=128, required=True)
     student_number = forms.CharField(max_length=8, required=False)

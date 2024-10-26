@@ -14,7 +14,10 @@ class Profile(models.Model):
     pronouns = models.CharField(max_length=32, null=True)
     phone = models.CharField(max_length=32, blank=False)
     student_number = models.CharField(max_length=8, null=True)
-    birthdate = models.DateField(null=False)
+    birthdate = models.DateField(
+        null=False,
+        default=datetime.date.today
+    )
     blurb = models.TextField(null=True)
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
