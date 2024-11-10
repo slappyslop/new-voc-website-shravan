@@ -72,11 +72,7 @@ def waiver(request, membership_id):
 
 @Members
 def member_list(request):
-    members_group, created = Group.objects.get_or_create(name='Members')
-    exec_group, created = Group.objects.get_or_create(name='Exec')
-    psg_group, created = Group.objects.get_or_create(name='PSG')
-
-    exec_profiles = Profile.objects.filter(user__groups__id=exec_group.id)
+    exec_profiles = Profile.objects.filter(user__in=Exec.objects.values('user'))
     execs = []
     for profile in exec_profiles:
         exec = Exec.objects.get(user=profile.user)
@@ -87,7 +83,7 @@ def member_list(request):
             'phone': profile.phone
         })
 
-    psg_profiles = Profile.objects.filter(user__groups__id=psg_group.id)
+    psg_profiles = Profile.objects.filter(user__in=PSG.objects.values('user'))
     psg_members = []
     for profile in psg_profiles:
         psg = PSG.objects.get(user=profile.user)
@@ -97,7 +93,7 @@ def member_list(request):
             'phone': profile.phone
         })
 
-    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__groups__id=members_group.id)
+    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(end_date__gte=datetime.now()).values('user'))
     members = []
     for profile in member_profiles:
         members.append({
@@ -113,6 +109,10 @@ def profile(request, id):
     user = get_object_or_404(User, id=id)
     profile = Profile.objects.get(user=user)
     return render(request, 'membership/profile.html', {'user': user, 'profile': profile})
+
+@Execs
+def manage_memberships(request):
+    pass
 
 @Admin
 def manage_roles(request): # for managing who has the exec role
