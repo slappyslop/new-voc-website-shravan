@@ -116,9 +116,6 @@ def profile(request, id):
 
 @Admin
 def manage_roles(request): # for managing who has the exec role
-    exec_group, created = Group.objects.get_or_create(name='Exec')
-    psg_group, created = Group.objects.get_or_create(name='PSG')
-
     if request.method == "POST":
         remove_exec = request.POST.get('remove-exec')
         remove_psg = request.POST.get('remove-psg')
@@ -126,12 +123,10 @@ def manage_roles(request): # for managing who has the exec role
         if remove_exec:
             user = get_object_or_404(User, id=remove_exec)
             Exec.objects.filter(user=user).delete()
-            exec_group.user_set.remove(user)
 
         elif remove_psg:
             user = get_object_or_404(User, id=remove_psg)
             PSG.objects.filter(user=user).delete()
-            psg_group.user_set.remove(user)
 
         elif 'exec-user' in request.POST: # add/modify existing exec
             user = get_object_or_404(User, id=request.POST['exec-user'])
@@ -140,7 +135,6 @@ def manage_roles(request): # for managing who has the exec role
 
             if form.is_valid():
                 exec = form.save()
-                exec_group.user_set.add(exec.user)
 
             return redirect('manage_roles')
         
@@ -150,7 +144,6 @@ def manage_roles(request): # for managing who has the exec role
 
             if form.is_valid():
                 psg = form.save()
-                psg_group.user_set.add(user)
 
             return redirect('manage_roles')
         
@@ -160,8 +153,7 @@ def manage_roles(request): # for managing who has the exec role
         exec_form = ExecForm(prefix="exec")
         psg_form = PSGForm(prefix='psg')
 
-        # Ignore anyone who has somehow ended up with an entry in the exec table without the group role, although this should (hopefully) never happen
-        execs = Exec.objects.filter(user__groups__id=exec_group.id).order_by('exec_role')
+        execs = Exec.objects.all().order_by('exec_role')
 
         execs_extended_info = []
 
@@ -174,7 +166,7 @@ def manage_roles(request): # for managing who has the exec role
                 'last_name': profile.last_name
             })
 
-        psg = PSG.objects.filter(user__groups__id=psg_group.id)
+        psg = PSG.objects.all()
         psg_extended_info = []
 
         for member in psg:
