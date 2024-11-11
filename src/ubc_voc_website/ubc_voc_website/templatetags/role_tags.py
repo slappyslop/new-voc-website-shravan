@@ -6,7 +6,11 @@ register = template.Library()
 
 @register.filter(name='is_member')
 def is_member(user):
-    memberships = Membership.objects.filter(user=user, end_date__gte=datetime.now())
+    memberships = Membership.objects.filter(
+        user=user, 
+        end_date__gte=datetime.now(),
+        active=True    
+    )
     if memberships.count() == 1:
         return True
     else:
