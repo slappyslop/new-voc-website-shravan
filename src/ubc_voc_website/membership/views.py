@@ -81,6 +81,7 @@ def member_list(request):
     for profile in exec_profiles:
         exec = Exec.objects.get(user=profile.user)
         execs.append({
+            'id': profile.user.id,
             'name': f'{profile.first_name} {profile.last_name}',
             'position': exec.exec_role,
             'email': profile.user.email,
@@ -97,7 +98,7 @@ def member_list(request):
         })
 
     member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(
-            end_date__gte=datetime.now(),
+            end_date__gte=datetime.date.today(),
             active=True
         ).values('user'))
     members = []
