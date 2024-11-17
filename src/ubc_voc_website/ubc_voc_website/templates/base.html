@@ -63,7 +63,10 @@
                                 Exec Section
                             </a>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Manage Memberships</a></li>
+                                {% if request.user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'manage_roles' %}">Manage Roles</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     {% endif %}
