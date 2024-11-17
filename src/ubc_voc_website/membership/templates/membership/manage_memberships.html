@@ -74,7 +74,7 @@
                     <td>{{ profile.first_name }} {{ profile.last_name }}</td>
                     <td>{{ profile.user.email }}</td>
                     <td>{{ profile.phone }}</td>
-                    <td></td>
+                    <td>{{ profile.memberships.0.end_date }}</td>
                     <td>
                         <i class="fas fa-chevron-right toggle-arrow" data-toggle="collapse" 
                         data-target="#collapseRow{{ profile.user.id }}" aria-expanded="false" 
@@ -96,39 +96,37 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                {% for key, memberships in memberships_by_user.items %}
-                                    {% for membership in memberships %}
-                                        <tr>
-                                            <td>{{ membership.type_display_name }}</td>
-                                            <td>{{ membership.start_date }}</td>
-                                            <td>{{ membership.end_date }}</td>
-                                            <td>
-                                                <a href="view-waiver/{{ membership.id }}">View Waiver</a>
-                                            </td>
-                                            <td>
-                                                {% if membership.mapped_status == "Active" %}
-                                                    <span class="badge bg-success">
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% elif membership.mapped_status == "Inactive" %}
-                                                    <span class="badge bg-danger">
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if membership.mapped_status == "Active" %}
-                                                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</button>
-                                                {% elif membership.mapped_status == "Inactive" %}
-                                                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</button>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                {% for membership in profile.memberships %}
+                                    <tr>
+                                        <td>{{ membership.type_display_name }}</td>
+                                        <td>{{ membership.start_date }}</td>
+                                        <td>{{ membership.end_date }}</td>
+                                        <td>
+                                            <a href="view-waiver/{{ membership.id }}" target="_blank">View Waiver</a>
+                                        </td>
+                                        <td>
+                                            {% if membership.mapped_status == "Active" %}
+                                                <span class="badge bg-success">
+                                                    {{ membership.mapped_status }}
+                                                </span>
+                                            {% elif membership.mapped_status == "Inactive" %}
+                                                <span class="badge bg-danger">
+                                                    {{ membership.mapped_status }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    {{ membership.mapped_status }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if membership.mapped_status == "Active" %}
+                                                <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</button>
+                                            {% elif membership.mapped_status == "Inactive" %}
+                                                <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
                                 {% endfor %}
                             </table>
                         </div>

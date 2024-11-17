@@ -144,14 +144,13 @@ def view_waiver(request, id):
 
 @Execs
 def manage_memberships(request):
+    # all profiles that have at least 1 membership
     profiles = Profile.objects.filter(user__in=Membership.objects.all().values('user'))
-    memberships = Membership.objects.all()
 
-    memberships_by_user = {}
-    for m in memberships:
-        memberships_by_user.setdefault(m.user.id, []).append(m)
+    for profile in profiles:
+        profile.memberships = Membership.objects.filter(user=profile.user).order_by('-end_date')
 
-    return render(request, 'membership/manage_memberships.html', {'profiles': profiles, 'memberships_by_user': memberships_by_user})
+    return render(request, 'membership/manage_memberships.html', {'profiles': profiles})
 
 @Execs
 def toggle_membership(request, membership_id):
