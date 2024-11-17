@@ -6,7 +6,7 @@ import datetime
 class Profile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         primary_key=True
     )
     first_name = models.CharField(max_length=64, blank=False)
@@ -34,7 +34,7 @@ class Membership(models.Model):
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
     start_date = models.DateField()
     end_date = models.DateField()
@@ -69,7 +69,7 @@ class Membership(models.Model):
 class Exec(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         primary_key=True
     )
     exec_role = models.CharField(max_length=32)
@@ -80,7 +80,7 @@ class Exec(models.Model):
 class PSG(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         primary_key=True
     )
 
@@ -90,7 +90,7 @@ class PSG(models.Model):
 class Waiver(models.Model):
     membership = models.OneToOneField(
         Membership,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         primary_key=True
     )
     full_name = models.TextField(
