@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Create a Trip{% endblock %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup organizer checkbox
+            const organizer_checkbox = document.getElementById('toggle-organizers');
+            const organizer_div = document.getElementById('organizer_div');
+
+            organizer_div.style.display = 'none';
+
+            organizer_checkbox.addEventListener('change', function () {
+                organizer_div.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Setup organizer searchable dropdown
+            const elements = document.querySelectorAll('.choices');
+            elements.forEach(element => {
+                new Choices(element, {
+                    removeItemButton: true,
+                    placeholder: true,
+                    placeholderValue: 'Select users...',
+                    searchPlaceholderValue: 'Search users...',
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Create a Trip</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="mb-4">
+                {{ form.name.label_tag }} {{ form.name }}
+            </div>
+
+            <div class="mb-4">
+                <label>
+                    <input type="checkbox" id="toggle-organizers">Include additional organizers
+                </label>
+            </div>
+            <div id="organizer_div" class="mb-4">
+                {{ form.organizers.label_tag }} {{ form.organizers }}
+            </div>
+
+            <div class="mb-4" style="display: flex; padding: 10px; width: 50%">
+                <div>
+                    {{ form.start_time.label_tag }} {{ form.start_time }}
+                </div>
+                <div>
+                    {{ form.end_time.label_tag }} {{ form.end_time }}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                {{ form.published.label_tag }} {{ form.published }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.status.label_tag }} {{ form.status }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.description.label_tag }} {{ form.description }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.use_signup.label_tag }} {{ form.use_signup }}
+            </div>
+
+            <div class="mb-4">
+                <div>
+                    {{ form.signup_question.label_tag }} {{ form.signup_question }}
+                </div>
+    
+                <div>
+                    {{ form.max_participants.label_tag }} {{ form.max_participants }}
+                </div>
+    
+                <div style="display: flex;">
+                    {{ form.interested_start.label_tag }} {{ form.interested_start }}
+                    {{ form.interested_end.label_tag }} {{ form.interested_end }}
+                </div>
+    
+                <div style="display: flex;">
+                    {{ form.committed_start.label_tag }} {{ form.committed_start }}
+                    {{ form.committed_end.label_tag }} {{ form.committed_end }}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                {{ form.use_pretrip.label_tag }} {{ form.use_pretrip }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.pretrip_location.label_tag }} {{ form.pretrip_location }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.drivers_required.label_tag }} {{ form.drivers_required }}
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

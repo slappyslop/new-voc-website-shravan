@@ -27,5 +27,6 @@ urlpatterns = [
     path('accounts/join/', join, name='join'),
     path('accounts/', include("django.contrib.auth.urls")),
     path("membership/", include("membership.urls")),
+    path("trips/", include("trips.urls")),
     path("", TemplateView.as_view(template_name="home.html"), name="home")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

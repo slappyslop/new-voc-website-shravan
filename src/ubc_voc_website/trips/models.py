@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Trip(models.Model):
     class TripStatus(models.TextChoices):
-        DEFAULT = "D",
+        NO = "N",
         TENTATIVE = "T",
         CANCELLED = "C"
 
@@ -17,7 +17,7 @@ class Trip(models.Model):
     status = models.CharField(
         max_length=1,
         choices=TripStatus,
-        default=TripStatus.DEFAULT
+        default=TripStatus.NO
     )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
