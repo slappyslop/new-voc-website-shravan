@@ -119,25 +119,23 @@ def view_waiver(request, id):
     user = get_object_or_404(User, id=request.user.id)
     membership = get_object_or_404(Membership, id=id)
     waiver = Waiver.objects.get(membership=membership)
-
     exec = Exec.objects.get(user=user)
 
-    # custom access control - Execs can see all waivers but non-Execs can only see their own
-    if not exec and waiver.user != user:
+    if not waiver:
+        return "<p>No waiver found for this membership</p>"
+    elif not exec and waiver.user != user:
+        # custom access control - Execs can see all waivers but non-Execs can only see their own
         return render(request, 'access_denied.html', status=403)
     else:
-        if not waiver:
-            return "<p>No waiver found for this membership</p>"
-        else:
-            form = WaiverForm(user=user, instance=waiver, readonly=True)
-            html_content = render_to_string('membership/waiver_readonly.html', {'form': form, 'waiver': waiver, 'readonly': True})
-            base_url = request.build_absolute_uri('/')
-            pdf = HTML(string=html_content, base_url=base_url)
+        form = WaiverForm(user=user, instance=waiver, readonly=True)
+        html_content = render_to_string('membership/waiver_readonly.html', {'form': form, 'waiver': waiver, 'readonly': True})
+        base_url = request.build_absolute_uri('/')
+        pdf = HTML(string=html_content, base_url=base_url)
 
-            response = HttpResponse(pdf, content_type='application/pdf')
-            response['Content-Disposition'] = 'inline; filename="waiver.pdf"'
-            response.write(pdf.write_pdf())
-            return response
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="waiver.pdf"'
+        response.write(pdf.write_pdf())
+        return response
 
 @Execs
 def manage_memberships(request):

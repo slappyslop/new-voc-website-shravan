@@ -5,9 +5,28 @@
 {% block title %}Trip Agenda{% endblock %}
 
 {% block head_content %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarToggle = document.getElementById('toggle-calendar');
+            const listDiv = document.getElementById('list_div');
+            const calendarDiv = document.getElementById('calendar_div');
+
+            calendarToggle.addEventListener('change', function () {
+                listDiv.style.display = this.checked ? 'none' : 'block';
+                calendarDiv.style.display = this.checked ? 'block' : 'none';
+            });
+        })
+    </script>
 
 {% endblock %}
 
 {% block content %}
+    <div id="list_div">
+
+    </div>
+
+    <div id="calendar_div">
+
+    </div>
     {{ trips }}
 {% endblock %}

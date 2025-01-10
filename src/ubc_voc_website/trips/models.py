@@ -34,6 +34,13 @@ class Trip(models.Model):
     pretrip_location = models.CharField(max_length=128)
     drivers_required = models.BooleanField(default=False)
 
+    @property
+    def trip_date_as_str(self):
+        if self.end_time and self.end_time.date() > self.start_time.date():
+            return f"{self.start_time.strftime('%a %d')} - {self.end_time.strftime('%a %d')}"
+        else:
+            return self.start_time.strftime('%a %d')
+
 class TripSignup(models.Model):
     class TripSignupTypes(models.TextChoices):
         INTERESTED = "I",

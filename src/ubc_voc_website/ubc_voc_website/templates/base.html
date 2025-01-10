@@ -34,10 +34,10 @@
                             Trips
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="trips">Trip Agenda</a></li>
+                            <li><a class="dropdown-item" href="{% url 'trips' %}">Trip Agenda</a></li>
                             <li><a class="dropdown-item" href="trips/trip-reports">Trip Reports</a></li>
                             {% if request.user|is_member %}
-                                <li><a class="dropdown-item" href="trips/create">Organize a Trip</a></li>
+                                <li><a class="dropdown-item" href="{% url 'my_trips' %}">Organize a Trip</a></li>
                             {% endif %}
                         </ul>
                     </li>
