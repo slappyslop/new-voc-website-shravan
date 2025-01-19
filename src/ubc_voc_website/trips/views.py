@@ -9,12 +9,18 @@ from .forms import TripForm, TripSignupForm
 import datetime
 
 def trips(request):
-    trips = Trip.objects.filter(start_time__gte=datetime.datetime.now(), published=True).order_by('-start_time')
-    return render(request, 'trips/trip_agenda.html', {'trips': trips})
+    trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
+    grouped_trips = {}
+    for trip in trips:
+        month = trip.start_time.strftime('%B %Y')
+        if month not in grouped_trips:
+            grouped_trips[month] = []
+        grouped_trips[month].append(trip)
+    return render(request, 'trips/trip_agenda.html', {'grouped_trips': grouped_trips})
 
 @Members
 def my_trips(request):
-    previous_trips = Trip.objects.filter(start_time__lte=datetime.datetime.now(), organizers=request.user).order_by('-start_time')
+    previous_trips = Trip.objects.filter(start_time__lte=datetime.datetime.now(), organizers=request.user)
     grouped_previous_trips = {}
     for trip in previous_trips:
         month = trip.start_time.strftime('%B %Y')
@@ -22,7 +28,7 @@ def my_trips(request):
             grouped_previous_trips[month] = []
         grouped_previous_trips[month].append(trip)
 
-    upcoming_trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), organizers=request.user).order_by('-start_time')
+    upcoming_trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), organizers=request.user)
     grouped_upcoming_trips = {}
     for trip in upcoming_trips:
         month = trip.start_time.strftime('%B %Y')
@@ -38,7 +44,7 @@ def trip_create(request):
         form = TripForm(request.POST)
         if form.is_valid():
             form.save(user=request.user)
-            return redirect('trip_agenda')
+            return redirect('trips')
     else:
         form = TripForm()
     return render(request, 'trips/trip_form.html', {'form': form})
@@ -51,14 +57,20 @@ def trip_edit(request, id):
         return render(request, 'access_denied.html', status=403)
     else:
         if request.method == "POST":
+            print(request.POST)
             form = TripForm(request.POST)
             if form.is_valid():
                 form.save(user=request.user)
-                return redirect('trip_agenda')
+                return redirect('trips')
+            else:
+                print(form.errors)
         else:
             form = TripForm(instance=trip)
         return render(request, 'trips/trip_form.html', {'form': form})
 
-@Members
+@login_required
 def trip_details(request, id):
-    return "<p>placeholder for trip details page"
+    trip = get_object_or_404(Trip, id=id)
+    return render(request, 'trips/trip.html', {'trip': trip})
+
+

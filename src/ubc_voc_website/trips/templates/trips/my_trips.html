@@ -7,11 +7,24 @@
 {% block head_content %}
     <link href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
+
+    <style>
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <h2>Upcoming Trips</h2>
+        <h2 class="table-header">
+            Upcoming Trips
+            <a href="{% url 'trip_create' %}" class="btn btn-primary">
+                <b>+</b>
+            </a>
+        </h2>
         <table id="upcoming-table" class="table">
             <thead>
                 <tr>

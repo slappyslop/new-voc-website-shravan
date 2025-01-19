@@ -21,12 +21,38 @@
 {% endblock %}
 
 {% block content %}
-    <div id="list_div">
-
+    <div class="container">
+        <div id="list_div">
+            <h2>Upcoming Trips</h2>
+            <table id="upcoming-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Trip</th>
+                        <th>Details</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month, trips in grouped_trips.items %}
+                        <tr>
+                            <td colspan="4"><strong>{{ month }}</strong></td>
+                        </tr>
+                        {% for trip in trips %}
+                            <tr>
+                                <td>{{ trip.trip_date_as_str }}</td>
+                                <td>{{ trip.name }}</td>
+                                <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
+                                <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+        <div id="calendar_div">
+    
+        </div>
     </div>
-
-    <div id="calendar_div">
-
-    </div>
-    {{ trips }}
 {% endblock %}

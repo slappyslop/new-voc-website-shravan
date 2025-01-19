@@ -6,7 +6,6 @@ register = template.Library()
 
 @register.filter(name='is_member')
 def is_member(user):
-    print(user)
     if user.is_authenticated:
         memberships = Membership.objects.filter(
             user=user, 

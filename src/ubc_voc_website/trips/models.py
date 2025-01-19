@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from ckeditor.fields import RichTextField
+
 class Trip(models.Model):
     class TripStatus(models.TextChoices):
         NO = "N",
@@ -20,8 +22,8 @@ class Trip(models.Model):
         default=TripStatus.NO
     )
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    description = models.TextField(null=True)
+    end_time = models.DateTimeField(null=True)
+    description = RichTextField(null=True)
     use_signup = models.BooleanField(default=False)
     signup_question = models.CharField(max_length=256, null=True)
     max_participants = models.IntegerField(null=True)
