@@ -12,6 +12,7 @@
 {% block content %}
     <div class="container">
         <h2>{{ trip.name }}</h2>
+        <h5>{{ trip.trip_date_as_str_long }}</h5>
 
         {% if request.user|is_member %}
             <a href="#signup">Jump to signup form</a>
