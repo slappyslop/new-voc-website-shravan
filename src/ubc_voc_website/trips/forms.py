@@ -1,5 +1,5 @@
 from django import forms
-from .models import Car, Trip, TripSignup
+from .models import Car, Trip, TripSignup, TripTag
 from membership.models import Membership, Profile
 
 from django.contrib.auth import get_user_model
@@ -118,11 +118,12 @@ class TripForm(forms.ModelForm):
         required=True,
         label="Is this trip tentative/cancelled?"
     )
-    # description = forms.CharField(
-    #     required=True,
-    #     widget=forms.HiddenInput(),
-    #     label="Trip Description"
-    # )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=TripTag.objects.all(),
+        required=False,
+        label="Tags",
+        widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    )
     description = QuillFormField()
     use_signup = forms.BooleanField(
         initial=False,

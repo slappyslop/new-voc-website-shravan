@@ -26,40 +26,22 @@
             });
 
             // Setup organizer searchable dropdown
-            const elements = document.querySelectorAll('.choices');
-            elements.forEach(element => {
-                new Choices(element, {
-                    removeItemButton: true,
-                    placeholder: true,
-                    placeholderValue: 'Select users...',
-                    searchPlaceholderValue: 'Search users...',
-                });
+            const organizer_selector = document.getElementById('id_organizers');
+            new Choices(organizer_selector, {
+                removeItemButton: true,
+                placeholder: true,
+                placeholderValue: 'Select users...',
+                searchPlaceholderValue: 'Search users...',
             });
 
-            // // Setup rich text editor for description
-            // const quill = new Quill('#description-textbox', {
-            //     theme: 'snow',
-            //     modules: {
-            //         toolbar: [
-            //             ['bold', 'italic', 'underline'],
-            //             ['link'],
-            //             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            //             [{ 'align': [] }],
-            //             ['blockquote', 'code-block'],
-            //             ['image']
-            //         ]
-            //     }
-            // });
-            // var initialContent = '{{ form.description.value|escapejs }}';
-            // quill.root.innerHTML = initialContent;
-
-            // // Set description content to Quill textbox content on submit
-            // document.querySelector('#trip-form').addEventListener('submit', function(event) {
-            //     console.log('onsubmit function called');
-            //     document.querySelector('input[name="description"]').value = quill.root.innerHTML;
-            //     event.preventDefault(); // ensure that the form doesn't submit right away before the above line finishes
-            //     this.submit();
-            // });
+            // Setup tags searchable dropdown
+            const tag_selector = document.getElementById('id_tags');
+            new Choices(tag_selector, {
+                removeItemButton: true,
+                placeholder: true,
+                placeholderValue: 'Select tags...',
+                searchPlaceholderValue: 'Search tags...',
+            });
 
             // Setup signup tools checkbox
             const signup_tool_checkbox = document.querySelector('#id_use_signup');
@@ -84,12 +66,6 @@
             });
         });
     </script>
-
-    <style>
-        textarea {
-            width: 100%;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
@@ -129,12 +105,9 @@
                 {{ form.status.label_tag }} {{ form.status }}
             </div>
 
-            <!-- <div class="mb-4">
-                {{ form.description.label_tag }}
-                <div id="description-textbox" class="rich-textbox">
-                    {{ form.description.value|escape }}
-                </div>
-            </div> -->
+            <div class="mb-4">
+                {{ form.tags.label_tag }} {{ form.tags }}
+            </div>
 
             <div class="mb-4">
                 {{ form.description.label_tag }} {{ form.description }}

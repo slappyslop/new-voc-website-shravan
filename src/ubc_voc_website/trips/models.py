@@ -1,6 +1,13 @@
 from django.db import models
 from django.conf import settings
 
+"""
+This is its own model rather than a subclass in the Trip model because it allows any Admin
+to add a new tag via the admin centre, rather than required a hardcoded change
+"""
+class TripTag(models.Model):
+    name = models.CharField(max_length=32, blank=False)
+
 class Trip(models.Model):
     class TripStatus(models.TextChoices):
         NO = "N",
@@ -18,6 +25,11 @@ class Trip(models.Model):
         max_length=1,
         choices=TripStatus,
         default=TripStatus.NO
+    )
+    tags = models.ManyToManyField(
+        TripTag,
+        related_name="tagged_trips",
+        blank=True
     )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True)
@@ -40,7 +52,7 @@ class Trip(models.Model):
             return f"{self.start_time.strftime('%a %d')} - {self.end_time.strftime('%a %d')}"
         else:
             return self.start_time.strftime('%a %d')
-
+        
 class TripSignup(models.Model):
     class TripSignupTypes(models.TextChoices):
         INTERESTED = "I",
