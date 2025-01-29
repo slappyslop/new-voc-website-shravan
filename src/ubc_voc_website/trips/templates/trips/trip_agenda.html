@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load role_tags %}
 
 {% block title %}Trip Agenda{% endblock %}
 
@@ -68,7 +69,10 @@
                         <th>Date</th>
                         <th>Trip</th>
                         <th>Details</th>
-                        <th>Edit</th>
+                        {% if request.user|is_exec %}
+                            <th>Edit</th>
+                        {% endif %}
+                        <th>Tags</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,7 +85,16 @@
                                 <td>{{ trip.trip_date_as_str_short }}</td>
                                 <td>{{ trip.name }}</td>
                                 <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
-                                <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                                {% if request.user|is_exec %}
+                                    <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                                {% endif %}
+                                <td>
+                                    {% for tag in trip.tags.all %}
+                                        <span class="badge badge-pill" style="background-color: '{{ tag.colour|default:'#808080' }}'; color: white;">
+                                            {{ tag.name }}
+                                        </span>
+                                    {% endfor %}
+                                </td>
                             </tr>
                         {% endfor %}
                     {% endfor %}
