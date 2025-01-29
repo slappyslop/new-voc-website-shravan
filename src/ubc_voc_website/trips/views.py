@@ -27,11 +27,15 @@ def trips(request):
             end_time = trip.start_time.replace(hour=23, minute=59, second=59)
         else:
             end_time = trip.end_time
+
+        colour = trip.tags.all()[0] if trip.tags.exists() else '#808080'
+
         trips_calendar.append({
             'id': trip.id,
             'title': trip.name,
             'start': trip.start_time.isoformat(),
-            'end': end_time.isoformat()
+            'end': end_time.isoformat(),
+            'color': colour
         })
 
     return render(request, 'trips/trip_agenda.html', {'trips_list': trips_list, 'trips_calendar': json.dumps(trips_calendar)})
