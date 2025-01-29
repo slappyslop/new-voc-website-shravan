@@ -28,6 +28,7 @@ def trips(request):
         else:
             end_time = trip.end_time
         trips_calendar.append({
+            'id': trip.id,
             'title': trip.name,
             'start': trip.start_time.isoformat(),
             'end': end_time.isoformat()

@@ -36,7 +36,11 @@
             const events = JSON.parse('{{ trips_calendar|escapejs }}');
             calendar = new FullCalendar.Calendar(calendar, {
                 initialView: 'dayGridMonth',
-                events: events
+                events: events,
+                eventClick: function(info) {
+                    console.log(info.event);
+                    window.location.href = '/trips/details/' + info.event._def.publicId;
+                }
             });
             calendar.render();
         })
