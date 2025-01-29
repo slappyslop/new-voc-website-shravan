@@ -1,12 +1,15 @@
 from django.db import models
 from django.conf import settings
 
+from colorfield.fields import ColorField
+
 """
 This is its own model rather than a subclass in the Trip model because it allows any Admin
 to add a new tag via the admin centre, rather than required a hardcoded change
 """
 class TripTag(models.Model):
     name = models.CharField(max_length=32, blank=False)
+    colour = ColorField(default='#808080')
 
 class Trip(models.Model):
     class TripStatus(models.TextChoices):

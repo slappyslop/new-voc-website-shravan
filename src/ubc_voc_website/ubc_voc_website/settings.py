@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'ubc_voc_website',
     'membership',
     'trips',
-    'django_quill'
+    'django_quill',
+    'colorfield'
 ]
 
 MIDDLEWARE = [

@@ -2,3 +2,4 @@ django==5.0.6
 python-dateutil==2.9.0
 Pillow==10.4.0
 WeasyPrint==63.0
+django-colorfield==0.12.0
