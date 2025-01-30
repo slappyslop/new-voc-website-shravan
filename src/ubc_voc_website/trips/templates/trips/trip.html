@@ -29,8 +29,12 @@
             {{ description|safe }}
         </p>
 
-        <div id="signup">
-            {{ signup_form.as_p }}
-        </div>
+        {% if request.user|is_member %}
+            <h5>Sign Up</h5>
+            <div id="signup">
+                {{ signup_form.as_p }}
+            </div>
+        {% endif %}
     </div>
+    
 {% endblock %}

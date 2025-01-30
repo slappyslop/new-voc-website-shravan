@@ -1,5 +1,5 @@
 from django import forms
-from .models import Car, Trip, TripSignup, TripTag
+from .models import Trip, TripSignup, TripTag
 from membership.models import Membership, Profile
 
 from django.contrib.auth import get_user_model
@@ -178,18 +178,15 @@ class TripSignupForm(forms.ModelForm):
 
     def __init__(self, *args, trip, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['type'].choices = [choice for choice in trip.valid_signup_types]
+        signup_choices = trip.valid_signup_types
+        if not signup_choices:
+            self.fields.pop('type')
+        else:
+            self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
 
     type = forms.ChoiceField(
         required=True
     )
     can_drive = forms.BooleanField(initial=False)
+    car_spots = forms.IntegerField(required=False)
     signup_answer = forms.CharField(max_length=256, required=False)
-
-class CarForm(forms.ModelForm):
-    class Meta:
-        model = Car
-        fields = ('seats',)
-
-    seats = forms.IntegerField(required=True)
-    

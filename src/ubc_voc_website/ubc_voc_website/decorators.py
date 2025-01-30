@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from utils import *
+from ubc_voc_website.utils import *
 
 def Members(view_function):
     @login_required

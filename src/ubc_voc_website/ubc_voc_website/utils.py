@@ -1,8 +1,5 @@
 from membership.models import Exec, Membership, PSG
-
 import datetime
-
-# TODO: consolidate logic by using these functions for the decorators and template tags that do the same thing
 
 def is_member(user):
     active_memberships = Membership.objects.filter(

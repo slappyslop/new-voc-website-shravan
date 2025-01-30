@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
-import datetime
 from colorfield.fields import ColorField
 
 # helper class, not a model
@@ -81,7 +81,7 @@ class Trip(models.Model):
         """
         signup_types = []
         if self.use_signup:
-            now = datetime.datetime.now()
+            now = timezone.now()
             if self.interested_start <= now and self.interested_end >= now:
                 signup_types.append(TripSignupTypes.INTERESTED)
             if self.committed_start <= now and self.committed_end >= now:
@@ -106,14 +106,3 @@ class TripSignup(models.Model):
     )
     can_drive = models.BooleanField(default=False)
     signup_answer = models.TextField(max_length=256, null=True)
-
-class Car(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        primary_key=True
-    )
-    seats = models.IntegerField(null=False)
-
-
-
