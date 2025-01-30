@@ -104,20 +104,28 @@ def trip_delete(request, id):
 
 @login_required
 def trip_details(request, id):
-    trip = get_object_or_404(Trip, id=id)
-    organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
-        'user__id', 'first_name', 'last_name'
-    )
-    try:
-        description = json.loads(trip.description).get('html', '')
-    except json.JSONDecodeError:
-        description = trip.description
-
-    if trip.use_signup and len(trip.valid_signup_types) > 0 and is_member(request.user):
-        form = TripSignupForm(trip=trip)
+    if request.POST:
+        form = TripSignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('trips')
+        else:
+            print(form.errors)
     else:
-        form = None
+        trip = get_object_or_404(Trip, id=id)
+        organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
+            'user__id', 'first_name', 'last_name'
+        )
+        try:
+            description = json.loads(trip.description).get('html', '')
+        except json.JSONDecodeError:
+            description = trip.description
 
-    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'form': form})
+        if trip.use_signup and len(trip.valid_signup_types) > 0 and is_member(request.user):
+            form = TripSignupForm(trip=trip)
+        else:
+            form = None
+
+        return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'form': form})
 
 

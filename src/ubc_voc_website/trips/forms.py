@@ -185,11 +185,16 @@ class TripSignupForm(forms.ModelForm):
         else:
             self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
 
-        print(trip.signup_question)
         if not trip.signup_question:
             self.fields.pop('signup_answer')
         else:
             self.fields['signup_answer'].label_from_instance = trip.signup_question
+
+    def clean(self):
+        cleaned_data = super().clean()
+        can_drive = cleaned_data.get('can_drive')
+        if can_drive and not cleaned_data.get('car_spots'):
+            self.add_error('car_spots', "This field is required when 'Use signup' is selected")
 
     type = forms.ChoiceField(
         required=True
