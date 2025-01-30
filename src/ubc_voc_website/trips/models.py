@@ -105,4 +105,5 @@ class TripSignup(models.Model):
         default=TripSignupTypes.INTERESTED
     )
     can_drive = models.BooleanField(default=False)
+    car_spots = models.IntegerField(null=True)
     signup_answer = models.TextField(max_length=256, null=True)

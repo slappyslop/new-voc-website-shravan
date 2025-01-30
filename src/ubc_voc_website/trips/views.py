@@ -118,6 +118,6 @@ def trip_details(request, id):
     else:
         form = None
 
-    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'signup_form': form})
+    return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'form': form})
 
 

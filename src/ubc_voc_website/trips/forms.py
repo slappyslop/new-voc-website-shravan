@@ -174,15 +174,22 @@ class TripForm(forms.ModelForm):
 class TripSignupForm(forms.ModelForm):
     class Meta:
         model = TripSignup
-        fields = ('type', 'can_drive', 'signup_answer')
+        fields = ('type', 'can_drive', 'car_spots', 'signup_answer')
 
     def __init__(self, *args, trip, **kwargs):
         super().__init__(*args, **kwargs)
+
         signup_choices = trip.valid_signup_types
         if not signup_choices:
             self.fields.pop('type')
         else:
             self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
+
+        print(trip.signup_question)
+        if not trip.signup_question:
+            self.fields.pop('signup_answer')
+        else:
+            self.fields['signup_answer'].label_from_instance = trip.signup_question
 
     type = forms.ChoiceField(
         required=True

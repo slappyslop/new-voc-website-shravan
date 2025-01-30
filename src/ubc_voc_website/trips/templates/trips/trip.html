@@ -6,7 +6,17 @@
 {% block title %}{{ trip.name }}{% endblock %}
 
 {% block head_content %}
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup car checkbox
+            const carCheckbox = document.querySelector('#id_can_drive');
+            const carSpotsDiv = document.getElementById('car-spots-div');
+            carSpotsDiv.style.display = carCheckbox.checked ? 'block' : 'none';
+            carCheckbox.addEventListener('change', function () {
+                carSpotsDiv.style.display = this.checked ? 'block' : 'none';
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -32,7 +42,24 @@
         {% if request.user|is_member %}
             <h5>Sign Up</h5>
             <div id="signup">
-                {{ signup_form.as_p }}
+                <div class="mb-4">
+                    {{ form.type.label_tag }} {{ form.type }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.can_drive.label_tag }} {{ form.can_drive }}
+                </div>
+
+                <div class="mb-4" id="car-spots-div">
+                    {{ form.car_spots.label_tag }} {{ form.car_spots }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.signup_answer.label_tag }} <br />
+                    {{ form.signup_answer }}
+                </div>
+
+                <button type="submit">Submit</button>
             </div>
         {% endif %}
     </div>
