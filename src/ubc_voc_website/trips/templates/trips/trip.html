@@ -25,7 +25,7 @@
         <h5>{{ trip.trip_date_as_str_long }}</h5>
 
         {% if request.user|is_member %}
-            <a href="#signup">Jump to signup form</a>
+            <a href="#signup-form">Jump to signup form</a>
         {% endif %}
 
         <p>
@@ -39,9 +39,20 @@
             {{ description|safe }}
         </p>
 
+        <!------------------------------- Signups list ------------------------------->
+        {% if request.user|is_member and signups.interested or signnups.committed or signups.going %}
+            <h5>Signups</h5>
+            <div id="signup-list">
+                <p>Interested</p>
+                <p>Committed</p>
+                <p>Going</p>
+            </div>
+        {% endif %}
+
+        <!------------------------------- Signup form ------------------------------->
         {% if request.user|is_member and trip.valid_signup_types %}
             <h5>Sign Up</h5>
-            <div id="signup">
+            <div id="signup-form">
                 <div class="mb-4">
                     {{ form.type.label_tag }} {{ form.type }}
                 </div>

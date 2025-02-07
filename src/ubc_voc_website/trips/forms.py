@@ -35,13 +35,11 @@ class TripForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        print(user.pk)
         instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
         self.fields['organizers'].label_from_instance = self.get_profile_label
 
         if instance and instance.pk:
-            print(instance.organizers)
             self.fields['tags'].initial = instance.tags.all()
             self.fields['organizers'].initial = instance.organizers.exclude(pk=user.pk)
 

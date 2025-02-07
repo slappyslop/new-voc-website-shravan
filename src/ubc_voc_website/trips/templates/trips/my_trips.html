@@ -79,7 +79,7 @@
                     </tr>
                     {% for trip in trips %}
                         <tr>
-                            <td>{{ trip.trip_date_as_str }}</td>
+                            <td>{{ trip.trip_date_as_str_short }}</td>
                             <td>{{ trip.name }}</td>
                             <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
                         </tr>

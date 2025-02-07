@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Admin, Members, Execs
 from ubc_voc_website.utils import is_member
 
-from .models import Trip
+from .models import Trip, TripSignup, TripSignupTypes
 from .forms import TripForm, TripSignupForm
 
 from membership.models import Profile
@@ -82,7 +82,7 @@ def trip_edit(request, id):
         return render(request, 'access_denied.html', status=403)
     else:
         if request.method == "POST":
-            form = TripForm(request.POST, instance=trip)
+            form = TripForm(request.POST, instance=trip, user=request.user)
             if form.is_valid():
                 form.save(user=request.user)
                 return redirect('trips')
@@ -121,11 +121,22 @@ def trip_details(request, id):
         except json.JSONDecodeError:
             description = trip.description
 
-        if trip.use_signup and len(trip.valid_signup_types) > 0 and is_member(request.user):
-            form = TripSignupForm(trip=trip)
-        else:
-            form = None
+        interested_list, committed_list, going_list = [], [], []
+        form = None
+        if trip.use_signup:
+            interested_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.INTERESTED)
+            committed_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
+            going_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
 
-        return render(request, 'trips/trip.html', {'trip': trip, 'organizers': organizers, 'description': description, 'form': form})
+            if is_member(request.user) and trip.valid_signup_types:
+                form = TripSignupForm(trip=trip)
+
+        return render(request, 'trips/trip.html', {
+            'trip': trip, 
+            'organizers': organizers, 
+            'description': description, 
+            'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+            'form': form
+            })
 
 
