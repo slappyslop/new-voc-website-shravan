@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/join/', join, name='join'),
+    path('accounts/join/', join, name='join_account'),
     path('accounts/', include("django.contrib.auth.urls")),
     path("membership/", include("membership.urls")),
     path("trips/", include("trips.urls")),

@@ -9,6 +9,8 @@ def join(request):
             user = form.save()
             login(request, user)
             return redirect('home')
+        else:
+            print(form.errors)
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/join.html', {'form': form})
+        return render(request, 'registration/join.html', {'form': form})
