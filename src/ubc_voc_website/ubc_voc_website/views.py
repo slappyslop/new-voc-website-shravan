@@ -13,4 +13,5 @@ def join(request):
             print(form.errors)
     else:
         form = CustomUserCreationForm()
-        return render(request, 'registration/join.html', {'form': form})
+    
+    return render(request, 'registration/join.html', {'form': form})
