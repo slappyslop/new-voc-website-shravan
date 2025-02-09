@@ -3,7 +3,6 @@ from .models import Trip, TripSignup, TripTag
 from membership.models import Membership, Profile
 
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
 from django_quill.forms import QuillFormField
@@ -188,6 +187,14 @@ class TripSignupForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.trip = trip
+
+        try:
+            self.signup = TripSignup.objects.get(user=self.user, trip=self.trip)
+            for field in self.fields:
+                if hasattr(self.signup, field):
+                    self.fields[field].initial = getattr(self.signup, field)
+        except TripSignup.DoesNotExist:
+            self.signup = None
         
         signup_choices = self.trip.valid_signup_types
         if not signup_choices:
@@ -209,7 +216,7 @@ class TripSignupForm(forms.ModelForm):
     def save(self, commit=True):
         try:
             signup = TripSignup.objects.get(user=self.user, trip=self.trip)
-        except ObjectDoesNotExist:
+        except TripSignup.DoesNotExist:
             signup = super().save(commit=False)
             signup.user = self.user
             signup.trip = self.trip
