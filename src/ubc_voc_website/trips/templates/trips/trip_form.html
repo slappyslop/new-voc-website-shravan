@@ -113,6 +113,10 @@
             </div>
 
             <div class="mb-4">
+                {{ form.use_clubroom.label_tag }} {{ form.use_clubroom }}
+            </div>
+
+            <div class="mb-4">
                 {{ form.published.label_tag }} {{ form.published }}
             </div>
 
@@ -166,7 +170,7 @@
 
             <div id="pretrip-div">
                 <div class="mb-4">
-                    {{ form.pretrip_time.label_tag }} {{ form.pretrip_time }}
+                    {{ form.pretrip_start_time.label_tag }} {{ form.pretrip_start_time }}
                 </div>
                 <div class="mb-4">
                     {{ form.pretrip_location.label_tag }}<br />
