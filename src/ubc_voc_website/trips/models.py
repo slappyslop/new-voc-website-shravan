@@ -108,3 +108,9 @@ class TripSignup(models.Model):
     can_drive = models.BooleanField(default=False)
     car_spots = models.IntegerField(null=True)
     signup_answer = models.TextField(max_length=256, null=True)
+
+class Meeting(models.Model):
+    name = models.CharField(max_length=256, blank=False)
+    start_date = models.DateTimeField()
+    end_date = models.DateField()
+    duration = models.IntegerField(default=60)

@@ -3,12 +3,13 @@ from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Admin, Members, Execs
 from ubc_voc_website.utils import is_member
 
-from .models import Trip, TripSignup, TripSignupTypes
+from .models import Meeting, Trip, TripSignup, TripSignupTypes
 from .forms import TripForm, TripSignupForm
 
 from membership.models import Profile
 
 import datetime
+import pytz
 import json
 
 def trips(request):
@@ -172,16 +173,11 @@ def trip_details(request, id):
 
 @Members
 def clubroom_calendar(request):
+    trips_calendar = []
+
     upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
         'id', 'name', 'start_time', 'end_time'
     )
-    upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
-        'id', 'name', 'pretrip_time'
-    )
-
-    # TODO add gear hours and exec meetings in here too
-
-    trips_calendar = []
     for event in upcoming_clubroom_events:
         trips_calendar.append({
             'id': event.id,
@@ -190,16 +186,35 @@ def clubroom_calendar(request):
             'end': event.end_time.isoformat(),
             'color': '#0000FF'
         })
+
+    upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
+        'id', 'name', 'pretrip_time'
+    )
     for pretrip in upcoming_clubroom_pretrips:
         end_time = pretrip.pretrip_time + datetime.timedelta(hours=1)
 
         trips_calendar.append({
             'id': pretrip.id, # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
             'title': f"Pretrip Meeting - {event.name}",
-            'start': pretrip.pretrip_time,
-            'end': end_time,
+            'start': pretrip.pretrip_time.isoformat(),
+            'end': end_time.isoformat(),
             'color': "#00FF00"
         })
+
+    pacific_timezone = pytz.timezone('America/Vancouver')
+    meeting_sets = Meeting.objects.all()
+    for set in meeting_sets:
+        start_time = set.start_date.astimezone(pacific_timezone)
+        while start_time.date() <= set.end_date:
+            trips_calendar.append({
+                'title': set.name,
+                'start': start_time.isoformat(),
+                'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
+                'color': "#FF0000"
+            })
+            start_time += datetime.timedelta(days=7)
+
+    # TODO add gear hours in here too
 
     return render(request, 'trips/clubroom_calendar.html', {
         'trips_calendar': json.dumps(trips_calendar)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Trip, TripTag
+from .models import Meeting, Trip, TripTag
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
@@ -10,4 +10,9 @@ class TripAdmin(admin.ModelAdmin):
 @admin.register(TripTag)
 class TripTagAdmin(admin.ModelAdmin):
     list_display = ('name',)
+    search_fields = ('name',)
+
+@admin.register(Meeting)
+class MeetingAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_date', 'end_date', 'duration')
     search_fields = ('name',)
