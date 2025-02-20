@@ -90,6 +90,7 @@ def trip_edit(request, id):
                 print(form.errors)
         else:
             form = TripForm(instance=trip, user=request.user)
+        print(trip.in_clubroom)
         return render(request, 'trips/trip_form.html', {'form': form})
     
 @Members
@@ -181,10 +182,10 @@ def clubroom_calendar(request):
     )
     for event in upcoming_clubroom_events:
         trips_calendar.append({
-            'id': event.id,
-            'title': event.name,
-            'start': event.start_time.isoformat(),
-            'end': event.end_time.isoformat(),
+            'id': event['id'],
+            'title': event['name'],
+            'start': event['start_time'].isoformat(),
+            'end': event['end_time'].isoformat(),
             'color': '#0000FF'
         })
 

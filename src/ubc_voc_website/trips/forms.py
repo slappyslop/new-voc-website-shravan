@@ -16,7 +16,8 @@ class TripForm(forms.ModelForm):
             'name',
             'organizers',
             'start_time', 
-            'end_time', 
+            'end_time',
+            'in_clubroom',
             'published',
             'status',
             'description',
@@ -49,9 +50,9 @@ class TripForm(forms.ModelForm):
         ie. signup related fields are required if and only if use_signup == True
         """
         cleaned_data = super().clean()
-        use_clubroom, use_signup, use_pretrip = cleaned_data.get('use_clubroom'), cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
+        in_clubroom, use_signup, use_pretrip = cleaned_data.get('in_clubroom'), cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
 
-        if use_clubroom:
+        if in_clubroom:
             if not cleaned_data.get('end_time'):
                 self.add_error('end_time', """End time is required for clubroom events to keep our clubroom calendar up to date.
                                This is not a booking, it just gives us an idea of when the clubroom is being used - 
@@ -121,7 +122,7 @@ class TripForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
-    use_clubroom = forms.BooleanField(
+    in_clubroom = forms.BooleanField(
         initial=False,
         required=False,
         label="Will this event happen in the clubroom?"
@@ -180,7 +181,7 @@ class TripForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     pretrip_location = forms.CharField(
-        max_length=128, 
+        max_length=128,
         required=False
     )
     drivers_required = forms.BooleanField(

@@ -63,9 +63,13 @@
             const pretrip_use_clubroom = document.getElementById("pretrip_use_clubroom");
             const pretrip_location_input = document.getElementById("id_pretrip_location");
             const pretrip_location_input_label = document.getElementById("pretrip_location_input_label")
-            pretrip_location_input.style.display = this.checked ? 'none' : 'block';
+            if (pretrip_location_input.value == 'VOC Clubroom') {
+                pretrip_use_clubroom.checked = true;
+            }
+            pretrip_location_input.style.display = pretrip_use_clubroom.checked ? 'none' : 'block';
             pretrip_use_clubroom.addEventListener('change', function () {
                 pretrip_location_input_label.style.display = this.checked ? 'none' : 'block';
+                pretrip_location_input.style.display = this.checked ? 'none' : 'block';
                 if (this.checked) {
                     pretrip_location_input.value = "VOC Clubroom";
                 }
@@ -113,7 +117,7 @@
             </div>
 
             <div class="mb-4">
-                {{ form.use_clubroom.label_tag }} {{ form.use_clubroom }}
+                {{ form.in_clubroom.label_tag }} {{ form.in_clubroom }}
             </div>
 
             <div class="mb-4">
@@ -175,10 +179,10 @@
                 <div class="mb-4">
                     {{ form.pretrip_location.label_tag }}<br />
                     <label>
-                        VOC Clubroom <input type="checkbox" name="use_clubroom" id="pretrip_use_clubroom">
+                        VOC Clubroom <input type="checkbox" id="pretrip_use_clubroom">
                     </label><br />
                     <label id="pretrip_location_input_label">
-                        Other: <input type="text" name="pretrip_location" id="id_pretrip_location">
+                        Other: <input type="text" name="pretrip_location" id="id_pretrip_location" value="{{ form.pretrip_location.value }}">
                     </label>
                 </div>
             </div>
