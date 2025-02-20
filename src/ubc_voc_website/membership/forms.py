@@ -10,7 +10,7 @@ User = get_user_model()
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'blurb', 'acc', 'vocene', 'trip_org_email')
+        fields = ('first_name', 'last_name', 'pronouns', 'phone', 'student_number', 'birthdate', 'bio', 'acc', 'vocene', 'trip_org_email')
 
     first_name = forms.CharField(max_length=64, required=True)
     last_name = forms.CharField(max_length=64, required=True)
@@ -21,9 +21,9 @@ class ProfileForm(forms.ModelForm):
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'})
     )
-    blurb = forms.CharField(
+    bio = forms.CharField(
         required=False,
-        widget=forms.TextInput()
+        widget=forms.Textarea(attrs={'rows': 5,'cols': 50})
     )
     acc = forms.BooleanField(
         required=True,

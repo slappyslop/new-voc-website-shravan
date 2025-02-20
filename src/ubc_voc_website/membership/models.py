@@ -18,7 +18,7 @@ class Profile(models.Model):
         null=False,
         default=datetime.date.today
     )
-    blurb = models.TextField(null=True)
+    bio = models.TextField(null=True)
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)
