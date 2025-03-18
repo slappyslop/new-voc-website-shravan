@@ -33,7 +33,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'trips' %}">Trip Agenda</a></li>
-                            <li><a class="dropdown-item" href="trips/trip-reports">Trip Reports</a></li>
+                            <li><a class="dropdown-item" href="{% url 'trip_reports' %}">Trip Reports</a></li>
                             {% if request.user|is_member %}
                                 <li><a class="dropdown-item" href="{% url 'clubroom_calendar' %}">Clubroom Calendar</a></li>
                                 <li><a class="dropdown-item" href="{% url 'my_trips' %}">Organize a Trip</a></li>

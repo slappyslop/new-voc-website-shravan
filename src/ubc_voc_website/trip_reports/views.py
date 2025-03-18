@@ -3,6 +3,7 @@ from ubc_voc_website.decorators import Admin, Members, Execs
 from ubc_voc_website.utils import is_member
 
 from .models import TripReport, TripReportPrivacyStatus, TripReportStatus
+from .forms import TripReportForm
 
 def trip_reports(request):
     if is_member(request.user):
@@ -20,11 +21,32 @@ def my_trip_reports(request):
 
 @Members
 def create_trip_report(request):
-    pass
+    if request.method == "POST":
+        form = TripReportForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('trip_reports')
+    else:
+        form = TripReportForm()
+    return render(request, 'trip_reports/trip_report_form.html', {'form': form})
 
 @Members
 def edit_trip_report(request, id):
-    pass
+    trip_report = get_object_or_404(TripReport, id=id)
+
+    if not trip_report.authors.filter(pk=request.user.pk).exists():
+        return render(request, 'access_denied.html', status=403)
+    else:
+        if request.method == "POST":
+            form = TripReportForm(request.POST, instance=trip_report)
+            if form.is_valid():
+                form.save()
+                return redirect('trip_reports')
+            else:
+                print(form.errors)
+        else:
+            form = TripReportForm(instance=trip_report)
+        return render(request, 'trip_reports.trip_report_form.html', {'form': form})
 
 @Members
 def delete_trip_report(request, id):
@@ -36,6 +58,7 @@ def delete_trip_report(request, id):
         return redirect('trip_reports')
 
 def view_trip_report(request, id):
-    pass
+    trip_report = get_object_or_404(TripReport, id=id)
+    return render(request, 'trip_reports/trip_report.hmtl', {'trip_report': trip_report})
 
 

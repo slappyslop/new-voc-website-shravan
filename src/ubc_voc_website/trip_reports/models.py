@@ -13,7 +13,7 @@ class TripReportPrivacyStatus(models.TextChoices):
     PRIVATE = "PR"
     PUBLIC = "PU"
 
-class TripReport(models.model):
+class TripReport(models.Model):
     trip = models.OneToOneField(
         Trip,
         on_delete=models.PROTECT

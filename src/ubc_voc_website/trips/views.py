@@ -90,7 +90,6 @@ def trip_edit(request, id):
                 print(form.errors)
         else:
             form = TripForm(instance=trip, user=request.user)
-        print(trip.in_clubroom)
         return render(request, 'trips/trip_form.html', {'form': form})
     
 @Members
