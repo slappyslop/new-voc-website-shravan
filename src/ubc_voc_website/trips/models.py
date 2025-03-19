@@ -68,6 +68,13 @@ class Trip(models.Model):
             return self.start_time.strftime('%a %d')
         
     @property
+    def trip_date_as_str_with_year(self):
+        if self.end_time and self.end_time.date() > self.start_time.date():
+            return f"{self.start_time.strftime('%a %d %b %Y')} - {self.end_time.strftime('%a %d %Y')}"
+        else:
+            return self.start_time.strftime('%a %d %b %Y')
+        
+    @property
     def trip_date_as_str_long(self):
         if self.end_time and self.end_time.date() > self.start_time.date():
             return f"{self.start_time.strftime('%A, %B %d')} - {self.end_time.strftime('%A, %B %d')}"
@@ -88,6 +95,9 @@ class Trip(models.Model):
             if self.committed_start <= now and self.committed_end >= now:
                 signup_types.append(TripSignupTypes.COMMITTED)
         return signup_types
+    
+    def __str__(self):
+        return f"{self.name} ({self.trip_date_as_str_with_year})"
         
 class TripSignup(models.Model):
     trip = models.OneToOneField(

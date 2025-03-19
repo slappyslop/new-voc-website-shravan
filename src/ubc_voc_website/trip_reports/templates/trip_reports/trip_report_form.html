@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Write a Trip Report{% endblock %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {% include 'django_quill/media.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup trip searchable dropdown
+            const trip_selector = document.getElementById('id_trip');
+            new Choices(trip_selector, {
+                maxItemCount: 1,
+                removeItemButton: true,
+                placeholderValue: 'Select trip...',
+                searchPlaceholderValue: 'Search trip...'
+            });
+
+            // Setup author checkbox
+            const author_checkbox = document.getElementById('toggle-authors');
+            const author_div = document.getElementById('author-div');
+
+            author_div.style.display = author_checkbox.check ? 'block' : 'none';
+            author_checkbox.addEventListener('change', function () {
+                author_div.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Setup author searchable dropdown
+            const author_selector = document.getElementById('id_authors');
+            new Choices(author_selector, {
+                removeItemButton: true,
+                placeholder: true,
+                placeholderValue: 'Select members...',
+                searchPlaceholderValue: 'Select members...'
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Write a Trip Report</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="mb-4">
+            {{ form.trip.label_tag }} {{ form.trip }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.title.label_tag }} {{ form.title }}
+            </div>
+
+            <div class="mb-4">
+            <label>
+                Include additional authors? <input type="checkbox" id="toggle-authors">
+            </label>
+            </div>
+            <div id="author-div" class="mb-4">
+                {{ form.authors.label_tag }} {{ form.authors }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.content.label_tag }} {{ form.content }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+

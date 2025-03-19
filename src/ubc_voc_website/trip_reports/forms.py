@@ -23,12 +23,16 @@ class TripReportForm(forms.ModelForm):
         queryset=Trip.objects.filter(start_time__lte=datetime.datetime.now()),
         required=False,
         label="Trip",
+        empty_label=None,
         widget=forms.Select(attrs={'class': 'choices'})
     )
     title = forms.CharField(
         max_length=256,
         required=True,
-        label="Title"
+        label="Title",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control'
+        })
     )
     authors = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(id__in=Membership.objects.filter(
