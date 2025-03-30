@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Gear Hours{% endblock %}
+
+{% block head_content %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarDiv = document.getElementById('calendar');
+            // const events = JSON.parse('{{ gear_hours|escapejs }}');
+
+            const calendar = new FullCalendar.Calendar(calendarDiv, {
+                initialView: 'dayGridMonth',
+                firstDay: 1
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Gear Hours</h2>
+
+        <div id="calendar"></div>
+    </div>
+{% endblock %}

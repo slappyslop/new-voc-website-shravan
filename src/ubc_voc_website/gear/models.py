@@ -5,7 +5,7 @@ from django.conf import settings
 class GearHour(models.Model):
     qm = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.cascade,
+        on_delete=models.CASCADE,
     )
 
     """
