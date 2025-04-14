@@ -5,17 +5,25 @@
 {% block title %}Gear Hours{% endblock %}
 
 {% block head_content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendarDiv = document.getElementById('calendar');
-            // const events = JSON.parse('{{ gear_hours|escapejs }}');
+            const events = JSON.parse('{{ gear_hours|escapejs }}');
 
             const calendar = new FullCalendar.Calendar(calendarDiv, {
                 initialView: 'dayGridMonth',
                 firstDay: 1
             });
             calendar.render();
+
+            // Setup date/time pickers
+            flatpickr('.flatpickr', {
+                dateFormat: "Y-m-d"
+            });
         });
     </script>
 {% endblock %}

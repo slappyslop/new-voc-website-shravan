@@ -13,6 +13,7 @@ class GearHourForm(forms.ModelForm):
         fields = (
             'start_date',
             'end_date',
+            'start_time',
             'duration'
         )
 
@@ -21,13 +22,18 @@ class GearHourForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.gear_hour = gear_hour
 
-    start_date = forms.DateTimeField(
+    start_date = forms.DateField(
         required=True,
-        initial=datetime.datetime.now(),
+        initial=datetime.datetime.today(),
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
     )
     end_date = forms.DateField(
-        required=True
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+    )
+    start_time = forms.TimeField(
+        required=True,
+        initial=datetime.datetime.now().time()
     )
     duration = forms.IntegerField(
         required=True,

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+import datetime
 
 class GearHour(models.Model):
     qm = models.ForeignKey(
@@ -15,9 +16,10 @@ class GearHour(models.Model):
     The downside to this approach is it requires a second model for CancelledGearHours, because there needs to be a way
     to cancel a gear hour for one week without deleting the whole recurrence
     """
-    start_date = models.DateTimeField()
+    start_date = models.DateField()
     end_date = models.DateField()
-    duration = models.IntegerField(default=60)
+    start_time = models.TimeField(default=datetime.time(0, 0))
+    duration = models.IntegerField()
 
 class CancelledGearHour(models.Model):
     gear_hour = models.ForeignKey(
@@ -25,4 +27,4 @@ class CancelledGearHour(models.Model):
         on_delete=models.CASCADE,
         related_name="cancelled_dates"
     )
-    date = models.DateTimeField()
+    date = models.DateField()
