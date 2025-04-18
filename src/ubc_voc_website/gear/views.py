@@ -8,7 +8,10 @@ from membership.models import Profile
 from ubc_voc_website.decorators import Admin, Members, Execs
 
 import datetime
+import pytz
 import json
+
+pacific = pytz.timezone('America/Los_Angeles')
 
 User = get_user_model()
 
@@ -33,7 +36,10 @@ def gear_hours(request):
         while date <= gear_hour.end_date:
             if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
                 start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
+                start_datetime = pacific.localize(start_datetime)
+                print(start_datetime)
                 end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
+
                 calendar_events.append({
                     'id': f"{gear_hour.id}: {date}",
                     'title': f"Gear Hours - {qm_name}",

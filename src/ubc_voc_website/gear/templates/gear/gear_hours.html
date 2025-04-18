@@ -18,13 +18,14 @@
                 initialView: 'dayGridMonth',
                 events: events,
                 eventClick: function(info) {
-                    document.getElementById('modal-title').textContent = "test title";
-                    document.getElementById('modal-body').innerHTML = `<p>test body</p>`;
+                    document.getElementById('modal-title').textContent = info.event.title;
+                    document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
 
                     const modal = new bootstrap.Modal(document.getElementById('modal'));
                     modal.show();
                 },
-                firstDay: 1
+                firstDay: 1,
+                timeZone: 'local'
             });
             calendar.render();
 
@@ -60,13 +61,13 @@
 
     </div>
 
-    <div class="modal" id="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm" role="document">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                  <div class="modal-header">
                     <h5 class="modal-title" id="modal-title">Modal title</h5>
-                    <div class="modal-body" id="modal-body"></div>
                 </div>
+                <div class="modal-body" id="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
