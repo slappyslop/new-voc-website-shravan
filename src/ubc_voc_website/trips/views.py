@@ -13,6 +13,8 @@ import datetime
 import pytz
 import json
 
+pacific_timezone = pytz.timezone('America/Vancouver')
+
 def trips(request):
     trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
     trips_list = {}
@@ -175,13 +177,13 @@ def trip_details(request, id):
 
 @Members
 def clubroom_calendar(request):
-    trips_calendar = []
+    events_calendar = []
 
     upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
         'id', 'name', 'start_time', 'end_time'
     )
     for event in upcoming_clubroom_events:
-        trips_calendar.append({
+        events_calendar.append({
             'id': event['id'],
             'title': event['name'],
             'start': event['start_time'].isoformat(),
@@ -195,7 +197,7 @@ def clubroom_calendar(request):
     for pretrip in upcoming_clubroom_pretrips:
         end_time = pretrip['pretrip_time'] + datetime.timedelta(hours=1)
 
-        trips_calendar.append({
+        events_calendar.append({
             'id': pretrip['id'], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
             'title': f"Pretrip Meeting - {pretrip['name']}",
             'start': pretrip['pretrip_time'].isoformat(),
@@ -203,12 +205,11 @@ def clubroom_calendar(request):
             'color': "#00FF00"
         })
 
-    pacific_timezone = pytz.timezone('America/Vancouver')
     meeting_sets = Meeting.objects.all()
     for set in meeting_sets:
         start_time = set.start_date.astimezone(pacific_timezone)
         while start_time.date() <= set.end_date:
-            trips_calendar.append({
+            events_calendar.append({
                 'title': set.name,
                 'start': start_time.isoformat(),
                 'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
@@ -230,7 +231,7 @@ def clubroom_calendar(request):
                 start_datetime = pacific_timezone.localize(start_datetime)
                 end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
 
-                trips_calendar.append({
+                events_calendar.append({
                     'title': f"Gear Hours - {qm_name}",
                     'start': start_datetime.isoformat(),
                     'end': end_datetime.isoformat()
@@ -240,7 +241,7 @@ def clubroom_calendar(request):
 
 
     return render(request, 'trips/clubroom_calendar.html', {
-        'trips_calendar': json.dumps(trips_calendar)
+        'trips_calendar': json.dumps(events_calendar)
     })
 
 

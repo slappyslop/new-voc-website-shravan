@@ -11,7 +11,7 @@ import datetime
 import pytz
 import json
 
-pacific = pytz.timezone('America/Los_Angeles')
+pacific = pytz.timezone('America/Vancouver')
 
 User = get_user_model()
 
