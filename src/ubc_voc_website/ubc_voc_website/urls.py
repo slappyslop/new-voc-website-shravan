@@ -24,7 +24,7 @@ from django.contrib.auth.views import (
 )
 
 from django.urls import path, include
-from .views import join
+from .views import home, join
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -36,7 +36,7 @@ urlpatterns = [
     path('gear/', include("gear.urls")),
     path("membership/", include("membership.urls")),
     path("trips/", include("trips.urls")),
-    path("", TemplateView.as_view(template_name="home.html"), name="home"),
+    path("", home, name="home"),
     path("password-reset/", PasswordResetView.as_view(template_name="registration/password_reset/password_reset.html"), name="password_reset"),
     path("password-reset/done", PasswordResetDoneView.as_view(template_name="registration/password_reset/password_reset_done.html"), name="password_reset_done"),
     path("password-reset/confirm/<uid64>/<token>/", PasswordResetConfirmView.as_view(template_name="registration/password_reset/password_reset_confirm.html"), name="password_reset_confirm"),

@@ -9,6 +9,22 @@
             in Vancouver, Canada. We are avid outdoors enthusiasts and enjoy hiking, rock climbing, mountaineering, 
             back-country skiing, paddling, bike-touring and all self-propelled outdoor adventures.
         </p>
+
+        {% if photo %}
+            <div class="text-center">
+                <div class="d-inline-block text-center card mb-3">
+                    <img src="{{ photo.get_large_url }}" class="card-img-top" alt="{{ photo.title }}">
+                    <div class="card-body">
+                        {% if photo.title %}
+                            <h5 class="card-title">{{ photo.title }}</h5>
+                        {% endif %}
+                        {% if photo.caption %}
+                            <p class="card-text"><small class="text-muted">{{ photo.caption }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}
