@@ -58,7 +58,7 @@
                         <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
                         <td>
                             {% for tag in trip.tags.all %}
-                                <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                <!-- Language server may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
                                 <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
                                     {{ tag.name }}
                                 </span>
