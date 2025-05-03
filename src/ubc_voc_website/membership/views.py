@@ -114,15 +114,30 @@ def profile(request, id):
     profile = Profile.objects.get(user=user)
 
     organized_trips = Trip.objects.filter(organizers=request.user)
+    organized_trips_list = {}
+    for trip in organized_trips:
+        month = trip.start_time.strftime('%B %Y')
+        if month not in organized_trips_list:
+            organized_trips_list[month] = []
+        organized_trips_list[month].append(trip)
+    organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
+
     going_signups = TripSignup.objects.filter(user=request.user, type=TripSignupTypes.GOING)
     attended_trips = [signup.trip for signup in going_signups]
+    attended_trips_list = {}
+    for trip in attended_trips:
+        month = trip.start_time.strftime('%B %Y')
+        if month not in attended_trips_list:
+            attended_trips[month] = []
+        attended_trips_list[month].append(trip)
+    attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
     return render(request, 'membership/profile.html', {
         'user': user, 
         'profile': profile, 
         'trips': {
-            'organized': organized_trips,
-            'attended': attended_trips
+            'organized': organized_trips_list,
+            'attended': attended_trips_list
             }
         })
 

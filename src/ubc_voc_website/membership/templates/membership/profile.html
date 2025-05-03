@@ -21,20 +21,25 @@
                 <th>Tags</th>
             </thead>
             <tbody>
-                {% for trip in trips.organized %}
+                {% for month, trips in trips.organized.items %}
                     <tr>
-                        <td>{{ trip.trip_date_as_str_short }}</td>
-                        <td>{{ trip.name }}</td>
-                        <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
-                        <td>
-                            {% for tag in trip.tags.all %}
-                                <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
-                                <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
-                                    {{ tag.name }}
-                                </span>
-                            {% endfor %}
-                        </td>
+                        <td colspan="4"><strong>{{ month }}</strong></td>
                     </tr>
+                    {% for trip in trips %}
+                        <tr>
+                            <td>{{ trip.trip_date_as_str_short }}</td>
+                            <td>{{ trip.name }}</td>
+                            <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
+                            <td>
+                                {% for tag in trip.tags.all %}
+                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                        {{ tag.name }}
+                                    </span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -51,20 +56,25 @@
                 <th>Tags</th>
             </thead>
             <tbody>
-                {% for trip in trips.organized %}
+                {% for month, trips in trips.attended.items %}
                     <tr>
-                        <td>{{ trip.trip_date_as_str_short }}</td>
-                        <td>{{ trip.name }}</td>
-                        <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
-                        <td>
-                            {% for tag in trip.tags.all %}
-                                <!-- Language server may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
-                                <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
-                                    {{ tag.name }}
-                                </span>
-                            {% endfor %}
-                        </td>
+                        <td colspan="4"><strong>{{ month }}</strong></td>
                     </tr>
+                    {% for trip in trips %}
+                        <tr>
+                            <td>{{ trip.trip_date_as_str_short }}</td>
+                            <td>{{ trip.name }}</td>
+                            <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
+                            <td>
+                                {% for tag in trip.tags.all %}
+                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                        {{ tag.name }}
+                                    </span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -74,8 +84,13 @@
 
     <hr>
 
+    <h4>Photo Gallery</h4>
     {% if user.gallery %}
-        <h5>Photo Gallery</h5>
+
+    {% elif request.user == user %}
+        <p>You have not created a photo gallery yet</p>
+    {% else %}
+        <p>This user does not have a photo gallery</p>
     {% endif %}
 </div>
 {% endblock %}
