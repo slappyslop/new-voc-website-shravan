@@ -36,6 +36,7 @@ urlpatterns = [
     path('gear/', include("gear.urls")),
     path("membership/", include("membership.urls")),
     path("trips/", include("trips.urls")),
+    path("gallery/", include("gallery.urls")),
     path("", home, name="home"),
     path("password-reset/", PasswordResetView.as_view(template_name="registration/password_reset/password_reset.html"), name="password_reset"),
     path("password-reset/done", PasswordResetDoneView.as_view(template_name="registration/password_reset/password_reset_done.html"), name="password_reset_done"),
