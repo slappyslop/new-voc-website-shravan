@@ -86,7 +86,11 @@
 
     <h4>Photo Gallery</h4>
     {% if gallery %}
-
+        {% if request.user == user %}
+            <p>
+                <a href="{% url 'manage_user_gallery' %}">Click here</a> to manage your gallery
+            </p>
+        {% endif %}
     {% elif request.user == user %}
         <p>You have not created a photo gallery yet</p>
         <p>
