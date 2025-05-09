@@ -11,24 +11,26 @@
                 <div class="carousel-inner">
                     {% for photo in gallery.photos.all %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <div class="d-inline-block text-center card mb-3">
-                                <img src="{{ photo.get_large_url }}" class="card-img-top" alt="{{ photo.title }}">
-                                <div class="card-body">
-                                    {% if photo.title %}
-                                        <h5 class="card-title">{{ photo.title }}</h5>
-                                    {% endif %}
-                                    {% if photo.caption %}
-                                        <p class="card-text"><small class="text-muted">{{ photo.caption }}</small></p>
-                                    {% endif %}
+                            <div class="d-flex justify-content-center">
+                                <div class="card mb-3" style="max-width: 800px;">
+                                    <img src="{{ photo.get_large_url }}" class="card-img-top" alt="{{ photo.title }}">
+                                    <div class="card-body text-center">
+                                        {% if photo.title %}
+                                            <h5 class="card-title">{{ photo.title }}</h5>
+                                        {% endif %}
+                                        {% if photo.caption %}
+                                            <p class="card-text"><small class="text-muted">{{ photo.caption }}</small></p>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <button class="carousel-control-prev bg-dark" type="button" data-bs-target="#carousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <button class="carousel-control-next bg-dark" type="button" data-bs-target="#carousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon"></span>
                 </button>
             </div>
