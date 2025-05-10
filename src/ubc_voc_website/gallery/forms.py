@@ -5,7 +5,7 @@ from photologue.models import Photo
 class UserPhotoUploadForm(forms.ModelForm):
     class Meta:
         model = Photo
-        fields = ['title', 'image']
+        fields = ['title', 'image', 'caption']
 
     def __init__(self, *args, user=None, **kwargs):
         self.user = user

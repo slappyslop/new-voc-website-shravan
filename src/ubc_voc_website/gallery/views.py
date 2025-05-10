@@ -30,7 +30,6 @@ def manage_user_gallery(request):
             photo.image.name = new_path
 
             # Update Photo fields
-            photo.caption = f"Photo: {request.user.get_full_name()}"
             photo.slug = slugify(photo.title)
             photo.is_public = True
             photo.save()
