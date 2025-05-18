@@ -55,7 +55,7 @@
                                         <td class="text-wrap text-break w-50">Says: {{ signup.signup_answer }}</td>
                                     {% endif %}
                                     {% if signup.car_spots > 0 %}
-                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
+                                        <td><b>Can drive: </b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -78,12 +78,21 @@
                                 <tr>
                                     <th scope="row">{{ forloop.counter }}</th>
                                     <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
-                                    {% if signup.signup_answer %}
-                                        <td class="text-wrap text-break w-50">Says: {{ signup.signup_answer }}</td>
-                                    {% endif %}
-                                    {% if signup.car_spots > 0 %}
-                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
-                                    {% endif %}
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            Says: {{ signup.signup_answer }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if signup.car_spots > 0 %}
+                                            <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if request.user in trip.organizers.all %}
+                                            <a href="{% url 'mark_as_going' trip.id signup.id %}">Add to going list</a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -104,13 +113,24 @@
                             {% for signup in signups.interested %}
                                 <tr>
                                     <th scope="row">{{ forloop.counter }}</th>
-                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
-                                    {% if signup.signup_answer %}
-                                        <td class="text-wrap text-break w-50"><b>Says:</b> <i>{{ signup.signup_answer }}</i></td>
-                                    {% endif %}
-                                    {% if signup.car_spots > 0 %}
-                                        <td><b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
-                                    {% endif %}
+                                    <td>
+                                        <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
+                                    </td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> <i>{{ signup.signup_answer }}</i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if signup.car_spots > 0 %}
+                                            <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if request.user in trip.organizers.all %}
+                                            <a href="{% url 'mark_as_going' trip.id signup.id %}">Add to going list</a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -165,6 +185,19 @@
 
                 <button type="submit">Submit</button>
             </form>
+        {% endif %}
+
+        <!------------------------------- Gallery ------------------------------->
+        {% if request.user|is_member %}
+            <h5>Photo Gallery</h5>
+            {% if gallery %}
+                <p>photos here</p>
+            {% else %}
+                <p>This trip does not have an associated photo gallery</p>
+            {% endif %}
+            {% if request.user in signups.going %}
+                <p>Click here to contribute to the gallery for this trip</p>
+            {% endif %}
         {% endif %}
     </div>
     

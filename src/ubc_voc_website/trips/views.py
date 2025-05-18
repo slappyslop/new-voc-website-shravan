@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from ubc_voc_website.decorators import Admin, Members, Execs
+from ubc_voc_website.decorators import Members
 from ubc_voc_website.utils import is_member
 
 from .models import Meeting, Trip, TripSignup, TripSignupTypes
@@ -12,6 +13,8 @@ from gear.models import CancelledGearHour, GearHour
 import datetime
 import pytz
 import json
+
+User = get_user_model()
 
 pacific_timezone = pytz.timezone('America/Vancouver')
 
@@ -166,14 +169,39 @@ def trip_details(request, id):
             if trip.valid_signup_types:
                 form = TripSignupForm(user=request.user, trip=trip)
 
+        # get photo gallery
+        gallery = getattr(trip, 'gallery', None)
+    
+    else:
+        gallery = None
+
     return render(request, 'trips/trip.html', {
         'trip': trip, 
-        'organizers': organizers, 
+        'organizers': organizers,
         'description': description, 
         'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
         'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
-        'form': form
-        })
+        'form': form,
+        'gallery': gallery
+    })
+
+@Members
+def mark_as_going(request, trip_id, user_id):
+    user = User.objects.get(id=user_id)
+    trip = Trip.objects.get(id=trip_id)
+
+    if not trip.organizers.filter(pk=request.user.pk).exists():
+        return render(request, 'access_denied.html', status=403)
+    else:
+        # edit existing signup to going if it exists, else create a new one
+        trip_signup, created = TripSignup.objects.get_or_create(
+            trip=trip,
+            user=user,
+        )
+        trip_signup.type = TripSignupTypes.GOING
+        trip_signup.save()
+
+        return redirect(f"/trips/details/{trip_id}")
 
 @Members
 def clubroom_calendar(request):
