@@ -41,7 +41,7 @@ def manage_user_gallery(request):
     else:
         form = UserPhotoUploadForm(user=request.user)
 
-    return render(request, 'gallery/user_gallery.html', {
+    return render(request, 'gallery/gallery.html', {
         'gallery': gallery,
         'form': form
     })
@@ -58,15 +58,24 @@ def delete_user_photo(request, photo_id):
 @Members
 def manage_trip_gallery(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)
+
     going_list = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
     if not going_list.filter(user=request.user).exists():
         return render(request, 'access_denied.html', status=403)
-
-
+    
+    for gallery in TripGallery.objects.all():
+        print(gallery) 
+    
+    trip_name = f"Trip Gallery: {trip.name}"
     gallery, created = TripGallery.objects.get_or_create(
         trip=trip,
         defaults={
-            'title': f"Trip Gallery: {trip.name}",
+            'title': trip_name,
+            'slug': slugify(trip_name),
             'is_public': True
         }
     )
+
+    return render(request, 'gallery/gallery.html', {
+        'gallery': gallery,
+    })

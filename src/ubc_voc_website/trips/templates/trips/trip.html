@@ -195,8 +195,8 @@
             {% else %}
                 <p>This trip does not have an associated photo gallery</p>
             {% endif %}
-            {% if request.user in signups.going %}
-                <p>Click here to contribute to the gallery for this trip</p>
+            {% if is_going %}
+                <p><a href="{% url 'manage_trip_gallery' trip.id %}">Click here</a> to contribute to the gallery for this trip</p>
             {% endif %}
         {% endif %}
     </div>

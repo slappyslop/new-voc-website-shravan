@@ -180,6 +180,7 @@ def trip_details(request, id):
         'organizers': organizers,
         'description': description, 
         'signups': {"interested": interested_list, "committed": committed_list, "going": going_list},
+        'is_going': going_signups.filter(user=request.user).exists(),
         'car_spots': {"interested": interested_car_spots, "committed": committed_car_spots, "going": going_car_spots},
         'form': form,
         'gallery': gallery
