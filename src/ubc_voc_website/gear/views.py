@@ -72,3 +72,27 @@ def delete_gear_hour(request, id):
             )
 
     return redirect('gear_hours')
+
+@Execs
+def gear_rentals(request):
+    pass
+
+@Execs
+def create_gear_rental(request):
+    pass
+
+@Execs
+def edit_gear_rental(request, pk):
+    pass
+
+@Execs
+def renew_gear_rental(request, pk):
+    pass
+
+@Execs
+def return_gear_rental(request, pk):
+    pass
+
+@Execs
+def lost_gear_rental(request, pk):
+    pass
