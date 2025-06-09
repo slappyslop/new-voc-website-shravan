@@ -75,33 +75,44 @@ def delete_gear_hour(request, id):
 
 @Execs
 def gear_rentals(request):
-    gear_rentals = GearRental.objects.all()
-    book_rentals = BookRental.objects.all()
+    today = datetime.datetime.today()
+    
+    current_gear_rentals = list(GearRental.objects.filter(returned=False))
+    for rental in current_gear_rentals:
+        rental.gear = True
+    overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
+    long_gear_rentals = [rental for rental in overdue_gear_rentals if r.due_date < (today - datetime.timedelta(weeks=3))]
 
-    current_gear_rentals = gear_rentals.filter(returned=False)
-    current_book_rentals = book_rentals.filter(returned=False)
+    current_book_rentals = list(BookRental.objects.filter(returned=False))
+    for rental in current_book_rentals:
+        rental.gear = False
+    overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
+    long_book_rentals = [rental for rental in overdue_book_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
-    overdue_gear_rentals = current_gear_rentals.filter(due_date__lt=datetime.datetime.today())
-    overdue_book_rentals = current_book_rentals.filter(due_date__lte=datetime.datetime.today())
-
-    return render(request, 'gear/gearmaster.html')
+    return render(request, 'gear/gearmaster.html', {
+        'rentals': {
+            'current': current_gear_rentals + current_book_rentals,
+            'overdue': overdue_gear_rentals + overdue_book_rentals,
+            'long': long_gear_rentals + long_book_rentals
+        }
+    })
 
 @Execs
-def create_gear_rental(request):
+def create_rental(request):
     pass
 
 @Execs
-def edit_gear_rental(request, pk):
+def edit_rental(request, pk):
     pass
 
 @Execs
-def renew_gear_rental(request, pk):
+def renew_rental(request, pk):
     pass
 
 @Execs
-def return_gear_rental(request, pk):
+def return_rental(request, pk):
     pass
 
 @Execs
-def lost_gear_rental(request, pk):
+def lost_rental(request, pk):
     pass

@@ -10,28 +10,88 @@
     <div class="container">
         <h2>Gearmaster Ten-Thousand</h2>
 
-        <ul class="nav nav-tabs" id="gear-rental-tables" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="current" data-bs-toggle="tab" data-bs-target="#current-rentals">Current Rentals</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overdue" data-bs-toggle="tab" data-bs-target="#overdue-rentals">Overdue Rentals</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="long" data-bs-toggle="tab" data-bs-target="#long-rentals">Everything out for 3+ weeks</button>
-            </li>
-        </ul>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <ul class="nav nav-tabs" id="gear-rental-tables" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="current" data-bs-toggle="tab" data-bs-target="#current-rentals">
+                        Current Rentals
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="overdue" data-bs-toggle="tab" data-bs-target="#overdue-rentals">
+                        Overdue Rentals
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="long" data-bs-toggle="tab" data-bs-target="#long-rentals">
+                        Rentals out for 3+ weeks
+                    </button>
+                </li>
+            </ul>
+
+            <a href="{% url 'create_rental' %}" class="btn btn-primary">
+                + New Rental
+            </a>
+        </div>
 
         <!-- Tab content -->
          <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="current-rentals" role="tabpanel" aria-labelled="current-rentals">
-                <p>current rentals table</p>
+                <table id="current-rentals-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Date Out</th>
+                            <th>Date Due</th>
+                            <th>Category</th>
+                            <th>What</th>
+                            <th>QM Name</th>
+                            <th>Notes</th>
+                            <th>Edit</th>
+                            <th>Renew</th>
+                            <th>Return</th>
+                            <th>Mark as Lost</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
             <div class="tab-pane fade" id="overdue-rentals" role="tabpanel" aria-labelledby="overdue-rentals">
-                <p>overdue rentals table</p>
+                <table id="current-rentals-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Date Out</th>
+                            <th>Date Due</th>
+                            <th>Category</th>
+                            <th>What</th>
+                            <th>QM Name</th>
+                            <th>Notes</th>
+                            <th>Edit</th>
+                            <th>Renew</th>
+                            <th>Return</th>
+                            <th>Mark as Lost</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
             <div class="tab-pane fade" id="long-rentals" role="tabpanels" aria-labelledby="long-rentals">
-                <p>long rentals table</p>
+                <table id="current-rentals-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Date Out</th>
+                            <th>Date Due</th>
+                            <th>Category</th>
+                            <th>What</th>
+                            <th>QM Name</th>
+                            <th>Notes</th>
+                            <th>Edit</th>
+                            <th>Renew</th>
+                            <th>Return</th>
+                            <th>Mark as Lost</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
          </div>
     </div>
