@@ -53,9 +53,11 @@ class Rental(models.Model):
     )
     deposit = models.IntegerField()
     start_date = models.DateField()
+    due_date = models.DateField()
     return_date = models.DateField()
     extensions = models.IntegerField()
     notes = models.TextField(null=True)
+    returned = models.BooleanField()
     lost = models.BooleanField(default=False)
 
 class GearRental(Rental):

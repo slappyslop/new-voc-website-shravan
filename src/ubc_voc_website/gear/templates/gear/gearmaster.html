@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Gearmaster{% endblock %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Gearmaster Ten-Thousand</h2>
+
+        <ul class="nav nav-tabs" id="gear-rental-tables" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="current" data-bs-toggle="tab" data-bs-target="#current-rentals">Current Rentals</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overdue" data-bs-toggle="tab" data-bs-target="#overdue-rentals">Overdue Rentals</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="long" data-bs-toggle="tab" data-bs-target="#long-rentals">Everything out for 3+ weeks</button>
+            </li>
+        </ul>
+
+        <!-- Tab content -->
+         <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="current-rentals" role="tabpanel" aria-labelled="current-rentals">
+                <p>current rentals table</p>
+            </div>
+            <div class="tab-pane fade" id="overdue-rentals" role="tabpanel" aria-labelledby="overdue-rentals">
+                <p>overdue rentals table</p>
+            </div>
+            <div class="tab-pane fade" id="long-rentals" role="tabpanels" aria-labelledby="long-rentals">
+                <p>long rentals table</p>
+            </div>
+         </div>
+    </div>
+{% endblock %}

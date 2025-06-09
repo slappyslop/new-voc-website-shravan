@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
-from .models import GearHour, CancelledGearHour
+from .models import GearHour, CancelledGearHour, BookRental, GearRental
 from .forms import GearHourForm
 from membership.models import Profile
 from ubc_voc_website.decorators import Admin, Members, Execs
@@ -75,7 +75,16 @@ def delete_gear_hour(request, id):
 
 @Execs
 def gear_rentals(request):
-    pass
+    gear_rentals = GearRental.objects.all()
+    book_rentals = BookRental.objects.all()
+
+    current_gear_rentals = gear_rentals.filter(returned=False)
+    current_book_rentals = book_rentals.filter(returned=False)
+
+    overdue_gear_rentals = current_gear_rentals.filter(due_date__lt=datetime.datetime.today())
+    overdue_book_rentals = current_book_rentals.filter(due_date__lte=datetime.datetime.today())
+
+    return render(request, 'gear/gearmaster.html')
 
 @Execs
 def create_gear_rental(request):
