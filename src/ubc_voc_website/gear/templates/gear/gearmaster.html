@@ -53,6 +53,11 @@
                             <th>Mark as Lost</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        {% for rental in rentals.current %}
+
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
             <div class="tab-pane fade" id="overdue-rentals" role="tabpanel" aria-labelledby="overdue-rentals">
@@ -72,6 +77,11 @@
                             <th>Mark as Lost</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        {% for rental in rentals.overdue %}
+
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
             <div class="tab-pane fade" id="long-rentals" role="tabpanels" aria-labelledby="long-rentals">
@@ -91,6 +101,11 @@
                             <th>Mark as Lost</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        {% for rental in rentals.long %}
+
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
          </div>

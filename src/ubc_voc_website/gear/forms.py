@@ -1,5 +1,5 @@
 from django import forms
-from .models import GearHour, CancelledGearHour
+from .models import Book, BookRental, CancelledGearHour, Gear, GearHour, GearRental
 
 from django.contrib.auth import get_user_model
 
@@ -60,14 +60,83 @@ class CancelledGearHourForm(forms.ModelForm):
             'gear_hour',
             'date'
         )
-
     gear_hour = forms.ModelChoiceField(
         queryset=GearHour.objects.all(),
         label="Gear Hour",
         widget=forms.Select,
         required=True
     )
-
     date = forms.DateField(
         required=True
     )
+
+class GearRentalForm(forms.ModelForm):
+    class Meta:
+        model = GearRental
+        fields = (
+            'member',
+            'gear',
+            'deposit',
+            'start_date',
+            'due_date',
+            'notes',
+        )
+
+    member = forms.ModelChoiceField(
+        queryset=User.objects.filter(membership__active=True).distinct(),
+        label="Member Name",
+        widget=forms.Select,
+        required=True
+    )
+    gear = forms.ModelMultipleChoiceField(
+        queryset=Gear.objects.all(),
+        required=True,
+        label="Item(s) being rented",
+        widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    )
+    deposit = forms.IntegerField()
+    start_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    due_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    notes = forms.TextInput()
+
+class BookRentalForm(forms.ModelForm):
+    class Meta:
+        model = BookRental
+        fields = (
+            'member',
+            'books',
+            'deposit',
+            'start_date',
+            'due_date',
+            'notes',
+        )
+
+    member = forms.ModelChoiceField(
+        queryset=User.objects.filter(membership__active=True).distinct(),
+        label="Member Name",
+        widget=forms.Select,
+        required=True
+    )
+    books = forms.ModelMultipleChoiceField(
+        queryset=Book.objects.all(),
+        required=True,
+        label="Item(s) being rented",
+        widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    )
+    deposit = forms.IntegerField()
+    start_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    due_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+    notes = forms.TextInput()
+

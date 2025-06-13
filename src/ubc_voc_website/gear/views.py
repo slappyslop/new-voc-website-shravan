@@ -1,9 +1,10 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
 from .models import GearHour, CancelledGearHour, BookRental, GearRental
-from .forms import GearHourForm
+from .forms import BookRentalForm, GearHourForm, GearRentalForm
 from membership.models import Profile
 from ubc_voc_website.decorators import Admin, Members, Execs
 
@@ -74,7 +75,7 @@ def delete_gear_hour(request, id):
     return redirect('gear_hours')
 
 @Execs
-def gear_rentals(request):
+def rentals(request):
     today = datetime.datetime.today()
     
     current_gear_rentals = list(GearRental.objects.filter(returned=False))
@@ -98,8 +99,23 @@ def gear_rentals(request):
     })
 
 @Execs
-def create_rental(request):
-    pass
+def create_rental(request, type):
+    if type == "gear":
+        form_type = GearRentalForm
+    elif type == "book":
+        form_type = BookRentalForm
+    else:
+        raise Http404(f"Rental type '${type}' not recognized")
+    
+    if request.method == "POST":
+        form = form_type(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("rentals")
+    else:
+        form = form_type()
+
+    return render(request, 'gear/create_gear_rental.html', {'form': form})
 
 @Execs
 def edit_rental(request, pk):

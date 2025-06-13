@@ -67,7 +67,7 @@
                                 {% if request.user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'manage_roles' %}">Manage Roles</a></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="{% url 'gear_rentals' %}">Gearmaster</a></li>
+                                <li><a class="dropdown-item" href="{% url 'rentals' %}">Gearmaster</a></li>
                             </ul>
                         </li>
                     {% endif %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Gearmaster{% endblock %}
+
+{% block head_content %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Create Rental</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
