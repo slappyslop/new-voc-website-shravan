@@ -129,6 +129,17 @@ class BookRentalForm(forms.ModelForm):
             'notes',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['member'].label_from_instance = self.get_profile_label
+
+    @staticmethod
+    def get_profile_label(user):
+        try:
+            return user.profile.full_name
+        except Profile.DoesNotExist:
+            return user.email
+        
     member = forms.ModelChoiceField(
         queryset=User.objects.filter(membership__active=True).distinct(),
         label="Member Name",
