@@ -57,7 +57,6 @@ class Rental(models.Model):
     return_date = models.DateField(null=True)
     extensions = models.IntegerField(default=0)
     notes = models.TextField(null=True)
-    returned = models.BooleanField(default=False)
     lost = models.BooleanField(default=False)
 
 class GearRental(Rental):

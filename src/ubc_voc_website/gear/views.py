@@ -78,15 +78,15 @@ def delete_gear_hour(request, id):
 def rentals(request):
     today = datetime.date.today()
     
-    current_gear_rentals = list(GearRental.objects.filter(returned=False))
+    current_gear_rentals = list(GearRental.objects.filter(return_date__isnull=True, lost=False))
     for rental in current_gear_rentals:
-        rental.is_gear = True
+        rental.type = "gear"
     overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
     long_gear_rentals = [rental for rental in overdue_gear_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
-    current_book_rentals = list(BookRental.objects.filter(returned=False))
+    current_book_rentals = list(BookRental.objects.filter(return_date__isnull=True, lost=False))
     for rental in current_book_rentals:
-        rental.is_gear = False
+        rental.type = "book"
     overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
     long_book_rentals = [rental for rental in overdue_book_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
 
@@ -123,17 +123,40 @@ def create_rental(request, type):
     })
 
 @Execs
-def edit_rental(request, pk):
+def edit_rental(request, pk, type):
     pass
 
 @Execs
-def renew_rental(request, pk):
-    pass
+def renew_rental(request, pk, type):
+    if request.method == "POST":
+        rental_type = GearRental if type == "gear" else BookRental
+        rental = get_object_or_404(rental_type, pk=pk)
+        print(rental)
+
+        rental.due_date += datetime.timedelta(weeks=1)
+        rental.extensions += 1
+        rental.save()
+
+    return redirect('rentals')
 
 @Execs
-def return_rental(request, pk):
-    pass
+def return_rental(request, pk, type):
+    if request.method == "POST":
+        rental_type = GearRental if type == "gear" else BookRental
+        rental = get_object_or_404(rental_type, pk=pk)
+
+        rental.return_date = datetime.date.today()
+        rental.save()
+
+    return redirect('rentals')
 
 @Execs
-def lost_rental(request, pk):
-    pass
+def lost_rental(request, pk, type):
+    if request.method == "POST":
+        rental_type = GearRental if type == "gear" else BookRental
+        rental = get_object_or_404(rental_type, pk=pk)
+
+        rental.lost = True
+        rental.save()
+
+    return redirect('rentals')
