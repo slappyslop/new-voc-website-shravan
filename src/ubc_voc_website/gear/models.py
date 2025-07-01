@@ -38,6 +38,13 @@ class Book(models.Model):
     deposit = models.IntegerField(default=20)
 
 class Rental(models.Model):
+    class RentalStatus(models.TextChoices):
+        RETURNED_ON_TIME = "returned_on_time"
+        RETURNED_LATE = "returned_late"
+        OUT_ON_TIME = "out_on_time"
+        OUT_LATE = "out_late"
+        LOST = "lost"
+
     class Meta:
         abstract = True
 
@@ -58,6 +65,19 @@ class Rental(models.Model):
     extensions = models.IntegerField(default=0)
     notes = models.TextField(null=True)
     lost = models.BooleanField(default=False)
+
+    def status(self):
+        if self.return_date:
+            if self.return_date > self.due_date:
+                return Rental.RentalStatus.RETURNED_LATE
+            else:
+                return Rental.RentalStatus.RETURNED_ON_TIME
+        elif self.lost:
+            return Rental.RentalStatus.LOST
+        elif self.due_date < datetime.date.today():
+            return Rental.RentalStatus.OUT_LATE
+        else:
+            return Rental.RentalStatus.OUT_ON_TIME
 
 class GearRental(Rental):
     """
