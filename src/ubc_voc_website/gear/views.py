@@ -127,7 +127,31 @@ def create_rental(request, type):
 
 @Execs
 def edit_rental(request, pk, type):
-    pass
+    if type == "gear":
+        rental_model = GearRental
+        form_type = GearRentalForm
+    elif type == "book":
+        rental_model = BookRental
+        form_type = BookRentalForm
+    else:
+        raise Http404(f"Rental type '${type}' not recognized")
+    
+    rental = get_object_or_404(rental_model, pk=pk)
+
+    if request.method == "POST":
+        form = form_type(request.POST, instance=rental)
+        if form.is_valid():
+            form.save()
+            return redirect("rentals")
+    else:
+        form = form_type(instance=rental)
+
+    return render(request, 'gear/edit_rental.html', {
+        'form': form,
+        'type': type
+    })
+    
+
 
 @Execs
 def renew_rental(request, pk, type):
