@@ -5,4 +5,4 @@ WeasyPrint==63.0
 django-colorfield==0.12.0
 django-quill-editor==0.1.42
 django-photologue==3.17
-puput==2.2.0
+wagtail==6.4.2
