@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul>
+        {% for child in page.get_children.live.in_menu %}
+            <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+        {% empty %}
+            <li>No trip reports found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -169,4 +169,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 SITE_ID = 1
 
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-# PUPUT_ENTRY_MODEL = 'tripreports.TripReport'
+WAGTAIL_SITE_NAME = "VOC Trip Reports"
+
