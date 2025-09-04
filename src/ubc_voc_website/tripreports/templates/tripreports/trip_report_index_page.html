@@ -13,6 +13,11 @@
                                     by <a href="{% url 'profile' trip_report.owner.id %}">{{ trip_report.owner.profile.full_name }}</a>
                                 </small>
                             </div>
+                            <div>
+                                <small class="text-muted">
+                                    posted {{ trip_report.first_published_at|date:"M d, Y H:i" }}</a>
+                                </small>
+                            </div>
                         </div>
                         <div class="card-body">
                             {{ trip_report.body|striptags|truncatewords:20 }}
