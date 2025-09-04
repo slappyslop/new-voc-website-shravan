@@ -1,11 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <ul>
-        {% for child in page.get_children.live %}
-            <li><a href="{{ child.url }}">{{ child.title }}</a></li>
-        {% empty %}
-            <li>No trip reports found.</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <ul>
+            {% for child in page.get_children.live %}
+                {% with child.specific as trip_report %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class=card-title">{{ trip_report.title }}</h4>
+                            <div>
+                                <small class="text-muted">
+                                    by <a href="{% url 'profile' trip_report.owner.id %}">{{ trip_report.owner.profile.full_name }}</a>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {{ trip_report.body|striptags|truncatewords:20 }}
+                        </div>
+                        <div class="card-footer text-end">
+                            <a href="{{ trip_report.url }}">Read more &rarr;</a>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% empty %}
+                <li>No trip reports found.</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
