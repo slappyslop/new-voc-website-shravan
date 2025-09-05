@@ -26,4 +26,12 @@ def create_trip_report(request):
         form = TripReportForm()
 
     return render(request, "tripreports/create_trip_report.html", {"form": form})
+
+@Members
+def my_tripreports(request):
+    tripreports = TripReport.objects.filter(owner=request.user)
+
+    return render(request, "tripreports/my_tripreports.html", {
+        "tripreports": tripreports
+    })
         
