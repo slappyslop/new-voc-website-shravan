@@ -43,7 +43,8 @@ def trips(request):
             'title': trip.name,
             'start': trip.start_time.isoformat(),
             'end': end_time.isoformat(),
-            'color': trip.tags.all()[0].colour if trip.tags.exists() else '#808080'
+            'color': trip.tags.all()[0].colour if trip.tags.exists() else '#808080',
+            'tags': [tag.name for tag in trip.tags.all()]
         })
 
     return render(request, 'trips/trip_agenda.html', {

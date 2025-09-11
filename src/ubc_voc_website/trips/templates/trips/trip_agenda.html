@@ -39,9 +39,16 @@
 
             // Initialize FullCalendar object
             const events = JSON.parse('{{ trips_calendar|escapejs }}');
+            const extendedEvents = events.map(event => ({
+                ...event,
+                extendedProps: {
+                    ...event.extendedProps,
+                    tags: event.tags || []
+                }
+            }));
             calendar = new FullCalendar.Calendar(calendar, {
                 initialView: 'dayGridMonth',
-                events: events,
+                events: extendedEvents,
                 eventClick: function(info) {
                     window.location.href = '/trips/details/' + info.event._def.publicId;
                 },
@@ -60,11 +67,20 @@
             function applyTripTagFilters() {
                 const selectedTripTags = tripTagChoices.getValue(true);
 
+                // Filter table rows
                 tableRows.forEach(row => {
                     const tags = row.dataset.tags ? row.dataset.tags.split(',') : [];
                     row.style.display = (selectedTripTags.length === 0 || selectedTripTags.some(tag => tags.includes(tag)))
                      ? ""
                     : "none";
+                });
+
+                // Filter calendar events
+                calendar.getEvents().forEach(event => {
+                    const tags = event.extendedProps.tags || [];
+                    const showEvent = (selectedTripTags.length === 0) ||
+                        selectedTripTags.some(tag => tags.includes(tag));
+                    event.setProp('display', showEvent ? 'auto' : 'none');
                 });
             }
             tripTagFilter.addEventListener("change", applyTripTagFilters);
@@ -86,14 +102,14 @@
             Upcoming Trips
             <button id="calendar-toggle" class="btn btn-outline-secondary"></button>
         </h2>
+        <div class="mb-3">
+            <select id="trip-tag-filter" multiple>
+                {% for tag in all_trip_tags %}
+                    <option value="{{ tag.name }}">{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <div id="list_div">
-            <div class="mb-3">
-                <select id="trip-tag-filter" multiple>
-                    {% for tag in all_trip_tags %}
-                        <option value="{{ tag.name }}">{{ tag.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
             <table id="upcoming-table" class="table">
                 <thead>
                     <tr>
