@@ -49,12 +49,26 @@
             });
 
             // Initialize Choices dropdown for trip tag filters
-            const trip_tag_filter = document.getElementById('trip-tag-filter');
-            new Choices(trip_tag_filter, {
+            const tripTagFilter = document.getElementById('trip-tag-filter');
+            const tripTagChoices = new Choices(tripTagFilter, {
                 placeholder: true,
                 placeholderValue: "Filter by trip tags"
             });
-        })
+
+            // Filtering logic for trip table
+            const tableRows = document.querySelectorAll("#upcoming-table tbody tr");
+            function applyTripTagFilters() {
+                const selectedTripTags = tripTagChoices.getValue(true);
+
+                tableRows.forEach(row => {
+                    const tags = row.dataset.tags ? row.dataset.tags.split(',') : [];
+                    row.style.display = (selectedTripTags.length === 0 || selectedTripTags.some(tag => tags.includes(tag)))
+                     ? ""
+                    : "none";
+                });
+            }
+            tripTagFilter.addEventListener("change", applyTripTagFilters);
+        });
     </script>
     <style>
         h2 {
@@ -98,7 +112,7 @@
                             <td colspan="4"><strong>{{ month }}</strong></td>
                         </tr>
                         {% for trip in trips %}
-                            <tr>
+                            <tr data-tags="{{ trip.tags.all|join:','}}">
                                 <td>{{ trip.trip_date_as_str_short }}</td>
                                 <td>{{ trip.name }}</td>
                                 <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
