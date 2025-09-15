@@ -41,7 +41,8 @@ class Membership(models.Model):
     class MembershipType(models.TextChoices):
         REGULAR = "R"
         ASSOCIATE = "A"
-        HONORARY = "H"
+        ACTIVE_HONORARY = "H"
+        INACTIVE_HONOURARY = "I"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
@@ -65,8 +66,10 @@ class Membership(models.Model):
             return "Regular"
         elif self.type == Membership.MembershipType.ASSOCIATE:
             return "Associate"
+        elif self.type == Membership.MembershipType.ACTIVE_HONORARY:
+            return "Honorary (Active)"
         else:
-            return "Honourary"
+            return "Honourary (Inactive)"
     
     @property
     def mapped_status(self):

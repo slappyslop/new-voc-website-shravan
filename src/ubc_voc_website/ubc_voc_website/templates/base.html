@@ -51,9 +51,13 @@
                             Membership
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit My Profile</a></li>
-                            {% if request.user|is_member %}
-                                <li><a class="dropdown-item" href="{% url 'members' %}">Member List</a></li>
+                            {% if request.user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit My Profile</a></li>
+                                {% if request.user|is_member %}
+                                    <li><a class="dropdown-item" href="{% url 'members' %}">Member List</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'join' %}">Join the VOC</a></li>
                             {% endif %}
                         </ul>
                     </li>

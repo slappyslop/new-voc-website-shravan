@@ -8,6 +8,24 @@
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
+            <div class="alert alert-info" role="alert">
+                <h5 class="alert-heading">Membership Types</h5>
+                <ul>
+                    <li><strong>Regular:</strong> Available to current UBC students</li>
+                    <li><strong>Associate:</strong> Available to everyone - non-UBC affiliated members, UBC alumni, etc. </li>
+                    <li><strong>Active Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and are still interested in leading/attending club trips</li>
+                    <li><strong>Inactive Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and will <strong>not</strong> lead/attend club trips</li>
+                </ul>
+                <!-- TODO actually put wiki link -->
+                <p>For more information on honorary membership eligibility, visit the VOC wiki</p>
+                <p>If you are:
+                    <ol>
+                        <li>Requesting Active Honorary membership</li>
+                        <li>Requesting Inactive Honorary membership and have not already been an honorary member</li>
+                    </ol>
+                    Please email 'membership at ubc-voc.com' to review your request.
+                </p>
+            </div>
             <button type="submit">Submit</button>
         </form>
     </div>
