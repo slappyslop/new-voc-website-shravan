@@ -95,7 +95,7 @@ class GearRentalForm(forms.ModelForm):
             return user.email
 
     member = forms.ModelChoiceField(
-        queryset=User.objects.filter(membership__active=True).distinct(),
+        queryset=User.objects.filter(membership__active=True).distinct().exclude(membership__type__in=["H", "I"]), # Exclude both types of honorary members
         label="Member Name",
         widget=forms.Select,
         required=True
