@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
 
 from .models import Exec, Membership, Profile, PSG, Waiver
@@ -318,22 +318,48 @@ def download_member_table(request, type):
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
         response['Content-Disposition'] = 'attachment; filename="voc_acc_members.xlsx"'
-
         wb.save(response)
         return response
-    else:
+    
+    elif type == "fmcbc":
         """
             This result is sent to the FMCBC for insurance, so we exclude inactive honorary members
         """
-    #     memberships = Membership.objects.filter(
-    #         end_date__gte=datetime.date.today(),
-    #         active=True,
-    #         type__ne=Membership.MembershipType.INACTIVE_HONOURARY
-    #     )
-    #     profiles = Profile.objects.filter(user__in=memberships.values('user', flat=True))
+        memberships = Membership.objects.filter(
+            end_date__gte=datetime.date.today(),
+            active=True
+        ).exclude(
+            type=Membership.MembershipType.INACTIVE_HONOURARY
+        )
+        profiles = Profile.objects.filter(user__in=memberships.values_list('user', flat=True))
 
-    # response = HttpResponse(content_type='text/csv')
-    # response['Content-Disposition'] = 'attachment; filename="voc_members.csv"'
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "VOC Member List (for FMCBC)"
 
-    # fields = ['first_name', 'last_name', ]
+        fields = ['No.', 'First Name', 'Last Name', 'Email', 'Phone', 'Birthdate']
+        ws.append(fields)
+
+        i = 1
+        for profile in profiles:
+            row = [
+                i,
+                profile.first_name,
+                profile.last_name,
+                profile.user.email,
+                profile.phone,
+                profile.birthdate
+            ]
+            ws.append(row)
+            i += 1
+
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response['Content-Disposition'] = 'attachment; filename="voc_members.xlsx"'
+        wb.save(response)
+        return response
+
+    else:
+        return Http404(f"Member list type {type} not found")
 
