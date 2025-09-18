@@ -25,7 +25,10 @@ def join(request):
         form = MembershipForm(request.POST, user=request.user)
         if form.is_valid():
             membership = form.save()
-            return redirect(f'waiver/{membership.id}')
+            if membership.type != Membership.MembershipType.INACTIVE_HONOURARY:
+                return redirect(f'waiver/{membership.id}')
+            else :
+                return redirect('home')
     else:
         form = MembershipForm(user=request.user)
     return render(request, 'membership/join.html', {'form': form})
