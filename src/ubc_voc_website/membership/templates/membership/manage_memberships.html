@@ -3,46 +3,14 @@
 {% block title %}Manage Memberships{% endblock %}
 
 {% block head_content %}
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.toggle-arrow').forEach(function (arrow) {
-                const collapseTarget = document.querySelector(arrow.getAttribute('data-target'));
-                const bsCollapse = new bootstrap.Collapse(collapseTarget, { toggle: false });
-
-                // set initial chevron state
-                if (collapseTarget.classList.contains('show')) {
-                    arrow.classList.remove('fa-chevron-right');
-                    arrow.classList.add('fa-chevron-down');
-                }
-                else {
-                    arrow.classList.remove('fa-chevron-down');
-                    arrow.classList.add('fa-chevron-right');
-                }
-
-                collapseTarget.addEventListener('show.bs.collapse', function () {
-                    arrow.classList.remove('fa-chevron-right');
-                    arrow.classList.add('fa-chevron-down');
-                });
-
-                collapseTarget.addEventListener('hide.bs.collapse', function () {
-                    arrow.classList.remove('fa-chevron-down');
-                    arrow.classList.add('fa-chevron-right');
-                });
-
-                arrow.addEventListener('click', function () {
-                    bsCollapse.toggle();
-                });
-            });
-        });
-    </script>
-
-    <link href="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize DataTable object
             let memberTable = document.getElementById("member-table");
-            let renderedMemberTable = new DataTable(memberTable, {
+            new DataTable(memberTable, {
                 paging: true,
                 perPage: 25,
                 ordering: true,
@@ -53,13 +21,26 @@
                     "info": "Showing {start} to {end} of {rows} members",
                 }
             });
+
+            // Initialize Bootstrap modal
+            const modal = new bootstrap.Modal(document.getElementById('membership-modal'));
+            const modalBody = document.querySelector('#membership-modal .modal-body');
+
+            memberTable.addEventListener('click', function (e) {
+                const button = e.target.closest('.show-memberships');
+                if (button) {
+                    const content = button.dataset.memberships;
+                    modalBody.innerHTML = content;
+                    modal.show();
+                }
+            })
         });
     </script>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <table id="table" class="table">
+        <table id="member-table" class="table">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -69,70 +50,76 @@
                     <th></th>
                 </tr>
             </thead>
-            {% for profile in profiles %}
-                <tr>
-                    <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-                    <td>{{ profile.user.email }}</td>
-                    <td>{{ profile.phone }}</td>
-                    <td>{{ profile.memberships.0.end_date }}</td>
-                    <td>
-                        <i class="fas fa-chevron-right toggle-arrow" data-toggle="collapse" 
-                        data-target="#collapseRow{{ profile.user.id }}" aria-expanded="false" 
-                        aria-controls="collapseRow{{ profile.user.id }}" style="cursor: pointer;">
-                        </i>
-                    </td>
-                </tr>
-                <tr id="collapseRow{{ profile.user.id }}" class="collapse">
-                    <td colspan="4">
-                        <div>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Membership Type</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Waiver</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                {% for membership in profile.memberships %}
-                                    <tr>
-                                        <td>{{ membership.type_display_name }}</td>
-                                        <td>{{ membership.start_date }}</td>
-                                        <td>{{ membership.end_date }}</td>
-                                        <td>
-                                            <a href="view-waiver/{{ membership.id }}" target="_blank">View Waiver</a>
-                                        </td>
-                                        <td>
-                                            {% if membership.mapped_status == "Active" %}
-                                                <span class="badge bg-success">
-                                                    {{ membership.mapped_status }}
-                                                </span>
-                                            {% elif membership.mapped_status == "Inactive" %}
-                                                <span class="badge bg-danger">
-                                                    {{ membership.mapped_status }}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary">
-                                                    {{ membership.mapped_status }}
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if membership.mapped_status == "Active" %}
-                                                <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</button>
-                                            {% elif membership.mapped_status == "Inactive" %}
-                                                <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</button>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
+            <tbody>
+                {% for profile in profiles %}
+                    <tr data-id="{{ profile.user.id }}">
+                        <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+                        <td>{{ profile.user.email }}</td>
+                        <td>{{ profile.phone }}</td>
+                        <td>{{ profile.memberships.0.end_date }}</td>
+                        <td class="dropdown-control" style="cursor: pointer;">
+                            <button class="btn btn-primary show-memberships" data-memberships="
+                                <table class='table'>
+                                    <thead>
+                                        <tr>
+                                            <th>Membership Type</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Waiver</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    {% for membership in profile.memberships %}
+                                        <tr>
+                                            <td>{{ membership.type_display_name }}</td>
+                                            <td>{{ membership.start_date }}</td>
+                                            <td>{{ membership.end_date }}</td>
+                                            <td>
+                                                <a href='view-waiver/{{ membership.id }}' target='_blank'>View Waiver</a>
+                                            </td>
+                                            <td>
+                                                {% if membership.mapped_status == 'Active' %}
+                                                    <span class='badge bg-success'>
+                                                        {{ membership.mapped_status }}
+                                                    </span>
+                                                {% elif membership.mapped_status == 'Inactive' %}
+                                                    <span class='badge bg-danger'>
+                                                        {{ membership.mapped_status }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class='badge bg-secondary'>
+                                                        {{ membership.mapped_status }}
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if membership.mapped_status == 'Active' %}
+                                                    <a class='btn btn-secondary btn-sm' href='{% url 'toggle_membership' membership.id %}''>Deactivate</button>
+                                                {% elif membership.mapped_status == 'Inactive' %}
+                                                    <a class='btn btn-secondary btn-sm' href='{% url 'toggle_membership' membership.id %}'>Activate</button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            ">Membership Details</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
+
+        <div class="modal fade" id="membership-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Membership Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
