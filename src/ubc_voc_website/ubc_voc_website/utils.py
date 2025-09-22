@@ -10,6 +10,8 @@ def is_member(user):
     return active_memberships.count() == 1
 
 def is_exec(user):
+    if user.is_superuser:
+        return True
     exec_positions = Exec.objects.filter(user=user)
     return exec_positions.count() >= 1
 
