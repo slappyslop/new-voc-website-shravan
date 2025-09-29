@@ -4,5 +4,5 @@ env/
 media/
 staticfiles
 *.txt
-
+.env
 
