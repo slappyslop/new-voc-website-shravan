@@ -1,0 +1,30 @@
+# pull base image
+FROM python:3.13-slim
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /home/ubc_voc_website/ubc_voc_website
+
+# install dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    build-essential \
+    libgirepository1.0-dev \
+    libcairo2-dev \
+    libgobject-2.0-0 \
+    gir1.2-pango-1.0 \
+    libpango1.0-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
+
+# copy project
+COPY ubc_voc_website .
+
+CMD ["sh" "-c" "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 ubc_voc_website.wsgi:application"]
+
