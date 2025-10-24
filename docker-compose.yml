@@ -10,8 +10,9 @@ services:
     volumes:
       - static_volume:/home/ubc_voc_website/staticfiles
       - media_volume:/home/ubc_voc_website/media
-    expose:
-      - 8000
+      - logs_volume:/home/ubc_voc_website/logs
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
@@ -32,5 +33,6 @@ services:
 volumes:
   static_volume:
   media_volume:
+  logs_volume:
   postgres_data:
 

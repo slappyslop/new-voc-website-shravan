@@ -30,7 +30,36 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/home/ubc_voc_website/staticfiles'
 
 CSRF_TRUSTED_ORIGINS = [
-    f"http://{host}:8082" for host in ALLOWED_HOSTS
-] + [
-    f"https://{host}:8082" for host in ALLOWED_HOSTS
+    f"https://{host}" for host in ALLOWED_HOSTS
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name} {message}",
+            "style": "{"
+        }
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "/home/ubc_voc_website/logs/django.log",
+            "formatter": "verbose",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file", "console"],
+            "level": "DEBUG",
+            "propagate": True
+        }
+    }
+}
