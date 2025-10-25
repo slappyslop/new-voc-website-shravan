@@ -93,6 +93,7 @@ def member_list(request):
     psg_members = []
     for profile in psg_profiles:
         psg_members.append({
+            'id': profile.user.id,
             'name': f'{profile.first_name} {profile.last_name}',
             'email': profile.user.email,
             'phone': profile.phone
@@ -105,6 +106,7 @@ def member_list(request):
     members = []
     for profile in member_profiles:
         members.append({
+            'id': profile.user.id,
             'name': f'{profile.first_name} {profile.last_name}',
             'email': profile.user.email,
             'phone': profile.phone
