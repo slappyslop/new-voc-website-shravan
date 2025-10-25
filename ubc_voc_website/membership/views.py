@@ -208,8 +208,11 @@ def manage_roles(request): # for managing who has the exec role
 
         elif 'exec-user' in request.POST: # add/modify existing exec
             user = get_object_or_404(User, id=request.POST['exec-user'])
-            exec_instance = get_object_or_404(Exec, user=user)
-            form = ExecForm(request.POST, instance=exec_instance, prefix='exec')
+            exec_instance = Exec.objects.filter(user=user).first()
+            if exec_instance:
+                form = ExecForm(request.POST, instance=exec_instance, prefix='exec')
+            else:
+                form = ExecForm(request.POST, prefix='exec')
 
             if form.is_valid():
                 exec = form.save()
