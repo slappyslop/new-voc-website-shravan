@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Membership
 
-# Register your models here.
+@admin.register(Membership)
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'start_date', 'end_date', 'type')
+    search_fields = ('user',)
+    list_filter = ('start_time', 'end_time')
