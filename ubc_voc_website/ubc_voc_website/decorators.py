@@ -1,11 +1,9 @@
-from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from ubc_voc_website.utils import *
 
 def Members(view_function):
-    @wraps(view_function)
     @login_required
     def _view(request, *args, **kwargs):
         if is_member(request.user):
@@ -15,7 +13,6 @@ def Members(view_function):
     return _view
 
 def Execs(view_function):
-    @wraps(view_function)
     @login_required
     def _view(request, *args, **kwargs):
         if is_exec(request.user):
@@ -25,7 +22,6 @@ def Execs(view_function):
     return _view
 
 def PSG(view_function):
-    @wraps(view_function)
     @login_required
     def _view(request, *args, **kwargs):
         if is_PSG(request.user):
@@ -35,7 +31,6 @@ def PSG(view_function):
     return _view
 
 def Admin(view_function):
-    @wraps(view_function)
     @login_required
     def _view(request, *args, **kwargs):
         if request.user.is_superuser:

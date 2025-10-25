@@ -45,7 +45,7 @@
                     <td>{{ exec.first_name }} {{ exec.last_name }}</td>
                     <td>{{ exec.role }}</td>
                     <td>
-                        <form method="post" onsubmit="return confirm('Are you sure you want to remove this user from Exec?');">
+			    <form method="POST" onsubmit="return confirm('Are you sure you want to remove this user from Exec?');" action="{% url 'manage_roles' %}">
                             {% csrf_token %}
                             <input type="hidden" name="remove-exec" value="{{ exec.id }}">
                             <button class="btn btn-danger">Remove</button>
@@ -59,7 +59,7 @@
     
 <div class="container">
     <h2>Add/Modify An Exec</h2>
-    <form method="POST">
+    <form method="POST" action="{% url 'manage_roles' %}">
         {% csrf_token %}
         {{ exec_form.as_p }}
 
@@ -82,7 +82,7 @@
                 <tr>
                     <td>{{ member.first_name }} {{ member.last_name }}</td>
                     <td>
-                        <form method="post" onsubmit="return confirm('Are you sure you want to remove this user from the PSG?');">
+			<form method="POST" onsubmit="return confirm('Are you sure you want to remove this user from the PSG?');" action="{% url 'manage_roles' %}">
                             {% csrf_token %}
                             <input type="hidden" name="remove-psg" value="{{ member.id }}">
                             <button class="btn btn-danger">Remove</button>
@@ -96,7 +96,7 @@
     
 <div class="container">
     <h2>Add a PSG Member</h2>
-    <form method="POST">
+    <form method="POST" action="{% url 'manage_roles' %}">
         {% csrf_token %}
         {{ psg_form.as_p }}
 
