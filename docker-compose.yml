@@ -20,6 +20,18 @@ services:
     depends_on:
       - db
 
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 8082:80
+    volumes:
+      - static_volume:/home/ubc_voc_website/staticfiles
+      - media_volume:/home/ubc_voc_website/media
+      - logs_volume:/home/ubc_voc_website/logs
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+
   db:
     image: postgres:18
     restart: always
