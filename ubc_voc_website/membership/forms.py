@@ -45,18 +45,18 @@ class ProfileForm(forms.ModelForm):
 class MembershipForm(forms.ModelForm):
     class Meta:
         model = Membership
-        fields = ('start_date', 'end_date', 'type')
+        fields = ('type',)
 
-    start_date = forms.DateField(
-        initial=datetime.datetime.today(),
-        required=True,
-        disabled=True
-    )
-    end_date = forms.DateField(
-        initial=get_end_date(datetime.datetime.today()),
-        required=True,
-        disabled=True
-    )
+    # start_date = forms.DateField(
+    #     initial=datetime.datetime.today(),
+    #     required=True,
+    #     disabled=True
+    # )
+    # end_date = forms.DateField(
+    #     initial=get_end_date(datetime.datetime.today()),
+    #     required=True,
+    #     disabled=True
+    # )
     type = forms.ChoiceField(
         choices=Membership.MembershipType.choices, 
         required=True,
@@ -76,6 +76,9 @@ class MembershipForm(forms.ModelForm):
         membership = super(MembershipForm, self).save(commit=False)
         if self.user:
             membership.user = self.user
+            membership.start_date = datetime.datetime.today()
+            membership.end_date = get_end_date(datetime.datetime.today())
+            
             if commit:
                 membership.save()
         return membership

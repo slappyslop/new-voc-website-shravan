@@ -5,6 +5,8 @@
 {% block content %}
     <div class="container">
         <h2>Join the VOC</h2>
+        <p><b>Start Date:</b> {{ start_date }}</p>
+        <p><b>End Date:</b> {{ end_date }}</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

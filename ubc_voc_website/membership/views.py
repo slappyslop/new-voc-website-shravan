@@ -31,7 +31,14 @@ def join(request):
                 return redirect('home')
     else:
         form = MembershipForm(user=request.user)
-    return render(request, 'membership/join.html', {'form': form})
+        start_date = datetime.date.today()
+        end_date = get_end_date(datetime.datetime.today()).date()
+
+    return render(request, 'membership/join.html', {
+        'form': form,
+        'start_date': start_date,
+        'end_date': end_date    
+    })
 
 @login_required
 def edit_profile(request):
