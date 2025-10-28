@@ -133,9 +133,6 @@ AUTHENTICATION_BACKENDS = ['ubc_voc_website.backends.EmailBackend']
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 SITE_ID = 1
 
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"

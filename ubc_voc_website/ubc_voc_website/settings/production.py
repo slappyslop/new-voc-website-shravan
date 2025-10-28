@@ -29,6 +29,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/ubc_voc_website/staticfiles'
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = '/home/ubc_voc_website/media'
+
 CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS
 ]
