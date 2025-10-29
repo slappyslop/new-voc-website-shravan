@@ -152,7 +152,7 @@
         <hr>
 
         <!------------------------------- Signup form ------------------------------->
-        {% if user_can_signup %}
+        {% if trip.use_signup and user_can_signup %} <!-- Excludes inactive honorary members -->
             <h5>Sign Up</h5>
             {% if trip.valid_signup_types %}
                 <form id="signup-form" method="post">
@@ -189,7 +189,17 @@
                     <button type="submit">Submit</button>
                 </form>
             {% else %}
-                <p>Signup for this trip is not available</p>
+                {% if trip.signup_info.interested.0 == 'not_yet_open' %}
+                    <p>The interested list will open on <b>{{ trip.signup_info.interested.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.interested.1|time:"g:i A" }}</b></p>
+                {% elif trip.signup_info.interested.0 == 'closed' %}
+                    <p>The interested list has already closed</p>
+                {% endif %}
+
+                {% if trip.signup_info.committed.0 == 'not_yet_open' %}
+                    <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
+                {% elif trip.signup_info.committed.0 == closed %}
+                    <p>The committed list has already closed</p>
+                {% endif %}
             {% endif %}
         {% endif %}
         <hr>

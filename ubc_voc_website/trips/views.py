@@ -189,6 +189,8 @@ def trip_details(request, id):
 
             # get form for new signups
             if trip.valid_signup_types and user_can_signup:
+
+
                 form = TripSignupForm(user=request.user, trip=trip)
 
         # get photo gallery
