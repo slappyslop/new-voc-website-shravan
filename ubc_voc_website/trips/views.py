@@ -84,7 +84,12 @@ def trip_create(request):
     if request.method == "POST":
         form = TripForm(request.POST)
         if form.is_valid():
-            form.save(user=request.user)
+            trip = form.save(commit=False, user=request.user)
+            action = request.POST.get("action")
+            if action == "publish":
+                trip.published = True
+
+            trip.save()
             return redirect('trips')
     else:
         form = TripForm()
@@ -100,7 +105,12 @@ def trip_edit(request, id):
         if request.method == "POST":
             form = TripForm(request.POST, instance=trip, user=request.user)
             if form.is_valid():
-                form.save(user=request.user)
+                trip = form.save(commit=False, user=request.user)
+                action = request.POST.get("action")
+                if action == "publish":
+                    trip.published = True
+
+                trip.save()
                 return redirect('trips')
             else:
                 print(form.errors)

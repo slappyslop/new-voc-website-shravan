@@ -18,7 +18,6 @@ class TripForm(forms.ModelForm):
             'start_time', 
             'end_time',
             'in_clubroom',
-            'published',
             'status',
             'description',
             'use_signup',
@@ -125,11 +124,6 @@ class TripForm(forms.ModelForm):
         initial=False,
         required=False,
         label="Will this event happen in the clubroom?"
-    )
-    published = forms.BooleanField(
-        initial=False,
-        required=False,
-        label="Publish this trip on the trip agenda? (leave unchecked if you would like to edit this trip later before posting it)"
     )
     status = forms.ChoiceField(
         choices=Trip.TripStatus.choices,

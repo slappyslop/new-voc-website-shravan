@@ -114,8 +114,6 @@
 
             {% render_form_field form.in_clubroom %}
 
-            {% render_form_field form.published %}
-
             {% render_form_field form.status %}
 
             {% render_form_field form.tags %}
@@ -157,7 +155,8 @@
 
             {% render_form_field form.drivers_required %}
 
-            <button type="submit">Submit</button>
+            <button type="submit" name="action" value="save" class="btn btn-secondary">Save</button>
+            <button type="submit" name="action" value="publish" class="btn btn-primary">Save and Publish</button>
         </form>
     </div>
 {% endblock %}
