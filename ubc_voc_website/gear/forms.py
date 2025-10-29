@@ -118,7 +118,9 @@ class GearRentalForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=datetime.date.today() + datetime.timedelta(days=7)
     )
-    notes = forms.TextInput()
+    notes = forms.CharField(
+        label="Notes (including what is being rented)"
+    )
 
 class BookRentalForm(forms.ModelForm):
     class Meta:
@@ -146,7 +148,7 @@ class BookRentalForm(forms.ModelForm):
     member = forms.ModelChoiceField(
         queryset=User.objects.filter(membership__active=True).distinct(),
         label="Member Name",
-        widget=forms.Select,
+        widget=forms.Select(attrs={"id": "member-select"}),
         required=True
     )
     # TODO make this field required when books have been added to the database (large project)
@@ -167,5 +169,7 @@ class BookRentalForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=datetime.date.today() + datetime.timedelta(days=7)
     )
-    notes = forms.TextInput()
+    notes = forms.CharField(
+        label="Notes (including what is being rented)"
+    )
 
