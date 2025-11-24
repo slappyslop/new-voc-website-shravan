@@ -142,32 +142,38 @@ class TripForm(forms.ModelForm):
         label="Trip Description"
     )
     use_signup = forms.BooleanField(
-        initial=False,
+        initial=True,
         required=False,
         label="Use the trip signup tools"
     )
     signup_question = forms.CharField(
         max_length=256, 
-        required=False
+        required=False,
+        label="Question to ask participants when they sign up"
     )
     max_participants = forms.IntegerField(
-        required=False
+        required=False,
+        label="What is the (estimated) maximum number of participants"
     )
     interested_start = forms.DateTimeField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label="From"
     )
     interested_end = forms.DateTimeField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label="To"
     )
     committed_start = forms.DateTimeField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label="From"
     )
     committed_end = forms.DateTimeField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'flatpickr'})
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label="To"
     )
     use_pretrip = forms.BooleanField(
         initial=True,

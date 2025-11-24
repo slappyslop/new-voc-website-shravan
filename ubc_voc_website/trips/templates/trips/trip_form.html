@@ -85,12 +85,6 @@
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
             });
-
-            // Initialize bootstrap tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            tooltipTriggerList.map(function (element) {
-                return new bootstrap.Tooltip(element);
-            });
         });
     </script>
 
@@ -154,11 +148,13 @@
 
                 {% render_form_field form.max_participants %}
     
+                <p>When should the <b>interested</b> list be open</p>
                 <div class="mb-4" style="display: flex;">
                     <div class="mx-2">{% render_form_field form.interested_start %}</div>
                     <div class="mx-2">{% render_form_field form.interested_end %}</div>
                 </div>
     
+                <p>When should the <b>committed</b> list be open</p>
                 <div class="mb-4" style="display: flex;">
                     <div class="mx-2">{% render_form_field form.committed_start %}</div>
                     <div class="mx-2">{% render_form_field form.committed_end %}</div>
