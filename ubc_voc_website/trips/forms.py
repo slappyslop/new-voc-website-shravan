@@ -85,6 +85,8 @@ class TripForm(forms.ModelForm):
             trip.save()
             if 'tags' in self.cleaned_data:
                 trip.tags.set(self.cleaned_data['tags'])
+            if 'organizers' in self.cleaned_data:
+                trip.organizers.set(self.cleaned_data['organizers'])
 
             if user and not trip.organizers.filter(pk=user.pk).exists():
                 trip.organizers.add(user)

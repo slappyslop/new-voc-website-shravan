@@ -82,17 +82,16 @@ def my_trips(request):
 @Members
 def trip_create(request):
     if request.method == "POST":
-        form = TripForm(request.POST)
+        form = TripForm(request.POST, user=request.user)
         if form.is_valid():
-            trip = form.save(commit=False, user=request.user)
+            trip = form.save(user=request.user)
             action = request.POST.get("action")
             if action == "publish":
                 trip.published = True
-
-            trip.save()
+                trip.save()
             return redirect('trips')
     else:
-        form = TripForm()
+        form = TripForm(user=request.user)
     return render(request, 'trips/trip_form.html', {'form': form})
 
 @Members
