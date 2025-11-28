@@ -11,11 +11,6 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const deleteButton = document.getElementById('delete-button');
-            const confirmDeleteMessage = document.getElementById('confirm-delete');
-            const confirmDeleteButton = document.getElementById('confirm-delete-button');
-            const deleteAllCheckbox = document.getElementById('delete-all-checkbox');
-        
             const calendarDiv = document.getElementById('calendar');
             const events = JSON.parse('{{ gear_hours|escapejs }}');
 
@@ -26,9 +21,9 @@
                     document.getElementById('modal-title').textContent = info.event.title;
                     document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
 
-                    deleteButton.setAttribute('gear-hour-id', info.event._def.publicId.split(':')[0]);
-                    deleteButton.setAttribute('date', info.event.start.toISOString().split('T')[0]);
-                    deleteAllCheckbox.checked = false;
+                    document.getElementById('delete-gear-hour-id').value = info.event._def.publicId.split(':')[0];
+                    document.getElementById('delete-gear-hour-date').value = info.event.start.toISOString().split("T")[0];
+                    document.getElementById('delete-all-checkbox').checked = false;
 
                     const modal = new bootstrap.Modal(document.getElementById('modal'));
                     modal.show();
@@ -46,37 +41,6 @@
                 noCalendar: true,
                 enableTime: true,
                 dateFormat: 'h:i K'
-            });
-
-            // Handle gear hour deletion
-                deleteButton.addEventListener('click', function() {
-                confirmDeleteMessage.style.display = 'block';
-            });
-
-            confirmDeleteButton.addEventListener('click', function() {
-                const gearHourId = deleteButton.getAttribute('gear-hour-id');
-                const date = deleteButton.getAttribute('date');
-                const deleteAll = deleteAllCheckbox.checked;
-
-                fetch(`delete/${gearHourId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                    },
-                    body: JSON.stringify({
-                        delete_all: deleteAll,
-                        date: date
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    }
-                    else {
-                        alert('Failed to delete gear hour');
-                    }
-                });
             });
         });
     </script>
@@ -105,26 +69,32 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                  <div class="modal-header">
-                    <h5 class="modal-title" id="modal-title">Modal title</h5>
+                    <h5 class="modal-title" id="modal-title"></h5>
                 </div>
                 <div class="modal-body">
                     <div id="modal-body"></div>
-                    <div id="confirm-delete" style="display: none;">
+                    {% if request.user|is_exec %}
                         <hr>
-                        <p>Are you sure you want to delete this gear hour?</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="delete-all-checkbox">
-                            <label class="form-check-label" for="delete-all-checkbox">
-                                Delete all instances of my gear hour on this day/time
-                            </label>
+                        <p>Do you want to delete this gear hour?</p>
+                        <div id="delete-form-div">
+                            <form id="delete-form" method="post" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete" value="1">
+                                <input type="hidden" name="gear-hour-id" id="delete-gear-hour-id">
+                                <input type="hidden" name="date" id="delete-gear-hour-date">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="delete-all" value="true" id="delete-all-checkbox">
+                                    <label class="form-check-label" for="delete-all-checkbox">
+                                        Delete all instances of my gear hour on this day/time (leave unchecked if you are only cancelling for this week)
+                                    </label>
+                                </div>
+                                <br />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
-                        <button id="confirm-delete-button" class="btn btn-danger mt-2">Confirm</button>
-                    </div>
+                    {% endif %}
                 </div>
                 <div class="modal-footer">
-                    {% if request.user|is_exec %}
-                        <button id="delete-button" type="button" class="btn btn-danger">Delete</button>
-                    {% endif %}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

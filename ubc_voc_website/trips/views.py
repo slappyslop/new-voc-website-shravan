@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
 from ubc_voc_website.decorators import Members
 from ubc_voc_website.utils import is_member
 
@@ -131,7 +130,8 @@ def trip_delete(request, id):
 
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
-    user_can_signup = get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
+    membership_type = get_membership_type(request.user)
+    user_can_signup = membership_type and membership_type != Membership.MembershipType.INACTIVE_HONOURARY
     if request.POST and user_can_signup:
         form = TripSignupForm(request.POST, user=request.user, trip=trip)
         if form.is_valid():
@@ -139,6 +139,7 @@ def trip_details(request, id):
         else:
             print(form.errors)
 
+    print(trip.organizers.all())
     organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
         'user__id', 'first_name', 'last_name'
     )
