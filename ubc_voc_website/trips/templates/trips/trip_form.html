@@ -17,37 +17,6 @@
         
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Setup organizer checkbox and searchable dropdown
-            const organizerCheckbox = document.getElementById('toggle-organizers');
-            const organizerDiv = document.getElementById('organizer_div');
-            const organizerSelector = document.getElementById('id_organizers');
-
-            const organizerChoices = new Choices(organizerSelector, {
-                removeItemButton: true,
-                placeholder: true,
-                placeholderValue: 'Select members...',
-                searchPlaceholderValue: 'Search members...',
-            });
-
-            const selectedOrganizers = [...organizerSelector.options].filter(option => option.selected);
-            if (selectedOrganizers.length > 1) {
-                organizerDiv.style.display = 'block';
-            }
-            else {
-                organizerDiv.style.display = 'none';
-            }
-
-            organizerCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    organizerDiv.style.display = 'block';
-                }
-                else {
-                    organizerDiv.style.display = 'none';
-                    organizerChoices.clearStore();
-                    organizerChoices.removeActiveItems();
-                }
-            });
-
             // Setup tags searchable dropdown
             const tag_selector = document.getElementById('id_tags');
             new Choices(tag_selector, {
@@ -115,15 +84,6 @@
             {{ form.non_field_errors }}
 
             {% render_form_field form.name %}
-
-            <div class="mb-4">
-                <label>
-                    Include additional organizers: <input type="checkbox" id="toggle-organizers">
-                </label>
-            </div>
-            <div id="organizer_div" class="mb-4">
-                {% render_form_field form.organizers %}
-            </div>
 
             <div class="mb-4" style="display: flex; padding: 10px; width: 50%">
                 <div class="mx-2">{% render_form_field form.start_time %}</div>

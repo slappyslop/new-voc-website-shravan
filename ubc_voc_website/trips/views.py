@@ -96,9 +96,6 @@ def trip_create(request):
 @Members
 def trip_edit(request, id):
     trip = get_object_or_404(Trip, id=id)
-    print(trip)
-
-    print(trip.organizers.all())
     if not trip.organizers.filter(pk=request.user.pk).exists():
         return render(request, 'access_denied.html', status=403)
     else:
@@ -138,8 +135,6 @@ def trip_details(request, id):
             form.save()
         else:
             print(form.errors)
-
-    print(trip.organizers.all())
     organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
         'user__id', 'first_name', 'last_name'
     )

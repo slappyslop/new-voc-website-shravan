@@ -14,7 +14,7 @@ class TripForm(forms.ModelForm):
         model = Trip
         fields = (
             'name',
-            'organizers',
+            # 'organizers',
             'start_time', 
             'end_time',
             'in_clubroom',
@@ -37,11 +37,11 @@ class TripForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
-        self.fields['organizers'].label_from_instance = self.get_profile_label
+        # self.fields['organizers'].label_from_instance = self.get_profile_label
 
         if instance and instance.pk:
             self.fields['tags'].initial = instance.tags.all()
-            self.fields['organizers'].initial = instance.organizers.exclude(pk=user.pk)
+            # self.fields['organizers'].initial = instance.organizers.exclude(pk=user.pk)
 
     def clean(self):
         """
@@ -85,8 +85,8 @@ class TripForm(forms.ModelForm):
             trip.save()
             if 'tags' in self.cleaned_data:
                 trip.tags.set(self.cleaned_data['tags'])
-            if 'organizers' in self.cleaned_data:
-                trip.organizers.set(self.cleaned_data['organizers'])
+            # if 'organizers' in self.cleaned_data:
+            #     trip.organizers.set(self.cleaned_data['organizers'])
 
             trip.organizers.add(user)
 
@@ -104,15 +104,15 @@ class TripForm(forms.ModelForm):
         required=True,
         label="Trip/Event Name"    
     )
-    organizers = forms.ModelMultipleChoiceField(
-        queryset=User.objects.filter(id__in=Membership.objects.filter(
-            active=True,
-            end_date__gte=datetime.date.today()
-        )),
-        required=False,
-        label="Additional Organizers",
-        widget=forms.SelectMultiple(attrs={'class': 'choices'})
-    )
+    # organizers = forms.ModelMultipleChoiceField(
+    #     queryset=User.objects.filter(id__in=Membership.objects.filter(
+    #         active=True,
+    #         end_date__gte=datetime.date.today()
+    #     )),
+    #     required=False,
+    #     label="Additional Organizers",
+    #     widget=forms.SelectMultiple(attrs={'class': 'choices'})
+    # )
     start_time = forms.DateTimeField(
         required=True,
         widget=forms.TextInput(attrs={'class': 'flatpickr'})
