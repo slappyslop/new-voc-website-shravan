@@ -19,6 +19,7 @@ class Profile(models.Model):
         default=datetime.date.today
     )
     bio = models.TextField(blank=True, null=True)
+    emergency_info = models.TextField(max_length=512, blank=True, null=True)
     acc = models.BooleanField(default=True)
     vocene = models.BooleanField(default=True)
     trip_org_email = models.BooleanField(default=True)

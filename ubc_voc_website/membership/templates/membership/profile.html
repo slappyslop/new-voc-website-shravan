@@ -9,6 +9,7 @@
     <h3>{{ profile.first_name }} {{ profile.last_name }} {% if profile.pronouns %}({{profile.pronouns}}){% endif %}</h3>
     <p><b>Email:</b> <a href="mailto:{{user.email}}">{{ user.email }}</a></p>
     <p><b>Phone:</b> {{ profile.phone }}</p>
+    <p><b>Emergency Info:</b> {{ profile.emergency_info }}</p>
 
     <hr>
 
