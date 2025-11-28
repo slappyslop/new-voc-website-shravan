@@ -97,7 +97,9 @@ def trip_create(request):
 @Members
 def trip_edit(request, id):
     trip = get_object_or_404(Trip, id=id)
+    print(trip)
 
+    print(trip.organizers.all())
     if not trip.organizers.filter(pk=request.user.pk).exists():
         return render(request, 'access_denied.html', status=403)
     else:
@@ -158,8 +160,9 @@ def trip_details(request, id):
             for signup in interested_signups:
                 profile = Profile.objects.get(user=signup.user)
                 interested_list.append({
-                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
+                    'name': profile.full_name_with_pronouns,
+                    'email': profile.user.email,
                     'signup_answer': signup.signup_answer,
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })
@@ -167,8 +170,9 @@ def trip_details(request, id):
             for signup in committed_signups:
                 profile = Profile.objects.get(user=signup.user)
                 committed_list.append({
-                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
+                    'name': profile.full_name_with_pronouns,
+                    'email': profile.user.email,
                     'signup_answer': signup.signup_answer,
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })
@@ -176,8 +180,9 @@ def trip_details(request, id):
             for signup in going_signups:
                 profile = Profile.objects.get(user=signup.user)
                 going_list.append({
-                    'name': profile.full_name_with_pronouns,
                     'id': signup.user.id,
+                    'name': profile.full_name_with_pronouns,
+                    'email': profile.user.email,
                     'signup_answer': signup.signup_answer,
                     'car_spots': signup.car_spots if signup.can_drive else 0
                 })

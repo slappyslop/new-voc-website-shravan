@@ -88,8 +88,7 @@ class TripForm(forms.ModelForm):
             if 'organizers' in self.cleaned_data:
                 trip.organizers.set(self.cleaned_data['organizers'])
 
-            if user and not trip.organizers.filter(pk=user.pk).exists():
-                trip.organizers.add(user)
+            trip.organizers.add(user)
 
         return trip
 
