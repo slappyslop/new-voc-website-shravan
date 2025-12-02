@@ -220,7 +220,7 @@ class TripSignupForm(forms.ModelForm):
         if not self.trip.signup_question:
             self.fields.pop('signup_answer')
         else:
-            self.fields['signup_answer'].label_from_instance = self.trip.signup_question
+            self.fields['signup_answer'].label = self.trip.signup_question
 
     def clean(self):
         cleaned_data = super().clean()
