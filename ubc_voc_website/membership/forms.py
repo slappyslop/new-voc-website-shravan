@@ -1,6 +1,7 @@
 from django import forms
-from .models import Exec, Membership, Profile, PSG, Waiver
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from .models import Exec, Membership, Profile, PSG, Waiver
 
 from .utils import *
 import datetime
@@ -81,8 +82,8 @@ class MembershipForm(forms.ModelForm):
         membership = super(MembershipForm, self).save(commit=False)
         if self.user:
             membership.user = self.user
-            membership.start_date = datetime.datetime.today()
-            membership.end_date = get_end_date(datetime.datetime.today())
+            membership.start_date = timezone.localdate()
+            membership.end_date = get_end_date(timezone.localdate())
             
             if commit:
                 membership.save()
@@ -110,7 +111,7 @@ class WaiverForm(forms.ModelForm):
         readonly = kwargs.pop('readonly', False)
         super().__init__(*args, **kwargs)
 
-        user_is_minor = is_minor(datetime.datetime.today(), user.profile.birthdate)
+        user_is_minor = is_minor(timezone.localdate(), user.profile.birthdate)
         if user_is_minor:
             self.fields['guardian_name'].required = True
         else:

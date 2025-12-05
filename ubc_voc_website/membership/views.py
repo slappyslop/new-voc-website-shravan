@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 from .models import Exec, Membership, Profile, PSG, Waiver
 from trips.models import Trip, TripSignup, TripSignupTypes
@@ -31,8 +32,8 @@ def join(request):
                 return redirect('home')
     else:
         form = MembershipForm(user=request.user)
-        start_date = datetime.date.today()
-        end_date = get_end_date(datetime.datetime.today()).date()
+        start_date = timezone.localdate()
+        end_date = get_end_date(timezone.localdate()).date()
 
     return render(request, 'membership/join.html', {
         'form': form,
@@ -80,7 +81,7 @@ def waiver(request, membership_id):
     else:
         form = WaiverForm(user=request.user)
 
-    return render(request, 'membership/waiver.html', {'form': form, 'user_is_minor': is_minor(datetime.datetime.today(), request.user.profile.birthdate)})
+    return render(request, 'membership/waiver.html', {'form': form, 'user_is_minor': is_minor(timezone.localdate(), request.user.profile.birthdate)})
 
 @Members
 def member_list(request):
@@ -107,7 +108,7 @@ def member_list(request):
         })
 
     member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(
-            end_date__gte=datetime.date.today(),
+            end_date__gte=timezone.localdate(),
             active=True
         ).values('user'))
     members = []
@@ -275,7 +276,7 @@ def manage_roles(request): # for managing who has the exec role
 @Execs
 def membership_stats(request):
     active_memberships = Membership.objects.filter(
-        end_date__gte=datetime.date.today(),
+        end_date__gte=timezone.localdate(),
         active=True
     )
     regular_memberships = active_memberships.filter(type=Membership.MembershipType.REGULAR)
@@ -284,7 +285,7 @@ def membership_stats(request):
     inactive_honorary_memberships = active_memberships.filter(type=Membership.MembershipType.INACTIVE_HONOURARY)
 
     inactive_memberships = Membership.objects.filter(
-        end_date__gte=datetime.date.today(),
+        end_date__gte=timezone.localdate(),
         active=False
     )
 
@@ -303,7 +304,7 @@ def membership_stats(request):
 def download_member_table(request, type):
     if type == "acc":
         memberships = Membership.objects.filter(
-            end_date__gte=datetime.date.today(),
+            end_date__gte=timezone.localdate(),
             active=True,
             type=Membership.MembershipType.REGULAR
         )
@@ -341,7 +342,7 @@ def download_member_table(request, type):
             This result is sent to the FMCBC for insurance, so we exclude inactive honorary members
         """
         memberships = Membership.objects.filter(
-            end_date__gte=datetime.date.today(),
+            end_date__gte=timezone.localdate(),
             active=True
         ).exclude(
             type=Membership.MembershipType.INACTIVE_HONOURARY

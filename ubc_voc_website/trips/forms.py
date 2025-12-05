@@ -1,15 +1,27 @@
 from django import forms
-from .models import Trip, TripSignup, TripTag
-from membership.models import Membership, Profile
-
 from django.contrib.auth import get_user_model
-import datetime
+from django.utils import timezone
+from .models import Trip, TripSignup, TripTag
+from membership.models import Profile
+
 
 from django_quill.forms import QuillFormField
 
 User = get_user_model()
 
 class TripForm(forms.ModelForm):
+    SIGNUP_START_CHOICES = [
+        ("never", "Never"),
+        ("now", "Now"),
+        ("custom", "Custom")
+    ]
+
+    SIGNUP_END_CHOICES = [
+        ("pretrip", "The pretrip meeting"),
+        ("trip", "The trip itself"),
+        ("custom", "Custom")
+    ]
+
     class Meta:
         model = Trip
         fields = (
@@ -61,14 +73,64 @@ class TripForm(forms.ModelForm):
             required_fields = [
                 'signup_question',
                 'max_participants',
-                'interested_start',
-                'interested_end',
-                'committed_start',
-                'committed_end'
             ]
             for field in required_fields:
                 if not cleaned_data.get(field):
                     self.add_error(field, "This field is required when 'Use signup' is selected")
+
+            interested_start_choice = cleaned_data.get("interested_start_choice")
+            if interested_start_choice == "never":
+                cleaned_data["interested_start"] = None
+            elif interested_start_choice == "now":
+                cleaned_data["interested_start"] = timezone.now()
+            else:
+                interested_start_custom = cleaned_data.get("interested_start")
+                if not interested_start_custom:
+                    self.add_error("interested_start", "Please choose a date and time")
+                else:
+                    cleaned_data["interested_start"] = interested_start_custom
+
+            interested_end_choice = cleaned_data.get("interested_end_choice")
+            if interested_end_choice == "pretrip":
+                if not cleaned_data.get("use_pretrip"):
+                    self.add_error("interested_end_choice", "Trip does not have a pretrip meeting")
+                else:
+                    cleaned_data["interested_end"] = cleaned_data.get("pretrip_time")
+            elif interested_end_choice == "trip":
+                cleaned_data["interested_end"] = cleaned_data.get("start_time")
+            else:
+                interested_end_custom = cleaned_data.get("interested_end")
+                if not interested_end_custom:
+                    self.add_error("interested_end", "Please choose a date and time")
+                else:
+                    cleaned_data["interested_end"] = interested_end_custom
+
+            committed_start_choice = cleaned_data.get("committed_start_choice")
+            if committed_start_choice == "never":
+                cleaned_data["committed_start"] = None
+            elif committed_start_choice == "now":
+                cleaned_data["committed_start"] = timezone.now()
+            else:
+                committed_start_custom = cleaned_data.get("committed_start")
+                if not committed_start_custom:
+                    self.add_error("committed_start", "Please choose a date and time")
+                else:
+                    cleaned_data["committed_start"] = committed_start_custom
+
+            committed_end_choice = cleaned_data.get("committed_end_choice")
+            if committed_end_choice == "pretrip":
+                if not cleaned_data.get("use_pretrip"):
+                    self.add_error("committed_end_choice", "Trip does not have a pretrip meeting")
+                else:
+                    cleaned_data["committed_end"] = cleaned_data.get("pretrip_time")
+            elif committed_end_choice == "trip":
+                cleaned_data["committed_end"] = cleaned_data.get("start_time")
+            else:
+                committed_end_custom = cleaned_data.get("committed_end")
+                if not committed_end_custom:
+                    self.add_error("committed_end", "Please choose a date and time")
+                else:
+                    cleaned_data["committed_end"] = committed_end_custom
 
         if use_pretrip:
             required_fields = [
@@ -78,6 +140,8 @@ class TripForm(forms.ModelForm):
             for field in required_fields:
                 if not cleaned_data.get(field):
                     self.add_error(field, "This field is required when 'Use pretrip' is selected")
+
+        return cleaned_data
 
     def save(self, commit=True, user=None):
         trip = super().save(commit=False)
@@ -154,25 +218,45 @@ class TripForm(forms.ModelForm):
         required=False,
         label="What is the (estimated) maximum number of participants"
     )
+    interested_start_choice = forms.ChoiceField(
+        choices=SIGNUP_START_CHOICES,
+        widget=forms.RadioSelect,
+        initial="now"
+    ) 
     interested_start = forms.DateTimeField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'}),
-        label="From"
+        label=""
+    )
+    interested_end_choice = forms.ChoiceField(
+        choices=SIGNUP_END_CHOICES,
+        widget=forms.RadioSelect,
+        initial="pretrip"
     )
     interested_end = forms.DateTimeField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'}),
-        label="To"
+        label=""
     )
+    committed_start_choice = forms.ChoiceField(
+        choices=SIGNUP_START_CHOICES,
+        widget=forms.RadioSelect,
+        initial="now"
+    ) 
     committed_start = forms.DateTimeField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'}),
-        label="From"
+        label=""
+    )
+    committed_end_choice = forms.ChoiceField(
+        choices=SIGNUP_END_CHOICES,
+        widget=forms.RadioSelect,
+        initial="pretrip"
     )
     committed_end = forms.DateTimeField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'flatpickr'}),
-        label="To"
+        label=""
     )
     use_pretrip = forms.BooleanField(
         initial=True,
@@ -189,7 +273,8 @@ class TripForm(forms.ModelForm):
     )
     drivers_required = forms.BooleanField(
         initial=False,
-        required=False
+        required=False,
+        label="Ask prospective participants if they can drive?"
     )
 
 class TripSignupForm(forms.ModelForm):

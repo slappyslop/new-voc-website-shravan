@@ -1,6 +1,7 @@
 from django import forms
+from django.utils import timezone
 from membership.models import Profile
-from .models import Book, BookRental, CancelledGearHour, Gear, GearHour, GearRental
+from .models import BookRental, CancelledGearHour, GearHour, GearRental
 
 from django.contrib.auth import get_user_model
 
@@ -35,7 +36,7 @@ class GearHourForm(forms.ModelForm):
 
     start_date = forms.DateField(
         required=True,
-        initial=datetime.datetime.today(),
+        initial=timezone.localdate(),
         widget=forms.TextInput(attrs={'class': 'flatpickr-date'})
     )
     end_date = forms.DateField(
@@ -44,7 +45,7 @@ class GearHourForm(forms.ModelForm):
     )
     start_time = forms.TimeField(
         required=True,
-        initial=datetime.datetime.now().strftime('%I:%M %p'),
+        initial=timezone.now().strftime('%I:%M %p'),
         input_formats=['%I:%M %p'],
         widget=forms.TextInput(attrs={'class': 'flatpickr-timeonly'})
     )
@@ -111,12 +112,12 @@ class GearRentalForm(forms.ModelForm):
     start_date = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=datetime.date.today
+        initial=timezone.localdate()
     )
     due_date = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=datetime.date.today() + datetime.timedelta(days=7)
+        initial=timezone.localdate() + datetime.timedelta(days=7)
     )
     notes = forms.CharField(
         label="Notes (including what is being rented)"
@@ -162,12 +163,12 @@ class BookRentalForm(forms.ModelForm):
     start_date = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=datetime.date.today
+        initial=timezone.localdate()
     )
     due_date = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=datetime.date.today() + datetime.timedelta(days=7)
+        initial=timezone.localdate() + datetime.timedelta(days=7)
     )
     notes = forms.CharField(
         label="Notes (including what is being rented)"

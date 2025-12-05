@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from ubc_voc_website.decorators import Members
 from ubc_voc_website.utils import is_member
 
@@ -20,7 +21,7 @@ User = get_user_model()
 pacific_timezone = pytz.timezone('America/Vancouver')
 
 def trips(request):
-    trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), published=True)
+    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True)
     trips_list = {}
     all_trip_tags = set()
     for trip in trips:
@@ -56,7 +57,7 @@ def trips(request):
 
 @Members
 def my_trips(request):
-    previous_trips = Trip.objects.filter(start_time__lte=datetime.datetime.now(), organizers=request.user)
+    previous_trips = Trip.objects.filter(start_time__lte=timezone.now(), organizers=request.user)
     grouped_previous_trips = {}
     for trip in previous_trips:
         month = trip.start_time.strftime('%B %Y')
@@ -66,7 +67,7 @@ def my_trips(request):
     # Sort by month in ascending order
     grouped_previous_trips = dict(sorted(grouped_previous_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
 
-    upcoming_trips = Trip.objects.filter(start_time__gt=datetime.datetime.now(), organizers=request.user)
+    upcoming_trips = Trip.objects.filter(start_time__gt=timezone.now(), organizers=request.user)
     grouped_upcoming_trips = {}
     for trip in upcoming_trips:
         month = trip.start_time.strftime('%B %Y')
@@ -283,7 +284,7 @@ def clubroom_calendar(request):
             start_time += datetime.timedelta(days=7)
 
     # TODO add gear hours in here too
-    gear_hours = GearHour.objects.filter(start_date__lte=datetime.date.today(), end_date__gte=datetime.date.today())
+    gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
     cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 
     for gear_hour in gear_hours:

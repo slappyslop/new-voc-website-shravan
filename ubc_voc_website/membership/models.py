@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 import datetime
 
@@ -15,7 +16,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=32)
     student_number = models.CharField(max_length=8, blank=True, null=True)
     birthdate = models.DateField(
-        default=datetime.date.today
+        default=timezone.localdate()
     )
     bio = models.TextField(blank=True, null=True)
     emergency_info = models.TextField(max_length=512, blank=True, null=True)
@@ -75,7 +76,7 @@ class Membership(models.Model):
     def mapped_status(self):
         if not self.active:
             return "Inactive"
-        elif self.end_date >= datetime.date.today():
+        elif self.end_date >= timezone.localdate():
             return "Active"
         else:
             return "Expired"

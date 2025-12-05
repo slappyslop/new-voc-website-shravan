@@ -1,12 +1,12 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .models import GearHour, CancelledGearHour, BookRental, GearRental
 from .forms import BookRentalForm, GearHourForm, GearRentalForm
 from membership.models import Profile
-from ubc_voc_website.decorators import Admin, Members, Execs
+from ubc_voc_website.decorators import Execs
 
 import datetime
 import pytz
@@ -40,7 +40,7 @@ def gear_hours(request):
                 print(form.errors)
             return redirect('gear_hours')
     else:
-        gear_hours = GearHour.objects.filter(start_date__lte=datetime.date.today(), end_date__gte=datetime.date.today())
+        gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
         cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 
         calendar_events = []
@@ -71,7 +71,7 @@ def gear_hours(request):
 
 @Execs
 def rentals(request):
-    today = datetime.date.today()
+    today = timezone.localdate()
 
     all_gear_rentals = list(GearRental.objects.all())
     for rental in all_gear_rentals:
@@ -167,7 +167,7 @@ def return_rental(request, pk, type):
         rental_type = GearRental if type == "gear" else BookRental
         rental = get_object_or_404(rental_type, pk=pk)
 
-        rental.return_date = datetime.date.today()
+        rental.return_date = timezone.localdate()
         rental.save()
 
     return redirect('rentals')

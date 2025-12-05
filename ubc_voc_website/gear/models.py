@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 import datetime
 
@@ -74,7 +75,7 @@ class Rental(models.Model):
                 return Rental.RentalStatus.RETURNED_ON_TIME
         elif self.lost:
             return Rental.RentalStatus.LOST
-        elif self.due_date < datetime.date.today():
+        elif self.due_date < timezone.localdate():
             return Rental.RentalStatus.OUT_LATE
         else:
             return Rental.RentalStatus.OUT_ON_TIME

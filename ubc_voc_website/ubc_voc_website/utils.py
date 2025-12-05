@@ -1,10 +1,10 @@
+from django.utils import timezone
 from membership.models import Exec, Membership, PSG
-import datetime
 
 def is_member(user):
     active_memberships = Membership.objects.filter(
             user=user,
-            end_date__gte=datetime.datetime.today(),
+            end_date__gte=timezone.localdate(),
             active=True
         )
     return active_memberships.count() == 1

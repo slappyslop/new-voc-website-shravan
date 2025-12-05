@@ -1,3 +1,4 @@
+from django.utils import timezone
 import datetime
 
 from .models import Membership
@@ -39,7 +40,7 @@ def get_membership_type(user):
     else:
         memberships = Membership.objects.filter(
             user=user,
-            end_date__gte=datetime.date.today(),
+            end_date__gte=timezone.localdate(),
             active=True
         )
 
