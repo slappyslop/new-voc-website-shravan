@@ -33,7 +33,7 @@ class ProfileForm(forms.ModelForm):
     )
     inreach_address = forms.CharField(
         required=False,
-        label="inReach address"
+        label="inReach email/link"
     )
     acc = forms.BooleanField(
         required=True,
