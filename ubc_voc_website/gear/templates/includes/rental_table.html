@@ -29,6 +29,7 @@
             <th>Date Returned</th>
             <th>Category</th>
             <th>What</th>
+            <th>Notes</th>
             <th>QM Name</th>
             <th>Edit</th>
             <th>Renew</th>
@@ -42,9 +43,10 @@
                 <td><a href="{% url 'profile' rental.member.id %}">{{ rental.member.profile.full_name }}</a></td>
                 <td>{{ rental.start_date }}</td>
                 <td>{{ rental.due_date }}</td>
-                <td>{{ rental.return_date }}</td>
+                <td>{% if rental.return_date %}{{ rental.return_date }}{% endif %}</td>
                 <td>{% if rental.type == "gear" %}Gear{% else %}Library{% endif %}</td>
-                <td>{{ rental.notes }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                <td>{{ rental.what }}</td> <!-- TODO swap this out with the gear/books field once implemented-->
+                <td>{% if rental.notes %}{{ rental.notes }}{% endif%}</td>
                 <td><a href="{% url 'profile' rental.member.id %}">{{ rental.qm.profile.full_name }}</a></td>
                 <td>
                     <a href="{% url 'edit_rental' rental.type rental.id %}">

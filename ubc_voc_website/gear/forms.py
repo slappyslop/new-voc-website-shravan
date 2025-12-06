@@ -81,6 +81,7 @@ class GearRentalForm(forms.ModelForm):
             'deposit',
             'start_date',
             'due_date',
+            'what',
             'notes',
         )
 
@@ -119,8 +120,12 @@ class GearRentalForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=timezone.localdate() + datetime.timedelta(days=7)
     )
-    notes = forms.CharField(
+    what = forms.CharField(
+        required=True,
         label="What is being rented"
+    )
+    notes = forms.CharField(
+        required=False
     )
 
 class BookRentalForm(forms.ModelForm):
@@ -132,6 +137,7 @@ class BookRentalForm(forms.ModelForm):
             'deposit',
             'start_date',
             'due_date',
+            'what',
             'notes',
         )
 
@@ -170,7 +176,11 @@ class BookRentalForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=timezone.localdate() + datetime.timedelta(days=7)
     )
-    notes = forms.CharField(
+    what = forms.CharField(
+        required=True,
         label="What is being rented"
+    )
+    notes = forms.CharField(
+        required=False
     )
 

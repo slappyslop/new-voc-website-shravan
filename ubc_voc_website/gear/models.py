@@ -64,6 +64,7 @@ class Rental(models.Model):
     due_date = models.DateField()
     return_date = models.DateField(blank=True, null=True)
     extensions = models.IntegerField(default=0)
+    what = models.TextField()
     notes = models.TextField(blank=True, null=True)
     lost = models.BooleanField(default=False)
 
