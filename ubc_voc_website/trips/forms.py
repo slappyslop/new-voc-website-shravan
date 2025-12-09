@@ -282,47 +282,37 @@ class TripSignupForm(forms.ModelForm):
         model = TripSignup
         fields = ('type', 'can_drive', 'car_spots', 'signup_answer')
 
-    def __init__(self, *args, trip=None, **kwargs):
-        self.user = kwargs.pop('user', None)
+    def __init__(self, *args, user=None, trip=None, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.user = user
         self.trip = trip
 
-        try:
-            self.signup = TripSignup.objects.get(user=self.user, trip=self.trip)
-            for field in self.fields:
-                if hasattr(self.signup, field):
-                    self.fields[field].initial = getattr(self.signup, field)
-        except TripSignup.DoesNotExist:
-            self.signup = None
-        
         signup_choices = self.trip.valid_signup_types
         if not signup_choices:
             self.fields.pop('type')
         else:
             self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
 
-        if not self.trip.signup_question:
-            self.fields.pop('signup_answer')
+        if not getattr(self.trip, "signup_question", None):
+            self.fields.pop('signup_answer', None)
         else:
             self.fields['signup_answer'].label = self.trip.signup_question
 
     def clean(self):
         cleaned_data = super().clean()
-        can_drive = cleaned_data.get('can_drive')
-        if can_drive and not cleaned_data.get('car_spots'):
-            self.add_error('car_spots', "This field is required when 'Use signup' is selected")
+        if cleaned_data.get('can_drive') and not cleaned_data.get('car_spots'):
+            self.add_error('car_spots', "This field is required when 'Can drive' is selected")
 
     def save(self, commit=True):
-        try:
-            signup = TripSignup.objects.get(user=self.user, trip=self.trip)
-        except TripSignup.DoesNotExist:
-            signup = super().save(commit=False)
+        signup = super().save(commit=False)
+        if not getattr(signup, 'user', None):
             signup.user = self.user
+        if not getattr(signup, 'trip', None):
             signup.trip = self.trip
 
-        for field in self.cleaned_data:
-            setattr(signup, field, self.cleaned_data[field])
+        for field, value in self.cleaned_data.items():
+            setattr(signup, field, value)
 
         if commit:
             signup.save()

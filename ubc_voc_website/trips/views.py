@@ -130,12 +130,19 @@ def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
     membership_type = get_membership_type(request.user)
     user_can_signup = membership_type and membership_type != Membership.MembershipType.INACTIVE_HONOURARY
+
+    signup = None
+    if user_can_signup:
+        signup = TripSignup.objects.filter(user=request.user, trip=trip).first()
+
     if request.POST and user_can_signup:
-        form = TripSignupForm(request.POST, user=request.user, trip=trip)
+        form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=signup)
         if form.is_valid():
             form.save()
+            return redirect(request.path)
         else:
             print(form.errors)
+
     organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
         'user__id', 'first_name', 'last_name'
     )
@@ -193,9 +200,7 @@ def trip_details(request, id):
 
             # get form for new signups
             if trip.valid_signup_types and user_can_signup:
-
-
-                form = TripSignupForm(user=request.user, trip=trip)
+                form = TripSignupForm(user=request.user, trip=trip, instance=signup)
 
         return render(request, 'trips/trip.html', {
             'trip': trip, 

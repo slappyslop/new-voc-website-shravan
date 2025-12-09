@@ -138,12 +138,15 @@ class Trip(models.Model):
         return f"{self.name} ({self.trip_date_as_str_with_year})"
         
 class TripSignup(models.Model):
-    trip = models.OneToOneField(
+    class Meta:
+        unique_together = ['user', 'trip']
+        
+    trip = models.ForeignKey(
         Trip,
         on_delete=models.CASCADE,
         primary_key=False
     )
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         primary_key=False
