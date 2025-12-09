@@ -140,7 +140,7 @@ class Trip(models.Model):
 class TripSignup(models.Model):
     class Meta:
         unique_together = ['user', 'trip']
-        
+
     trip = models.ForeignKey(
         Trip,
         on_delete=models.CASCADE,

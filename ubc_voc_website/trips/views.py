@@ -135,13 +135,15 @@ def trip_details(request, id):
     if user_can_signup:
         signup = TripSignup.objects.filter(user=request.user, trip=trip).first()
 
-    if request.POST and user_can_signup:
-        form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=signup)
-        if form.is_valid():
-            form.save()
-            return redirect(request.path)
+    form = None
+    if user_can_signup:
+        if request.method == "POST":
+            form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=signup)
+            if form.is_valid():
+                form.save()
+                return redirect(request.path)
         else:
-            print(form.errors)
+            form = TripSignupForm(user=request.user, trip=trip, instance=signup)
 
     organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
         'user__id', 'first_name', 'last_name'
@@ -152,8 +154,6 @@ def trip_details(request, id):
         description = trip.description
 
     if request.user.is_authenticated and is_member(request.user):
-        form = None
-
         going_signups = TripSignup.objects.none()
         interested_list, committed_list, going_list = [], [], []
         interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
@@ -197,10 +197,6 @@ def trip_details(request, id):
             interested_car_spots = sum(signup['car_spots'] for signup in interested_list)
             committed_car_spots = sum(signup['car_spots'] for signup in committed_list)
             going_car_spots = sum(signup['car_spots'] for signup in going_list)
-
-            # get form for new signups
-            if trip.valid_signup_types and user_can_signup:
-                form = TripSignupForm(user=request.user, trip=trip, instance=signup)
 
         return render(request, 'trips/trip.html', {
             'trip': trip, 

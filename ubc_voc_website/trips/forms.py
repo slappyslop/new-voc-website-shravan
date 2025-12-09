@@ -303,6 +303,7 @@ class TripSignupForm(forms.ModelForm):
         cleaned_data = super().clean()
         if cleaned_data.get('can_drive') and not cleaned_data.get('car_spots'):
             self.add_error('car_spots', "This field is required when 'Can drive' is selected")
+        return cleaned_data
 
     def save(self, commit=True):
         signup = super().save(commit=False)
