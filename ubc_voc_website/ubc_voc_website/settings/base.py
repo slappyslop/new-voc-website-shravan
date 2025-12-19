@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'ubc_voc_website',
     'gear',
     'membership',
-    'tripreports',
     'trips',
     'django_quill',
     'colorfield',
