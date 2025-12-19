@@ -23,7 +23,7 @@ from django.contrib.auth.views import (
 )
 
 from django.urls import path, include
-from .views import home, join
+from .views import home, join, wordpress_sso
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -42,4 +42,5 @@ urlpatterns = [
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trip-reports/", include("tripreports.urls")),
     path("trips/", include("trips.urls")),
+    path("wp/sso/", wordpress_sso, name="wordpress_sso")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

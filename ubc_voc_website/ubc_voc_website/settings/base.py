@@ -133,6 +133,5 @@ LOGOUT_REDIRECT_URL = "home"
 
 SITE_ID = 1
 
-WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-WAGTAIL_SITE_NAME = "VOC Trip Reports"
-
+WP_SSO_SECRET = os.getenv("WP_SSO_SECRET")
+WP_SSO_URL = "http://wp.localhost:8001/login"
