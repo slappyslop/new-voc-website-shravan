@@ -8,7 +8,6 @@ openpyxl==3.1.5
 Pillow==10.4.0
 psycopg[binary]
 PyJWT==2.10.1
-pymysql==1.1.2
 python-dateutil==2.9.0
 pytz
 WeasyPrint==63.0
