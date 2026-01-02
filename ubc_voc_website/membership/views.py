@@ -12,6 +12,7 @@ from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
 from ubc_voc_website.decorators import Admin, Members, Execs
 
 from .utils import *
+from ubc_voc_website.utils import is_member
 
 import base64
 import datetime
@@ -122,38 +123,41 @@ def member_list(request):
 
     return render(request, 'membership/members.html', {'execs': execs, 'psg_members': psg_members, 'members': members})
 
-@Members
+@login_required
 def profile(request, id):
     user = get_object_or_404(User, id=id)
-    profile = Profile.objects.get(user=user)
+    if not is_member(request.user) and user != request.user: # Non-members can only view their own profile
+        return render(request, 'access_denied.html', status=403)
+    else:
+        profile = Profile.objects.get(user=user)
 
-    organized_trips = Trip.objects.filter(organizers=request.user)
-    organized_trips_list = {}
-    for trip in organized_trips:
-        month = trip.start_time.strftime('%B %Y')
-        if month not in organized_trips_list:
-            organized_trips_list[month] = []
-        organized_trips_list[month].append(trip)
-    organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
+        organized_trips = Trip.objects.filter(organizers=request.user)
+        organized_trips_list = {}
+        for trip in organized_trips:
+            month = trip.start_time.strftime('%B %Y')
+            if month not in organized_trips_list:
+                organized_trips_list[month] = []
+            organized_trips_list[month].append(trip)
+        organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
-    going_signups = TripSignup.objects.filter(user=request.user, type=TripSignupTypes.GOING)
-    attended_trips = [signup.trip for signup in going_signups]
-    attended_trips_list = {}
-    for trip in attended_trips:
-        month = trip.start_time.strftime('%B %Y')
-        if month not in attended_trips_list:
-            attended_trips_list[month] = []
-        attended_trips_list[month].append(trip)
-    attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
+        going_signups = TripSignup.objects.filter(user=request.user, type=TripSignupTypes.GOING)
+        attended_trips = [signup.trip for signup in going_signups]
+        attended_trips_list = {}
+        for trip in attended_trips:
+            month = trip.start_time.strftime('%B %Y')
+            if month not in attended_trips_list:
+                attended_trips_list[month] = []
+            attended_trips_list[month].append(trip)
+        attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
-    return render(request, 'membership/profile.html', {
-        'user': user, 
-        'profile': profile, 
-        'trips': {
-            'organized': organized_trips_list,
-            'attended': attended_trips_list
-        }
-    })
+        return render(request, 'membership/profile.html', {
+            'user': user, 
+            'profile': profile, 
+            'trips': {
+                'organized': organized_trips_list,
+                'attended': attended_trips_list
+            }
+        })
 
 @Members
 def view_waiver(request, id):
