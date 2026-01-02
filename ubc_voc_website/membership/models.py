@@ -13,7 +13,7 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     pronouns = models.CharField(max_length=32, blank=True, null=True)
-    phone = models.CharField(max_length=32)
+    phone = models.CharField(max_length=64)
     student_number = models.CharField(max_length=8, blank=True, null=True)
     birthdate = models.DateField(
         default=date(1970, 1, 1)
