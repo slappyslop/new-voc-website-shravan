@@ -32,7 +32,7 @@ class Command(BaseCommand):
                         }
                     )
                     profile.pronouns = row['pronouns']
-                    profile.student_number = row['student_number']
+                    profile.student_number = row['studentnumber']
                     profile.bio = row['blurb']
                     profile.emergency_info = row['emergency_info']
                     profile.inreach_address = row['spot_url']
