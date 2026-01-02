@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from membership.models import Profile
 
 import csv
-from datetime import datetime
+from datetime import date, datetime
 
 User = get_user_model()
 
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                             'first_name': row['firstname'],
                             'last_name': row['lastname'],
                             'phone': row['phone'],
-                            'birthdate': datetime.strptime(row['birthdate'], "%Y-%m-%d").date() if (row['birthdate'] and row['birthdate'] != "0000-00-00") else None
+                            'birthdate': datetime.strptime(row['birthdate'], "%Y-%m-%d").date() if (row['birthdate'] and row['birthdate'] != "0000-00-00") else date(1970, 1, 1)
                         }
                     )
                     profile.pronouns = row['pronouns']
