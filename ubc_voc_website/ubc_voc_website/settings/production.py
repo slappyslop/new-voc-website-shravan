@@ -22,6 +22,15 @@ ROOT_URLCONF = 'ubc_voc_website.urls'
 # TODO replace this with SES once that's set up
 # Outputs all emails to the console, so we don't need a separate SMTP server in dev
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("SMTP_USERNAME")
+EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+DEFAULT_FROM_EMAIL = "UBC VOC <noreply@ubc-voc.com>"
+SERVER_EMAIL = "errors@ubc-voc.com"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
