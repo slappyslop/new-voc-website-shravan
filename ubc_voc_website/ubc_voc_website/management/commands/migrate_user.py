@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help="Migrate Users from CSV"
 
     def handle(self, *args, **options):
-        path="data_migration/users.csv"
+        path="DATA_PATH"
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=["id", "email"])
