@@ -25,5 +25,27 @@ python manage.py migrate
 ```
 This will automatically generate a new file in the `migrations` folder of the app whose models you have updated. Ensure to include this file when you commit your change.
 
+## Deployment ##
+To deploy the website to production:
+1. Clone this repository onto the remote server
+2. Copy `.env.sample` into `.env` and replace the placeholders with real values. For `DJANGO_ALLOWED_HOSTS`, use the URL of the website (probably 'ubc-voc.com'). Ensure that `POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY` are strong passwords.
+3. Build the docker container: `docker compose build`
+4. Migrate the database `docker compose run web python manage.py migrate`
+5. Create a superuser `docker compose run web python manage.py createsuperuser`
+6. Collect static files `docker compose run web python manage.py collectstatic`
+7. Run the containers: `docker compose up -d` (`-d` detaches the containers from your shell, which is necessary for the website to continue to run when your ssh session ends)
+8. Configure the server-wide instance of nginx to serve static and media files, eg:
+   ```
+   location /static/ {
+        proxy_pass http://127.0.0.1:8082/static/;
+        proxy_set_header Host $host;
+    }
+
+    location /media/ {
+        proxy_pass http://127.0.0.1:8082/media/;
+        proxy_set_header Host $host;
+    }
+   ```
+
 ## Learn More ##
 If you have not worked on a Django project before, understanding the [Model-View-Template architecture](https://docs.djangoproject.com/en/5.2/intro/overview/) will help clarify the file structure of this project
