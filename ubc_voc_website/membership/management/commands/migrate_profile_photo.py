@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f"User not found for old_id {old_id}"))
                 continue
 
-            profile = profile.objects.get(user=user)
+            profile = Profile.objects.get(user=user)
             photo_path = os.path.join(path, filename)
             with open(photo_path, "rb") as f:
                 profile.photo.save(
