@@ -47,6 +47,14 @@ class Membership(models.Model):
         ACTIVE_HONORARY = "H"
         INACTIVE_HONOURARY = "I"
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "start_date"],
+                name="unique_membership_user_start"
+            )
+        ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE,
