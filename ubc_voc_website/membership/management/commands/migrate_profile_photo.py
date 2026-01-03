@@ -27,7 +27,7 @@ class Command(BaseCommand):
             photo_path = os.path.join(path, filename)
             with open(photo_path, "rb") as f:
                 profile.photo.save(
-                    f"{user.id}".jpg,
+                    f"{user.id}.jpg",
                     File(f),
                     save=True
                 )
