@@ -6,7 +6,7 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ("email", "is_staff", "is_active")
+    list_display = ("email", "is_staff", "is_active", "old_id")
     list_filter = ("is_staff", "is_active", "is_superuser")
 
     fieldsets = (
@@ -15,5 +15,5 @@ class UserAdmin(BaseUserAdmin):
         (('Important dates'), {'fields': ('last_login',)}),
     )
 
-    search_fields = ('email',)
+    search_fields = ('email', 'old_id')
     ordering = ('email',)
