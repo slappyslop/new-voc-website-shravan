@@ -8,7 +8,7 @@ from datetime import date, datetime
 User = get_user_model()
 
 class Command(BaseCommand):
-    help="Migrate Profiles form CSV"
+    help="Migrate Profiles from CSV"
 
     def handle(self, *args, **kwargs):
         path = "profile.csv"
@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 except User.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"User not found for old_id {int(row['id'])}"))
                     continue
-                
+
                 try:
                     birthdate = datetime.strptime(row['birthdate'], "%Y-%m-%d").date()
                 except ValueError:
