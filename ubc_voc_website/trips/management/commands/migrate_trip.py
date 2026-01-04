@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 else:
                     status = Trip.TripStatus.NO
 
-                if row['endtime'] == "0000-00-00":
+                if row['endtime'] == "0000-00-00 00:00:00":
                     end_time = None
                 else:
                     end_time = datetime.strptime(row['endtime'], "%Y-%m-%d %H:%M:%S")
