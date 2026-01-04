@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
-                "id"
+                "id",
                 "name", 
                 "organizerid", 
                 "tentative", 
