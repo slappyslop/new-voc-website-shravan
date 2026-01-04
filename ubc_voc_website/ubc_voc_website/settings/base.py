@@ -127,6 +127,10 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
+ACCOUNT_FORMS = {
+    "signup": "ubc_voc_website.forms.CustomSignupForm"
+}
+
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
