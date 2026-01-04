@@ -152,17 +152,17 @@ class WaiverForm(forms.ModelForm):
     signature = forms.CharField(required=False, widget=forms.HiddenInput())
 
 class ExecForm(forms.ModelForm):
+    class Meta:
+        model = Exec
+        fields = ('user', 'exec_role')
+
     user = forms.ModelChoiceField(
-        queryset=User.objects.all(),
+        queryset=User.objects.filter(membership__active=True),
         label="Member Name",
         widget=forms.Select,
         required=True
     )
     exec_role = forms.CharField(max_length=32, required=True)
-
-    class Meta:
-        model = Exec
-        fields = ('user', 'exec_role')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -173,16 +173,16 @@ class ExecForm(forms.ModelForm):
         return f"{profile.first_name} {profile.last_name}"
     
 class PSGForm(forms.ModelForm):
+    class Meta:
+        model = PSG
+        fields = ('user',)
+
     user = forms.ModelChoiceField(
-        queryset=User.objects.all(),
+        queryset=User.objects.filter(membership__active=True),
         label="Member Name",
         widget=forms.Select,
         required=True
     )
-
-    class Meta:
-        model = PSG
-        fields = ('user',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

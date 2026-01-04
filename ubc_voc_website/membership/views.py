@@ -267,6 +267,8 @@ def manage_roles(request): # for managing who has the exec role
                 'last_name': profile.last_name
             })
 
+        print(exec_form)
+
         return render(request, 'membership/manage_roles.html', {
             'execs': execs_extended_info, 
             'psg': psg_extended_info,

@@ -16,12 +16,12 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-secondary fs-5">
+    <nav class="navbar navbar-expand-lg bg-body-secondary fs-6">
         <div class="container-fluid mx-3">
             <a class="navbar-brand" href="/">
                 <div class="d-flex align-items-center">
                     <img src="{% static 'ubc_voc_website/voc_colour_logo.png' %}" alt="VOC Logo" style="height: 100px; width: auto">
-                    <p class="fs-5 mb-0">UBC Varsity Outdoor Club</p>
+                    <p class="fs-4 mb-0">UBC Varsity Outdoor Club</p>
                 </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,11 +84,11 @@
                 {% if user.is_authenticated %}
                     <form action="{% url 'account_logout' %}" method="post" class="nav-item">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary fs-6">Log Out</button>
                     </form>
                 {% else %}
                     <a href="{% url 'account_login' %}">
-                        <button class="btn btn-sm btn-outline-secondary">Log In</button>
+                        <button class="btn btn-sm btn-outline-secondary fs-6">Log In</button>
                     </a>
                 {% endif %}
             </div>
