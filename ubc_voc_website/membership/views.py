@@ -244,7 +244,6 @@ def manage_roles(request): # for managing who has the exec role
         psg_form = PSGForm(prefix='psg')
 
         execs = Exec.objects.select_related('user', 'user__profile').order_by('exec_role')
-        print(execs.first())
         execs_extended_info = []
         for exec in execs:
             execs_extended_info.append({
