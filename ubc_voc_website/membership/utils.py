@@ -1,5 +1,5 @@
 from django.utils import timezone
-import datetime
+from datetime import date
 
 from .models import Membership
 
@@ -12,11 +12,11 @@ def get_end_date(today):
     """
     current_year = today.year
     
-    if datetime.datetime(current_year, 1, 1) <= today <= datetime.datetime(current_year, 4, 30):
-        return datetime.datetime(current_year, 9, 30)
+    if date(current_year, 1, 1) <= today <= date(current_year, 4, 30):
+        return date(current_year, 9, 30)
     
     else:
-        return datetime.datetime(current_year + 1, 9, 30)
+        return date(current_year + 1, 9, 30)
 
 def is_minor(today, birthdate):
     """

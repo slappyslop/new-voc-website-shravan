@@ -34,7 +34,7 @@ def join(request):
     else:
         form = MembershipForm(user=request.user)
         start_date = timezone.localdate()
-        end_date = get_end_date(timezone.localdate()).date()
+        end_date = get_end_date(timezone.localdate())
 
     return render(request, 'membership/join.html', {
         'form': form,
