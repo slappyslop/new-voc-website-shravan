@@ -38,13 +38,12 @@ def get_membership_type(user):
     if not user:
         return None
     else:
-        memberships = Membership.objects.filter(
+        membership = Membership.objects.filter(
             user=user,
             end_date__gte=timezone.localdate(),
             active=True
-        )
+        ).order_by('-end_date').first()
 
-        if not memberships.exists():
-            return None
-        else:
-            return memberships.first().type
+        if membership:
+            return membership.type
+        return None
