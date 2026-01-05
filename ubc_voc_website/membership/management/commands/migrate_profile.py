@@ -39,8 +39,8 @@ class Command(BaseCommand):
                 profile.pronouns = row['pronouns']
                 profile.student_number = row['studentnumber']
                 profile.bio = row['blurb']
-                profile.emergency_info = row['emergency_info']
-                profile.inreach_address = row['spot_url']
+                profile.emergency_info = row['emergency_info'] if row['emergency_info'] != "NULL" else None
+                profile.inreach_address = row['spot_url'] if row['spot_url'] != "NULL" else None
                 profile.acc = row['acc'] == "1"
                 profile.vocene = row['vocene'] == "1"
                 profile.trip_org_email = row['trip_email'] == "1"
