@@ -257,6 +257,26 @@ class TripForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'flatpickr'}),
         label=""
     )
+    going_start_choice = forms.ChoiceField(
+        choices=SIGNUP_START_CHOICES,
+        widget=forms.RadioSelect,
+        initial="never"
+    )
+    going_start = forms.DateTimeField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label=""
+    )
+    going_end_choice = forms.ChoiceField(
+        choices=SIGNUP_END_CHOICES,
+        widget=forms.RadioSelect,
+        initial="pretrip"
+    )
+    going_end = forms.DateTimeField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'flatpickr'}),
+        label=""
+    )
     use_pretrip = forms.BooleanField(
         initial=True,
         required=False,

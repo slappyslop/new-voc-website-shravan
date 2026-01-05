@@ -5,10 +5,13 @@ from django.utils import timezone
 from colorfield.fields import ColorField
 
 # helper class, not a model
-class TripSignupTypes(models.TextChoices):
-    INTERESTED = "interested",
-    COMMITTED = "committed",
-    GOING = "going"
+class TripSignupTypes(models.IntegerChoices):
+    INTERESTED = 1,
+    COMMITTED = 2,
+    GOING = 3,
+    NO_LONGER_INTERESTED = 4,
+    BAILED_FROM_COMMITTED = 5,
+    NO_LONGER_GOING = 6
 
 """
 This is its own model rather than a subclass in the Trip model because it allows any Admin
@@ -63,6 +66,8 @@ class Trip(models.Model):
     interested_end = models.DateTimeField(blank=True, null=True)
     committed_start = models.DateTimeField(blank=True, null=True)
     committed_end = models.DateTimeField(blank=True, null=True)
+    going_start = models.DateTimeField(blank=True, null=True)
+    going_end = models.DateTimeField(blank=True, null=True)
     use_pretrip = models.BooleanField(default=True)
     pretrip_time = models.DateTimeField(blank=True, null=True)
     pretrip_location = models.CharField(max_length=128, blank=True, null=True)
@@ -97,7 +102,8 @@ class Trip(models.Model):
         """
         signup_info = {
                 "interested": (self.SignupStatus.NOT_ENABLED, 0),
-                "committed": (self.SignupStatus.NOT_ENABLED, 0)
+                "committed": (self.SignupStatus.NOT_ENABLED, 0),
+                "going": (self.SignupStatus.NOT_ENABLED, 0)
             }
         if self.use_signup:
             now = timezone.now()
@@ -119,6 +125,15 @@ class Trip(models.Model):
                     signup_info["committed"] = (self.SignupStatus.OPEN.value, committed_end)
                 else:
                     signup_info["committed"] = (self.SignupStatus.CLOSED.value, 0)
+
+            if self.going_start:
+                going_end = self.going_end if self.going_end else self.start_time
+                if now < self.going_start:
+                    signup_info["going"] = (self.SignupStatus.NOT_YET_OPEN.value, self.going_start)
+                elif now < going_end:
+                    signup_info["going"] = (self.SignupStatus.OPEN.value, going_end)
+                else:
+                    signup_info["going"] = (self.SignupStatus.CLOSED.value, 0)
             
         return signup_info
     
@@ -133,6 +148,8 @@ class Trip(models.Model):
             signup_types.append(TripSignupTypes.INTERESTED)
         if self.signup_info["committed"][0] == self.SignupStatus.OPEN:
             signup_types.append(TripSignupTypes.COMMITTED)
+        if self.signup_info["going"][0] == self.SignupStatus.OPEN:
+            signup_types.append(TripSignupTypes.GOING)
 
         return signup_types
     
@@ -153,14 +170,14 @@ class TripSignup(models.Model):
         on_delete=models.CASCADE,
         primary_key=False
     )
-    type = models.CharField(
-        max_length=10,
+    type = models.IntegerField(
         choices = TripSignupTypes,
         default=TripSignupTypes.INTERESTED
     )
     can_drive = models.BooleanField(default=False)
     car_spots = models.IntegerField(blank=True, null=True)
     signup_answer = models.TextField(max_length=256, blank=True, null=True)
+    signup_time = models.DateTimeField(default=timezone.now)
 
 class Meeting(models.Model):
     name = models.CharField(max_length=256)

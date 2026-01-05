@@ -131,8 +131,9 @@ ACCOUNT_FORMS = {
     "signup": "ubc_voc_website.forms.CustomSignupForm"
 }
 
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
 SITE_ID = 1
 

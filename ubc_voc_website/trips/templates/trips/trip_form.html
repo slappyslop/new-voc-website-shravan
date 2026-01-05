@@ -34,6 +34,37 @@
                 signup_tool_div.style.display = this.checked ? 'block' : 'none';
             });
 
+            // Setup signup list visibility toggling
+            function updateSignupListVisibility(fromOptionsName, endOptionsContainer) {
+                const selected = document.querySelector(`input[name="${fromOptionsName}"]:checked`);
+                if (selected && selected.value === "never") {
+                    endOptionsContainer.style.display = "none";
+                }
+                else {
+                    endOptionsContainer.style.display = "block";
+                }
+            }
+
+            const radioGroups = [
+                { startName: "interested_start_choice", endContainer: document.getElementById("interested-end-container") },
+                { startName: "committed_start_choice", endContainer: document.getElementById("committed-end-container") },
+                { startName: "going_start_choice", endContainer: document.getElementById("going-end-container") },
+            ];
+
+            console.log(radioGroups);
+
+            radioGroups.forEach(group => {
+                const radios = document.querySelectorAll(`input[name="${group.startName}"]`);
+                radios.forEach(radio => {
+                    radio.addEventListener("change", () => {
+                        console.log("testing event listener");
+                        updateSignupListVisibility(group.startName, group.endContainer)
+                    });
+                });
+
+                updateSignupListVisibility(group.startName, group.endContainer)
+            });
+            
             // Setup pretrip checkbox
             const pretrip_checkbox = document.querySelector('#id_use_pretrip');
             const pretrip_div = document.getElementById('pretrip-div');
@@ -121,7 +152,7 @@
                 {% render_form_field form.max_participants %}
     
                 <p>When should the <b>interested</b> list be open?</p>
-                <div class="mb-4" style="display:flex;">
+                <div class="mb-4 d-flex">
                     <div class="mx-2">
                         <strong>From:</strong><br>
                         {% for option in form.interested_start_choice %}
@@ -133,7 +164,7 @@
                             </label><br>
                         {% endfor %}
                     </div>
-                    <div class="mx-2">
+                    <div class="mx-2" id="interested-end-container">
                         <strong>To:</strong><br>
                         {% for option in form.interested_end_choice %}
                             <label style="display: inline-flex; align-items: baseline; gap: 6px;">
@@ -147,7 +178,7 @@
                 </div>
 
                 <p>When should the <b>committed</b> list be open?</p>
-                <div class="mb-4" style="display:flex;">
+                <div class="mb-4 d-flex">
                     <div class="mx-2">
                         <strong>From:</strong><br>
                         {% for option in form.committed_start_choice %}
@@ -159,13 +190,43 @@
                             </label><br>
                         {% endfor %}
                     </div>
-                    <div class="mx-2">
+                    <div class="mx-2" id="committed-end-container">
                         <strong>To:</strong><br>
                         {% for option in form.committed_end_choice %}
                             <label style="display: inline-flex; align-items: baseline; gap: 6px;">
                                 {{ option.tag }}{{ option.choice_label }}
                                 {% if option.data.value == "custom" %}
                                     {% render_form_field form.committed_end %}
+                                {% endif %}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <p>
+                    When should the <b>going</b> list be open? <br>
+                    (Select "Never" if you do not want to allow participants to sign themselves up as <b>going</b>. 
+                    The organizer will still be able to sign participants up as <b>going</b>)
+                </p>
+                <div class="mb-4 d-flex">
+                    <div class="mx-2">
+                        <strong>From:</strong><br>
+                        {% for option in form.going_start_choice %}
+                            <label style="display: inline-flex; align-items: baseline; gap: 6px;">
+                                {{ option.tag }}{{ option.choice_label }}
+                                {% if option.data.value == "custom" %}
+                                    {% render_form_field form.going_start %}
+                                {% endif %}
+                            </label><br>
+                        {% endfor %}
+                    </div>
+                    <div class="mx-2" id="going-end-container">
+                        <strong>To:</strong><br>
+                        {% for option in form.going_end_choice %}
+                            <label style="display: inline-flex; align-items: baseline; gap: 6px;">
+                                {{ option.tag }}{{ option.choice_label }}
+                                {% if option.data.value == "custom" %}
+                                    {% render_form_field form.going_end %}
                                 {% endif %}
                             </label><br>
                         {% endfor %}

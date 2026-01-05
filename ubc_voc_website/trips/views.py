@@ -4,13 +4,14 @@ from django.utils import timezone
 from ubc_voc_website.decorators import Members
 from ubc_voc_website.utils import is_member
 
-from .models import Meeting, Trip, TripSignup, TripSignupTypes
 from .forms import TripForm, TripSignupForm
+from .models import Meeting, Trip, TripSignup, TripSignupTypes
+from .utils import is_signup_type_change_valid
 
-from membership.models import Membership, Profile
 from gear.models import CancelledGearHour, GearHour
-
+from membership.models import Membership, Profile
 from membership.utils import get_membership_type
+
 
 import datetime
 import pytz
@@ -155,81 +156,91 @@ def trip_details(request, id):
         description = trip.description
 
     if request.user.is_authenticated and is_member(request.user):
-        going_signups = TripSignup.objects.none()
-        interested_list, committed_list, going_list = [], [], []
-        interested_emails, committed_emails, going_emails = [], [], []
-        interested_car_spots, committed_car_spots, going_car_spots = 0, 0, 0
-
-        # get existing signups
         if trip.use_signup:
-            interested_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.INTERESTED)
-            interested_emails = [signup.user.email for signup in interested_signups]
-            for signup in interested_signups:
-                profile = Profile.objects.get(user=signup.user)
-                interested_list.append({
-                    'id': signup.user.id,
-                    'name': profile.full_name_with_pronouns,
-                    'email': profile.user.email,
-                    'signup_answer': signup.signup_answer,
-                    'car_spots': signup.car_spots if signup.can_drive else 0
-                })
-            committed_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.COMMITTED)
-            committed_emails = [signup.user.email for signup in committed_signups]
-            for signup in committed_signups:
-                profile = Profile.objects.get(user=signup.user)
-                committed_list.append({
-                    'id': signup.user.id,
-                    'name': profile.full_name_with_pronouns,
-                    'email': profile.user.email,
-                    'signup_answer': signup.signup_answer,
-                    'car_spots': signup.car_spots if signup.can_drive else 0
-                })
-            going_signups = TripSignup.objects.filter(trip=trip, type=TripSignupTypes.GOING)
-            going_emails = [signup.user.email for signup in going_signups]
-            for signup in going_signups:
-                profile = Profile.objects.get(user=signup.user)
-                going_list.append({
-                    'id': signup.user.id,
-                    'name': profile.full_name_with_pronouns,
-                    'email': profile.user.email,
-                    'signup_answer': signup.signup_answer,
-                    'car_spots': signup.car_spots if signup.can_drive else 0
-                })
+            def construct_signup_list(signups):
+                """
+                Returns a list of signups correctly formatted for the template
+                """
+                signup_list = []
+                emails = []
+                car_spots = 0
+                for signup in signups:
+                    signup_list.append({
+                        'id': signup.user.id,
+                        'name': signup.user.profile.full_name_with_pronouns,
+                        'email': signup.user.email,
+                        'signup_answer': signup.signup_answer,
+                        'car_spots': signup.car_spots if signup.can_drive else 0
+                    })
+                    emails.append(signup.user.email)
+                    if signup.can_drive:
+                        car_spots += signup.car_spots
+                return signup_list, emails, car_spots
+            signups = TripSignup.objects.filter(trip=trip).select_related('user__profile')
 
-            interested_car_spots = sum(signup['car_spots'] for signup in interested_list)
-            committed_car_spots = sum(signup['car_spots'] for signup in committed_list)
-            going_car_spots = sum(signup['car_spots'] for signup in going_list)
+            interested_list, interested_emails, interested_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.INTERESTED))
+            committed_list, committed_emails, committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.COMMITTED))
+            going_list, going_emails, going_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.GOING))
 
-        return render(request, 'trips/trip.html', {
-            'trip': trip, 
-            'organizers': organizers,
-            'description': description,
-            'signups': SimpleNamespace(
-                interested=interested_list,
-                committed=committed_list,
-                going=going_list
-            ),
-            'signup_emails': SimpleNamespace(
-                interested=interested_emails,
-                committed=committed_emails,
-                going=going_emails
-            ),
-            'is_going': going_signups.filter(user=request.user).exists(),
-            'car_spots': SimpleNamespace(
-                interested=interested_car_spots,
-                committed=committed_car_spots,
-                going=going_car_spots
-            ),
-            'form': form,
-            'user_can_signup': user_can_signup
-        })
+            no_longer_interested_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_INTERESTED))
+            bailed_from_committed_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.BAILED_FROM_COMMITTED))
+            no_longer_going_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_GOING))
+
+            return render(request, 'trips/trip.html', {
+                'trip': trip, 
+                'organizers': organizers,
+                'description': description,
+                'signups': SimpleNamespace(
+                    interested=interested_list,
+                    committed=committed_list,
+                    going=going_list,
+                    no_longer_interested=no_longer_interested_list,
+                    bailed_from_committed=bailed_from_committed_list,
+                    no_longer_going=no_longer_going_list
+                    
+                ),
+                'signup_emails': SimpleNamespace(
+                    interested=interested_emails,
+                    committed=committed_emails,
+                    going=going_emails
+                ),
+                'user_is_signed_up': signups.filter(
+                    user=request.user, 
+                    type__in=[TripSignupTypes.INTERESTED, TripSignupTypes.COMMITTED, TripSignupTypes.GOING]
+                ).exists(),
+                'car_spots': SimpleNamespace(
+                    interested=interested_car_spots,
+                    committed=committed_car_spots,
+                    going=going_car_spots
+                ) if trip.drivers_required else None,
+                'form': form,
+                'user_can_signup': user_can_signup
+            })
+        else: # Trip does not use signup tools but user is a member so can see organizer names
+            return render(request, 'trips.trip.html', {
+                'trip': trip,
+                'organizers': organizers,
+                'description': description
+            })
     
-    else:
+    else: # User is not signed in, can see trip details but no organizer names or signup info
         return render(request, 'trips/trip.html', {
             'trip': trip,
-            'organizers': organizers,
             'description': description
         })
+    
+@Members
+def change_signup_type(request, signup_id, new_type):
+    signup = get_object_or_404(TripSignup, signup_id)
+    trip = signup.trip
+    if signup.user != request.user or not is_signup_type_change_valid(signup.type, new_type, trip.valid_signup_types):
+        return render(request, 'access_denied.html', status=403)
+    else:
+        signup.type = new_type
+        signup.signup_time = timezone.now()
+        signup.save()
+
+    return redirect(f"/trips/details/{trip.id}")
 
 @Members
 def mark_as_going(request, trip_id, user_id):
