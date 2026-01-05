@@ -83,7 +83,7 @@ class Command(BaseCommand):
                     if row['interestedstart'] != "0000-00-00 00:00:00":
                         trip.interested_start = timezone.make_aware(datetime.strptime(row['interestedstart'], "%Y-%m-%d %H:%M:%S"))
                         trip.interested_end = timezone.make_aware(datetime.strptime(row['interestedend'], "%Y-%m-%d %H:%M:%S"))
-                    if row['committedstart'] != "0000-00-00 00:00:00"
+                    if row['committedstart'] != "0000-00-00 00:00:00":
                         trip.committed_start = timezone.make_aware(datetime.strptime(row['committedstart'], "%Y-%m-%d %H:%M:%S"))
                         trip.committed_end = timezone.make_aware(datetime.strptime(row['committedend'], "%Y-%m-%d %H:%M:%S"))
 
