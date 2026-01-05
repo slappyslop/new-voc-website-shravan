@@ -190,7 +190,7 @@ def view_waiver(request, id):
 @Execs
 def manage_memberships(request):
     latest_membership_subquery = Membership.objects.filter(user=OuterRef('user_id')).order_by('-end_date').values('id')[:1]
-    profile_queryset = Profile.objects.filter(user__membership__isnull=False)
+    profile_queryset = Profile.objects.filter(user__membership__isnull=False).distinct().order_by('first_name', 'last_name')
     profile_queryset = profile_queryset.annotate(latest_membership_id=Subquery(latest_membership_subquery)).select_related('user')
     profile_list = list(profile_queryset)
 
