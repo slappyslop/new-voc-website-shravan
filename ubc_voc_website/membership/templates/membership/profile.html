@@ -11,19 +11,19 @@
             <p><b>Phone:</b> {{ profile.phone }}</p>
             {% if profile.emergency_info %}
                 <div class="d-flex">
-                    <p class="me-2"><b>Emergency Info:</b></p>
+                    <p class="me-2 text-nowrap"><b>Emergency Info:</b></p>
                     {{ profile.emergency_info }}
                 </div>
             {% endif %}
             {% if profile.inreach_address %}
                 <div class="d-flex">
-                    <p class="me-2"><b>inReach Info:</b></p>
+                    <p class="me-2 text-nowrap"><b>inReach Info:</b></p>
                     {{ profile.inreach_address }}
                 </div>
             {% endif %}
             {% if profile.bio %}
                 <div class="d-flex">
-                    <p class="me-2"><b>Bio:</b></p>
+                    <p class="me-2 text-nowrap"><b>Bio:</b></p>
                     {{ profile.bio_html|safe }}
                 </div>
             {% endif %}
