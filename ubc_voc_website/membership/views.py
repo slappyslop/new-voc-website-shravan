@@ -131,7 +131,7 @@ def profile(request, id):
     else:
         profile = Profile.objects.get(user=user)
 
-        organized_trips = Trip.objects.filter(organizers=request.user)
+        organized_trips = Trip.objects.filter(organizers=user)
         organized_trips_list = {}
         for trip in organized_trips:
             month = trip.start_time.strftime('%B %Y')
@@ -140,7 +140,7 @@ def profile(request, id):
             organized_trips_list[month].append(trip)
         organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
-        going_signups = TripSignup.objects.filter(user=request.user, type=TripSignupTypes.GOING)
+        going_signups = TripSignup.objects.filter(user=user, type=TripSignupTypes.GOING)
         attended_trips = [signup.trip for signup in going_signups]
         attended_trips_list = {}
         for trip in attended_trips:

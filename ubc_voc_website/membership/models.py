@@ -98,6 +98,7 @@ class Exec(models.Model):
         primary_key=True
     )
     exec_role = models.CharField(max_length=32)
+    priority = models.IntegerField(default=1)
 
     def __str__(self):
         return f'{self.user} - {self.exec_role}'
