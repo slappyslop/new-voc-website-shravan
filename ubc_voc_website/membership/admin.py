@@ -19,12 +19,12 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Exec)
 class ExecAdmin(admin.ModelAdmin):
-    list_display = ('user', 'exec_role')
-    search_fields = ('user', 'exec_role')
-    list_filter = ('user', 'exec_role')
+    list_display = ('user', 'first_name', 'last_name', 'exec_role')
+    autocomplete_fields = ('user',)
+    search_fields = ('user__email', 'user__profile__first_name', 'user__profile__last_name', 'exec_role')
 
 @admin.register(PSG)
 class PSGAdmin(admin.ModelAdmin):
-    list_display = ('user',)
-    search_fields = ('user',)
-    list_filter = ('user',)
+    list_display = ('user', 'first_name', 'last_name')
+    autocomplete_fields = ('user',)
+    search_fields = ('user__email', 'user__profile__first_name', 'user__profile__last_name')
