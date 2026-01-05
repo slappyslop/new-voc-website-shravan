@@ -8,8 +8,8 @@ from django.utils import timezone
 
 from .models import Exec, Membership, Profile, PSG, Waiver
 from trips.models import Trip, TripSignup, TripSignupTypes
-from .forms import ExecForm, MembershipForm, ProfileForm, PSGForm, WaiverForm
-from ubc_voc_website.decorators import Admin, Members, Execs
+from .forms import MembershipForm, ProfileForm, WaiverForm
+from ubc_voc_website.decorators import Members, Execs
 
 from .utils import *
 from ubc_voc_website.utils import is_member
@@ -200,74 +200,6 @@ def toggle_membership(request, membership_id):
     membership.save()
 
     return redirect('manage_memberships')
-
-@Admin
-def manage_roles(request): # for managing who has the exec role
-    if request.method == "POST":
-        remove_exec = request.POST.get('remove-exec')
-        remove_psg = request.POST.get('remove-psg')
-
-        if remove_exec:
-            user = get_object_or_404(User, id=remove_exec)
-            Exec.objects.filter(user=user).delete()
-
-        elif remove_psg:
-            user = get_object_or_404(User, id=remove_psg)
-            PSG.objects.filter(user=user).delete()
-
-        elif 'exec-user' in request.POST: # add/modify existing exec
-            user = get_object_or_404(User, id=request.POST['exec-user'])
-            exec_instance = Exec.objects.filter(user=user).first()
-            if exec_instance:
-                form = ExecForm(request.POST, instance=exec_instance, prefix='exec')
-            else:
-                form = ExecForm(request.POST, prefix='exec')
-
-            if form.is_valid():
-                exec = form.save()
-
-            return redirect('manage_roles')
-        
-        elif 'psg-user' in request.POST: # add/modify existing PSG member
-            user = get_object_or_404(User, id=request.POST['psg-user'])
-            form  = PSGForm(request.POST, prefix='psg')
-
-            if form.is_valid():
-                psg = form.save()
-
-            return redirect('manage_roles')
-        
-        return redirect('manage_roles')
-
-    else:
-        exec_form = ExecForm(prefix="exec")
-        psg_form = PSGForm(prefix='psg')
-
-        execs = Exec.objects.select_related('user', 'user__profile').order_by('exec_role')
-        execs_extended_info = []
-        for exec in execs:
-            execs_extended_info.append({
-                'id': exec.user.id,
-                'role': exec.exec_role,
-                'first_name': exec.user.profile.first_name,
-                'last_name': exec.user.profile.last_name
-            })
-
-        psg = PSG.objects.select_related('user', 'user__profile').all()
-        psg_extended_info = []
-        for member in psg:
-            psg_extended_info.append({
-                'id': member.user.id,
-                'first_name': member.user.profile.first_name,
-                'last_name': member.user.profile.last_name
-            })
-
-        return render(request, 'membership/manage_roles.html', {
-            'execs': execs_extended_info, 
-            'psg': psg_extended_info,
-            'exec_form': exec_form,
-            'psg_form': psg_form
-        })
 
 @Execs
 def membership_stats(request):

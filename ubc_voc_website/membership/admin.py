@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Membership, Profile
+from .models import Exec, Membership, Profile, PSG
 
 @admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
@@ -16,3 +16,15 @@ class ProfileAdmin(admin.ModelAdmin):
     formfield_overrides = {
         
     }
+
+@admin.register(Exec)
+class ExecAdmin(admin.ModelAdmin):
+    list_display = ('user', 'exec_role')
+    search_fields = ('user', 'exec_role')
+    list_filter = ('user', 'exec_role')
+
+@admin.register(PSG)
+class PSGAdmin(admin.ModelAdmin):
+    list_display = ('user',)
+    search_fields = ('user',)
+    list_filter = ('user',)

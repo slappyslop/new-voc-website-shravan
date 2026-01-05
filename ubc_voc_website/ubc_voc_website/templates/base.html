@@ -73,9 +73,6 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'manage_memberships' %}">Memberships</a></li>
                                 <li><a class="dropdown-item" href="{% url 'membership_stats' %}">Membership Stats</a></li>
-                                {% if request.user.is_superuser %}
-                                <li><a class="dropdown-item" href="{% url 'manage_roles' %}">Manage Roles</a></li>
-                                {% endif %}
                                 <li><a class="dropdown-item" href="{% url 'rentals' %}">Gearmaster</a></li>
                             </ul>
                         </li>

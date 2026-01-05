@@ -10,7 +10,6 @@ urlpatterns = [
     path("view-waiver/<int:id>/", view_waiver, name="view_waiver"),
     path("manage-memberships/", manage_memberships, name="manage_memberships"),
     path("toggle/<int:membership_id>/", toggle_membership, name="toggle_membership"),
-    path("manage-roles/", manage_roles, name="manage_roles"),
     path("membership-stats/", membership_stats, name="membership_stats"),
     path("download-member-table/<str:type>/", download_member_table, name="download_member_table")
 ]
