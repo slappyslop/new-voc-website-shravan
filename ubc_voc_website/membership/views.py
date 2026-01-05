@@ -114,7 +114,7 @@ def member_list(request):
     member_profiles = Profile.objects.all().exclude(user_id__in=exec_user_ids).exclude(user_id__in=psg_user_ids).filter(user__in=Membership.objects.filter(
             end_date__gte=timezone.localdate(),
             active=True
-        ).values('user')).order_by('first_name')
+        ).values('user')).order_by('first_name', 'last_name')
     members = []
     for profile in member_profiles:
         members.append({
