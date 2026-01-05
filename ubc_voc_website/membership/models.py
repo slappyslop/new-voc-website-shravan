@@ -18,7 +18,7 @@ class Profile(models.Model):
     birthdate = models.DateField(
         default=date(1970, 1, 1)
     )
-    bio = models.TextField(blank=True)
+    bio = models.TextField(blank=True, null=True)
     emergency_info = models.TextField(max_length=512, blank=True, null=True)
     inreach_address = models.TextField(max_length=64, blank=True, null=True)
     acc = models.BooleanField(default=True)
