@@ -86,10 +86,10 @@ def waiver(request, membership_id):
 
 @Members
 def member_list(request):
-    exec_profiles = Profile.objects.filter(user__in=Exec.objects.values('user'))
+    exec_queryset = Exec.objects.select_related('user', 'user__profile').order_by('priority')
     execs = []
-    for profile in exec_profiles:
-        exec = Exec.objects.get(user=profile.user)
+    for exec in exec_queryset:
+        profile = exec.user.profile
         execs.append({
             'id': profile.user.id,
             'name': f'{profile.first_name} {profile.last_name}',
@@ -98,9 +98,10 @@ def member_list(request):
             'phone': profile.phone
         })
 
-    psg_profiles = Profile.objects.filter(user__in=PSG.objects.values('user'))
+    psg_queryset = PSG.objects.select_related('user', 'user__profile').order_by('user__profile__first_name')
     psg_members = []
-    for profile in psg_profiles:
+    for psg in psg_queryset:
+        profile = psg.user.profile
         psg_members.append({
             'id': profile.user.id,
             'name': f'{profile.first_name} {profile.last_name}',
@@ -108,7 +109,9 @@ def member_list(request):
             'phone': profile.phone
         })
 
-    member_profiles = Profile.objects.all().exclude(user__in=exec_profiles).exclude(user__in=psg_profiles).filter(user__in=Membership.objects.filter(
+    exec_user_ids = Exec.objects.values_list('user_id', flat=True)
+    psg_user_ids = PSG.objects.values_list('user_id', flat=True)
+    member_profiles = Profile.objects.all().exclude(user_id__in=exec_user_ids).exclude(user_id__in=psg_user_ids).filter(user__in=Membership.objects.filter(
             end_date__gte=timezone.localdate(),
             active=True
         ).values('user'))
