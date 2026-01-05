@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='trip',
             name='signup_question',
-            field=models.CharField(blank=True, max_length=512, null=True),
+            field=models.CharField(blank=True, max_length=1024, null=True),
         ),
     ]
