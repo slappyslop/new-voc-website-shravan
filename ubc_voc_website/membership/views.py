@@ -198,7 +198,8 @@ def manage_memberships(request):
     )
 
     for profile in profiles:
-        profile.latest_membership = profile.user.memberships[0]
+        profile.memberships = getattr(profile.user, 'memberships', [])
+        profile.latest_membership = profile.user.memberships[0] if profile.memberships else None
 
     return render(request, 'membership/manage_memberships.html', {'profiles': profiles})
 
