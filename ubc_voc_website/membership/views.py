@@ -198,7 +198,7 @@ def manage_memberships(request):
     )
 
     for profile in profiles:
-        profile.latest_membership = profile.memberships.first()
+        profile.latest_membership = profile.user.memberships.first()
 
     return render(request, 'membership/manage_memberships.html', {'profiles': profiles})
 
