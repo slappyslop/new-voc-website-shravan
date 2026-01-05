@@ -157,7 +157,7 @@ class ExecForm(forms.ModelForm):
         fields = ('user', 'exec_role')
 
     user = forms.ModelChoiceField(
-        queryset=User.objects.filter(membership__active=True),
+        queryset=User.objects.select_related("profile"),
         label="Member Name",
         widget=forms.Select,
         required=True
@@ -167,10 +167,10 @@ class ExecForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         def label(user):
-            try:
-                profile = user.profile
+            profile = getattr(user, "profile", None)
+            if profile:
                 return f"{profile.first_name} {profile.last_name}"
-            except Profile.DoesNotExist:
+            else:
                 return user.email
             
         self.fields['user'].label_from_instance = label
@@ -185,7 +185,7 @@ class PSGForm(forms.ModelForm):
         fields = ('user',)
 
     user = forms.ModelChoiceField(
-        queryset=User.objects.filter(membership__active=True),
+        queryset=User.objects.select_related("profile"),
         label="Member Name",
         widget=forms.Select,
         required=True
@@ -194,10 +194,10 @@ class PSGForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         def label(user):
-            try:
-                profile = user.profile
+            profile = getattr(user, "profile", None)
+            if profile:
                 return f"{profile.first_name} {profile.last_name}"
-            except Profile.DoesNotExist:
+            else:
                 return user.email
             
         self.fields['user'].label_from_instance = label
