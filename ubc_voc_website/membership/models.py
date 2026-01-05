@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from datetime import date
+import json
 
 class Profile(models.Model):
     user = models.OneToOneField(
@@ -36,6 +37,22 @@ class Profile(models.Model):
             return f"{self.full_name} ({self.pronouns})"
         else:
             return self.full_name
+        
+    @property
+    def bio_html(self):
+        if not self.bio:
+            return ""
+        
+        try:
+            data = json.loads(self.bio)
+            if 'html' in data:
+                return data['html']
+            elif 'ops' in data:
+                return ''.join(f"<p>{op.get('insert','')}</p>" for op in data['ops'])
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+        return self.bio
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

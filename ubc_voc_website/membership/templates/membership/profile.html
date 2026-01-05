@@ -16,7 +16,8 @@
                 <p><b>inReach Info:</b> {{ profile.inreach_address }}</p>
             {% endif %}
             {% if profile.bio %}
-                <p><b>Bio:</b> {{ profile.bio|safe }}</p>
+                <p><b>Bio:</b></p>
+                {{ profile.bio_html|safe }}
             {% endif %}
         </div>
         <div class="col-md-4 text-end">
