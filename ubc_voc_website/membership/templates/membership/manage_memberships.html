@@ -29,11 +29,19 @@
             memberTable.addEventListener('click', function (e) {
                 const button = e.target.closest('.show-memberships');
                 if (button) {
-                    const content = button.dataset.memberships;
-                    modalBody.innerHTML = content;
-                    modal.show();
+                    const userId = button.dataset.userId;
+                    fetch(`/membership/memberships/${userId}/`)
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                            modal.show();
+                        })
+                        .catch(err => {
+                            modalBody.innerHTML = `<div class="alert alert-danger">Failed to load memberships.</div>`;
+                            modal.show()
+                        })
                 }
-            })
+            });
         });
     </script>
 {% endblock %}
@@ -58,52 +66,7 @@
                         <td>{{ profile.phone }}</td>
                         <td>{{ profile.latest_membership.end_date }}</td>
                         <td class="dropdown-control" style="cursor: pointer;">
-                            <button class="btn btn-primary show-memberships" data-memberships="
-                                <table class='table'>
-                                    <thead>
-                                        <tr>
-                                            <th>Membership Type</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Waiver</th>
-                                            <th>Status</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    {% for membership in profile.memberships %}
-                                        <tr>
-                                            <td>{{ membership.type_display_name }}</td>
-                                            <td>{{ membership.start_date }}</td>
-                                            <td>{{ membership.end_date }}</td>
-                                            <td>
-                                                <a href='{% url "view_waiver" membership.id %}' target='_blank'>View Waiver</a>
-                                            </td>
-                                            <td>
-                                                {% if membership.mapped_status == 'Active' %}
-                                                    <span class='badge bg-success'>
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% elif membership.mapped_status == 'Inactive' %}
-                                                    <span class='badge bg-danger'>
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% else %}
-                                                    <span class='badge bg-secondary'>
-                                                        {{ membership.mapped_status }}
-                                                    </span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if membership.mapped_status == 'Active' %}
-                                                    <a class='btn btn-secondary btn-sm' href='{% url 'toggle_membership' membership.id %}''>Deactivate</button>
-                                                {% elif membership.mapped_status == 'Inactive' %}
-                                                    <a class='btn btn-secondary btn-sm' href='{% url 'toggle_membership' membership.id %}'>Activate</button>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            ">Membership Details</button>
+                            <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
                         </td>
                     </tr>
                 {% endfor %}

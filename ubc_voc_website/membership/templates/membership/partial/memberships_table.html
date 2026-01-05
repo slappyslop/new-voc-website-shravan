@@ -1,0 +1,38 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Waiver</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for membership in memberships %}
+        <tr>
+            <td>{{ membership.type_display_name }}</td>
+            <td>{{ membership.start_date }}</td>
+            <td>{{ membership.end_date }}</td>
+            <td><a href="{% url 'view_waiver' membership.id %}" target="_blank">View Waiver</a></td>
+            <td>
+                <span class="badge 
+                    {% if membership.mapped_status == 'Active' %}bg-success
+                    {% elif membership.mapped_status == 'Inactive' %}bg-danger
+                    {% else %}bg-secondary
+                    {% endif %}">
+                    {{ membership.mapped_status }}
+                </span>
+            </td>
+            <td>
+                {% if membership.mapped_status == 'Active' %}
+                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</a>
+                {% elif membership.mapped_status == 'Inactive' %}
+                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

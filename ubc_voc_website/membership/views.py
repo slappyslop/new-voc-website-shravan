@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.db.models import Prefetch
+from django.core.paginator import Paginator
+from django.db.models import OuterRef, Subquery
 from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -188,20 +189,26 @@ def view_waiver(request, id):
 
 @Execs
 def manage_memberships(request):
-    # all profiles that have at least 1 membership
-    profiles = Profile.objects.filter(user__membership__isnull=False).prefetch_related(
-        Prefetch(
-            'user__membership_set',
-            queryset=Membership.objects.order_by('-end_date'),
-            to_attr='memberships'
-        )
+    latest_membership_subquery = Membership.objects.filter(user=OuterRef('user_id')).order_by('-end_date').values('id')[:1]
+    profile_queryset = Profile.objects.filter(user__membership__isnull=False)
+    profile_queryset = profile_queryset.annotate(latest_membership_id=Subquery(latest_membership_subquery)).select_related('user')
+    profile_list = list(profile_queryset)
+
+    latest_memberships = Membership.objects.filter(
+        id__in=[p.latest_membership_id for p in profile_list if p.latest_membership_id]
     )
+    membership_map = {m.user_id: m for m in latest_memberships}
 
-    for profile in profiles:
-        profile.memberships = getattr(profile.user, 'memberships', [])
-        profile.latest_membership = profile.user.memberships[0] if profile.memberships else None
+    for profile in profile_list:
+        profile.latest_membership = membership_map.get(profile.user.id)
 
-    return render(request, 'membership/manage_memberships.html', {'profiles': profiles})
+    return render(request, 'membership/manage_memberships.html', {'profiles': profile_list})
+
+@Execs
+def get_memberships_for_user(request, id):
+    user = get_object_or_404(User, id=id)
+    memberships = user.membership_set.order_by('-end_date')
+    return render(request, 'membership/partial/memberships_table.html', {'memberships': memberships})
 
 @Execs
 def toggle_membership(request, membership_id):
