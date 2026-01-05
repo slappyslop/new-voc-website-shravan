@@ -86,7 +86,7 @@ def waiver(request, membership_id):
 
 @Members
 def member_list(request):
-    exec_queryset = Exec.objects.select_related('user', 'user__profile').order_by('priority')
+    exec_queryset = Exec.objects.select_related('user', 'user__profile').order_by('priority', 'user__profile__first_name')
     execs = []
     for exec in exec_queryset:
         profile = exec.user.profile
