@@ -7,12 +7,13 @@ from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from .models import Exec, Membership, Profile, PSG, Waiver
-from trips.models import Trip, TripSignup, TripSignupTypes
 from .forms import MembershipForm, ProfileForm, WaiverForm
-from ubc_voc_website.decorators import Members, Execs
-
+from .models import Exec, Membership, Profile, PSG, Waiver
 from .utils import *
+
+from trips.models import Trip, TripSignup
+from trips.utils import signup_type_as_str
+from ubc_voc_website.decorators import Members, Execs
 from ubc_voc_website.utils import is_member
 
 import base64
@@ -147,11 +148,12 @@ def profile(request, id):
             organized_trips_list[month].append(trip)
         organized_trips_list = dict(sorted(organized_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
-        going_signups = TripSignup.objects.filter(user=user, type=TripSignupTypes.GOING)
-        attended_trips = [signup.trip for signup in going_signups]
+        # signups = TripSignup.objects.filter(user=user).exclude(trip__organizers=user)
+        signups = TripSignup.objects.filter(user=user)
+        attended_trips = [{'trip': signup.trip, 'type': signup_type_as_str(signup.type)} for signup in signups]
         attended_trips_list = {}
         for trip in attended_trips:
-            month = trip.start_time.strftime('%B %Y')
+            month = trip["trip"].start_time.strftime('%B %Y')
             if month not in attended_trips_list:
                 attended_trips_list[month] = []
             attended_trips_list[month].append(trip)

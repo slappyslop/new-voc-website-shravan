@@ -59,3 +59,23 @@ def is_signup_type_change_valid(current_signup_type, new_signup_type, valid_sign
         return new_signup_type == TripSignupTypes.NO_LONGER_GOING
     else:
         return new_signup_type in valid_signup_types
+    
+def signup_type_as_str(signup_type):
+    """
+    Returns the appropriate display string for a signup type
+    
+    A TripSignupTypes value
+    """
+    match signup_type:
+        case TripSignupTypes.INTERESTED:
+            return "Interested"
+        case TripSignupTypes.COMMITTED:
+            return "Committed"
+        case TripSignupTypes.GOING:
+            return "Going"
+        case TripSignupTypes.NO_LONGER_INTERESTED:
+            return "No longer interested"
+        case TripSignupTypes.BAILED_FROM_COMMITTED:
+            return "Bailed from committed"
+        case TripSignupTypes.NO_LONGER_GOING:
+            return "Bailed from going"

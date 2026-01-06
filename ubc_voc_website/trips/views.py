@@ -113,32 +113,17 @@ def trip_delete(request, id):
 
 def trip_details(request, id):
     trip = get_object_or_404(Trip, id=id)
-    membership_type = get_membership_type(request.user)
-    user_can_signup = membership_type and membership_type != Membership.MembershipType.INACTIVE_HONOURARY
 
-    signup = None
-    if user_can_signup:
-        signup = TripSignup.objects.filter(user=request.user, trip=trip).first()
-
-    form = None
-    if user_can_signup:
-        if request.method == "POST":
-            form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=signup)
-            if form.is_valid():
-                form.save()
-                return redirect(request.path)
-        else:
-            form = TripSignupForm(user=request.user, trip=trip, instance=signup)
-
-    organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
-        'user__id', 'first_name', 'last_name'
-    )
     try:
         description = json.loads(trip.description).get('html', '')
     except json.JSONDecodeError:
         description = trip.description
 
     if request.user.is_authenticated and is_member(request.user):
+        organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
+            'user__id', 'first_name', 'last_name'
+        )
+
         if trip.use_signup:
             def construct_signup_list(signups):
                 """
@@ -169,6 +154,13 @@ def trip_details(request, id):
             bailed_from_committed_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.BAILED_FROM_COMMITTED))
             no_longer_going_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_GOING))
 
+            # Create signup form for user
+            if trip.valid_signup_types:
+                user_can_signup = trip.use_signup and get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
+                signup = TripSignup.objects.filter(user=request.user, trip=trip).first() if user_can_signup else None
+                form = TripSignupForm(user=request.user, trip=trip) if user_can_signup and not signup else None
+
+            
             return render(request, 'trips/trip.html', {
                 'trip': trip, 
                 'organizers': organizers,
@@ -211,6 +203,24 @@ def trip_details(request, id):
             'trip': trip,
             'description': description
         })
+    
+@Members
+def trip_signup(request, trip_id):
+    if request.method == "POST":
+        trip = get_object_or_404(Trip, id=trip_id)
+        if get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY:
+            existing_signup = TripSignup.objects.filter(user=request.user, trip=trip).first()
+            form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=existing_signup)
+            if form.is_valid():
+                if existing_signup: # Don't update type... that needs to be done through the change_signup_type view
+                    form.instance.type = existing_signup.type
+                    form.save()
+                else:
+                    signup_type = int(form.cleaned_data.get("type"))
+                    if signup_type in trip.valid_signup_types:
+                        form.save()
+        
+    return redirect('trip_details', id=trip_id)
     
 @Members
 def change_signup_type(request, signup_id, new_type):
