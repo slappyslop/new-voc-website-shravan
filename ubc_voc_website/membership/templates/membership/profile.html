@@ -40,11 +40,18 @@
     <h4 class="mb-3">Trip History</h4>
     <h5 class="mb-3">Organized Trips</h5>
     {% if trips.organized %}
+        {% if own_profile %}
+            <p>Unpublished trips are highlighted in <span class="bg-secondary bg-opacity-25 px-2 py-1 rounded">gray</span>. Edit the trip to publish it.</p>
+        {% endif %}
         <table class="table mb-3">
             <thead>
                 <th>Date</th>
                 <th>Trip</th>
-                <th>Details</th>
+                <th></th>
+                {% if own_profile %}
+                    <th></th>
+                    <th></th>
+                {% endif %}
                 <th>Tags</th>
             </thead>
             <tbody>
@@ -53,10 +60,22 @@
                         <td colspan="4"><strong>{{ month }}</strong></td>
                     </tr>
                     {% for trip in trips %}
-                        <tr>
+                        <tr class="{% if not trip.published %}table-secondary{% endif %}">
                             <td>{{ trip.trip_date_as_str_short }}</td>
                             <td>{{ trip.name }}</td>
                             <td><a href="{% url 'trip_details' trip.id %}">Details</a></td>
+                            {% if own_profile and trip.is_future_or_ongoing %}
+                                <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                                <td>
+                                    <a 
+                                        class="btn btn-danger" 
+                                        href="{% url 'trip_delete' trip.id%}" 
+                                        onclick="return confirm('Are you sure you want to delete this trip?')"
+                                    >
+                                        Delete
+                                    </a>
+                                </td>
+                            {% endif %}
                             <td>
                                 {% for tag in trip.tags.all %}
                                     <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->

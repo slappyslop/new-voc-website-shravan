@@ -58,28 +58,8 @@ def trips(request):
     })
 
 @Members
-def my_trips(request):
-    previous_trips = Trip.objects.filter(start_time__lte=timezone.now(), organizers=request.user)
-    grouped_previous_trips = {}
-    for trip in previous_trips:
-        month = trip.start_time.strftime('%B %Y')
-        if month not in grouped_previous_trips:
-            grouped_previous_trips[month] = []
-        grouped_previous_trips[month].append(trip)
-    # Sort by month in ascending order
-    grouped_previous_trips = dict(sorted(grouped_previous_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
-
-    upcoming_trips = Trip.objects.filter(start_time__gt=timezone.now(), organizers=request.user)
-    grouped_upcoming_trips = {}
-    for trip in upcoming_trips:
-        month = trip.start_time.strftime('%B %Y')
-        if month not in grouped_upcoming_trips:
-            grouped_upcoming_trips[month] = []
-        grouped_upcoming_trips[month].append(trip)
-    # Sort by month in ascending order
-    grouped_upcoming_trips = dict(sorted(grouped_upcoming_trips.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y')))
-
-    return render(request, 'trips/my_trips.html', {'previous_trips': grouped_previous_trips, 'upcoming_trips': grouped_upcoming_trips})
+def trip_organizer_message(request):
+    return render(request, 'trips/trip_organizer_message.html')
 
 @Members
 def trip_create(request):
@@ -116,7 +96,10 @@ def trip_edit(request, id):
                 print(form.errors)
         else:
             form = TripForm(instance=trip, user=request.user)
-        return render(request, 'trips/trip_form.html', {'form': form})
+        return render(request, 'trips/trip_form.html', {
+            'form': form,
+            'published': trip.published
+        })
     
 @Members
 def trip_delete(request, id):
@@ -176,7 +159,7 @@ def trip_details(request, id):
                     if signup.can_drive:
                         car_spots += signup.car_spots
                 return signup_list, emails, car_spots
-            signups = TripSignup.objects.filter(trip=trip).select_related('user__profile')
+            signups = TripSignup.objects.filter(trip=trip).select_related('user__profile').order_by('-signup_time')
 
             interested_list, interested_emails, interested_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.INTERESTED))
             committed_list, committed_emails, committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.COMMITTED))
@@ -306,7 +289,6 @@ def clubroom_calendar(request):
             })
             start_time += datetime.timedelta(days=7)
 
-    # TODO add gear hours in here too
     gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
     cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 

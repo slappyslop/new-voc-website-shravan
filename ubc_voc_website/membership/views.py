@@ -137,6 +137,9 @@ def profile(request, id):
         profile = Profile.objects.get(user=user)
 
         organized_trips = Trip.objects.filter(organizers=user)
+        if user != request.user:
+            organized_trips = organized_trips.filter(published=True)
+
         organized_trips_list = {}
         for trip in organized_trips:
             month = trip.start_time.strftime('%B %Y')
@@ -161,7 +164,8 @@ def profile(request, id):
             'trips': {
                 'organized': organized_trips_list,
                 'attended': attended_trips_list
-            }
+            },
+            'own_profile': user == request.user
         })
 
 @Members

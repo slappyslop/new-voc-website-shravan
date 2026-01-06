@@ -155,6 +155,23 @@ class Trip(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.trip_date_as_str_with_year})"
+    
+    @property
+    def is_future_or_ongoing(self):
+        """
+        Used to determine whether the organizer should still be allowed to edit the trip
+        Returns true in the following cases
+            Future trip: start_time is in the future
+            Ongoing: start_time is in the past and end_date is in the future
+                    OR end_date is null and start_date today
+        """
+        now = timezone.now()
+        if now < self.start_time or now < self.end_time:
+            return True
+        elif not self.end_time and now.date() == self.start_time.date():
+            return True
+        else:
+            return False
         
 class TripSignup(models.Model):
     class Meta:
