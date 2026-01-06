@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.core.paginator import Paginator
 from django.db.models import OuterRef, Subquery
 from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
@@ -158,6 +157,9 @@ def profile(request, id):
             attended_trips_list[month].append(trip)
         attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
+        exec = Exec.objects.get(user=user)
+        exec_role = exec.exec_role if exec else None
+
         return render(request, 'membership/profile.html', {
             'user': user, 
             'profile': profile, 
@@ -165,7 +167,8 @@ def profile(request, id):
                 'organized': organized_trips_list,
                 'attended': attended_trips_list
             },
-            'own_profile': user == request.user
+            'own_profile': user == request.user,
+            'exec_role': exec_role
         })
 
 @Members
