@@ -3,6 +3,9 @@ from django.conf import settings
 from django.utils import timezone
 
 from colorfield.fields import ColorField
+from zoneinfo import ZoneInfo
+
+pacific_timezone = ZoneInfo("America/Vancouver")
 
 # helper class, not a model
 class TripSignupTypes(models.IntegerChoices):
@@ -75,24 +78,30 @@ class Trip(models.Model):
 
     @property
     def trip_date_as_str_short(self):
-        if self.end_time and self.end_time.date() > self.start_time.date():
-            return f"{self.start_time.strftime('%a %d')} - {self.end_time.strftime('%a %d')}"
-        else:
-            return self.start_time.strftime('%a %d')
+        start = self.start_time.astimezone(pacific_timezone)
+        if self.end_time:
+            end = self.end_time.astimezone(pacific_timezone)
+            if end.date() > start.date():
+                return f"{start.strftime('%a %d')} - {end.strftime('%a %d')}"
+        return start.strftime('%a %d')
         
     @property
     def trip_date_as_str_with_year(self):
-        if self.end_time and self.end_time.date() > self.start_time.date():
-            return f"{self.start_time.strftime('%a %d %b %Y')} - {self.end_time.strftime('%a %d %Y')}"
-        else:
-            return self.start_time.strftime('%a %d %b %Y')
+        start = self.start_time.astimezone(pacific_timezone)
+        if self.end_time:
+            end = self.end_time.astimezone(pacific_timezone)
+            if end.date() > start.date():
+                return f"{start.strftime('%a %d %b %Y')} - {end.strftime('%a %d %Y')}"
+        return start.strftime('%a %d %b %Y')
         
     @property
     def trip_date_as_str_long(self):
-        if self.end_time and self.end_time.date() > self.start_time.date():
-            return f"{self.start_time.strftime('%A, %B %d, %I:%M %p')} - {self.end_time.strftime('%A, %B %d, %I:%M %p')}"
-        else:
-            return self.start_time.strftime('%A, %B %d, %I:%M %p')
+        start = self.start_time.astimezone(pacific_timezone)
+        if self.end_time:
+            end = self.end_time.astimezone(pacific_timezone)
+            if end.date() > start.date():
+                return f"{start.strftime('%A, %B %d, %I:%M %p')} - {end.strftime('%A, %B %d, %I:%M %p')}"
+        return start.strftime('%A, %B %d, %I:%M %p')
         
     @property
     def signup_info(self):
