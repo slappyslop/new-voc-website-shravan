@@ -246,7 +246,6 @@ def mark_as_going(request, trip_id, user_id):
 
         return redirect(f"/trips/details/{trip_id}")
 
-@Members
 def clubroom_calendar(request):
     events_calendar = []
 
