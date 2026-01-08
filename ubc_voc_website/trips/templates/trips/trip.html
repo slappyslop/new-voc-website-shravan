@@ -100,7 +100,7 @@
                 {% endfor %}
             {% else %}
                 {% for organizer in organizers %}
-                    <a href="{% url 'profile' organizer.user__id %}">This member</a>{% if not forloop.last %}, {% endif %}
+                    <a href="{% url 'profile' organizer.user__id %}">this member</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             {% endif %}
         </p>

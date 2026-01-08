@@ -118,11 +118,11 @@ def trip_details(request, id):
     except json.JSONDecodeError:
         description = trip.description
 
-    if request.user.is_authenticated and is_member(request.user):
-        organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
+    organizers = Profile.objects.filter(user__in=trip.organizers.all()).values(
             'user__id', 'first_name', 'last_name'
         )
 
+    if request.user.is_authenticated and is_member(request.user):
         if trip.use_signup:
             def construct_signup_list(signups):
                 """
@@ -189,18 +189,12 @@ def trip_details(request, id):
                     going=going_car_spots
                 ) if trip.drivers_required else None,
             })
-        else: # Trip does not use signup tools but user is a member so can see organizer names
-            return render(request, 'trips.trip.html', {
-                'trip': trip,
-                'organizers': organizers,
-                'description': description
-            })
-    
-    else: # User is not signed in, can see trip details but no organizer names or signup info
-        return render(request, 'trips/trip.html', {
-            'trip': trip,
-            'description': description
-        })
+
+    return render(request, 'trips/trip.html', {
+        'trip': trip,
+        'organizers': organizers,
+        'description': description
+    })
     
 @Members
 def trip_signup(request, trip_id):
