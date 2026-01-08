@@ -351,16 +351,23 @@ class TripSignupForm(forms.ModelForm):
         self.user = user
         self.trip = trip
 
-        signup_choices = self.trip.valid_signup_types
-        if not signup_choices:
-            self.fields.pop('type')
+        if self.instance and self.instance.pk:
+            self.fields.pop("type", None)
         else:
-            self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
+            signup_choices = self.trip.valid_signup_types
+            if not signup_choices:
+                self.fields.pop('type')
+            else:
+                self.fields['type'].choices = [(choice.value, choice.label) for choice in signup_choices]
 
         if not getattr(self.trip, "signup_question", None):
             self.fields.pop('signup_answer', None)
         else:
             self.fields['signup_answer'].label = self.trip.signup_question
+
+        if not getattr(self.trip, "drivers_required", None):
+            self.fields.pop('can_drive', None)
+            self.fields.pop('car_spots', None)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -370,13 +377,21 @@ class TripSignupForm(forms.ModelForm):
 
     def save(self, commit=True):
         signup = super().save(commit=False)
-        if not getattr(signup, 'user', None):
-            signup.user = self.user
-        if not getattr(signup, 'trip', None):
-            signup.trip = self.trip
 
-        for field, value in self.cleaned_data.items():
-            setattr(signup, field, value)
+        signup.user = self.user
+        signup.trip = self.trip
+
+        if self.instance.pk:
+            signup.type = self.instance.type
+        else:
+            signup.type = self.cleaned_data.get("type")
+            if signup.type not in signup.trip.valid_signup_types:
+                raise forms.ValidationError("The selected signup option is not currently available for this trip")
+
+        fields = ["can_drive", "car_spots", "signup_answer"]
+        for field in fields:
+            if field in self.cleaned_data:
+                setattr(signup, field, self.cleaned_data[field])
 
         if commit:
             signup.save()

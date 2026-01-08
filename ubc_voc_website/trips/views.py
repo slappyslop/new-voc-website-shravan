@@ -1,21 +1,20 @@
-from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
-from ubc_voc_website.decorators import Members
-from ubc_voc_website.utils import is_member
 
 from .forms import TripForm, TripSignupForm
 from .models import Meeting, Trip, TripSignup, TripSignupTypes
-from .utils import is_signup_type_change_valid
+from .utils import is_signup_type_change_valid, signup_type_as_str, valid_signup_changes
 
 from gear.models import CancelledGearHour, GearHour
 from membership.models import Membership, Profile
 from membership.utils import get_membership_type
-
+from ubc_voc_website.decorators import Members
+from ubc_voc_website.utils import is_member
 
 import datetime
-import pytz
 import json
+import pytz
 from types import SimpleNamespace
 
 User = get_user_model()
@@ -155,11 +154,12 @@ def trip_details(request, id):
             no_longer_going_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_GOING))
 
             # Create signup form for user
-            if trip.valid_signup_types:
-                user_can_signup = trip.use_signup and get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
+            user_can_signup = trip.use_signup and get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
+            if user_can_signup:
                 signup = TripSignup.objects.filter(user=request.user, trip=trip).first() if user_can_signup else None
-                form = TripSignupForm(user=request.user, trip=trip) if user_can_signup and not signup else None
-
+                form = TripSignupForm(user=request.user, trip=trip, instance=signup)
+                valid_type_changes = valid_signup_changes(signup.type, trip.valid_signup_types) if signup else []
+                valid_type_changes = [{"type": type, "name": signup_type_as_str(type)} for type in valid_type_changes]
             
             return render(request, 'trips/trip.html', {
                 'trip': trip, 
@@ -179,17 +179,15 @@ def trip_details(request, id):
                     committed=committed_emails,
                     going=going_emails
                 ),
-                'user_is_signed_up': signups.filter(
-                    user=request.user, 
-                    type__in=[TripSignupTypes.INTERESTED, TripSignupTypes.COMMITTED, TripSignupTypes.GOING]
-                ).exists(),
+                'user_can_signup': user_can_signup,
+                'user_signup': signup,
+                'valid_type_changes': valid_type_changes,
+                'form': form,
                 'car_spots': SimpleNamespace(
                     interested=interested_car_spots,
                     committed=committed_car_spots,
                     going=going_car_spots
                 ) if trip.drivers_required else None,
-                'form': form,
-                'user_can_signup': user_can_signup
             })
         else: # Trip does not use signup tools but user is a member so can see organizer names
             return render(request, 'trips.trip.html', {
@@ -212,19 +210,13 @@ def trip_signup(request, trip_id):
             existing_signup = TripSignup.objects.filter(user=request.user, trip=trip).first()
             form = TripSignupForm(request.POST, user=request.user, trip=trip, instance=existing_signup)
             if form.is_valid():
-                if existing_signup: # Don't update type... that needs to be done through the change_signup_type view
-                    form.instance.type = existing_signup.type
-                    form.save()
-                else:
-                    signup_type = int(form.cleaned_data.get("type"))
-                    if signup_type in trip.valid_signup_types:
-                        form.save()
+                form.save()
         
     return redirect('trip_details', id=trip_id)
     
 @Members
 def change_signup_type(request, signup_id, new_type):
-    signup = get_object_or_404(TripSignup, signup_id)
+    signup = get_object_or_404(TripSignup, id=signup_id)
     trip = signup.trip
     if signup.user != request.user or not is_signup_type_change_valid(signup.type, new_type, trip.valid_signup_types):
         return render(request, 'access_denied.html', status=403)

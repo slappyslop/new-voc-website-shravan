@@ -60,6 +60,13 @@ def is_signup_type_change_valid(current_signup_type, new_signup_type, valid_sign
     else:
         return new_signup_type in valid_signup_types
     
+def valid_signup_changes(current_signup_type, valid_signup_types):
+    valid_signup_changes = []
+    for new_signup_type in TripSignupTypes:
+        if is_signup_type_change_valid(current_signup_type, new_signup_type, valid_signup_types):
+            valid_signup_changes.append(new_signup_type)
+    return valid_signup_changes
+    
 def signup_type_as_str(signup_type):
     """
     Returns the appropriate display string for a signup type
