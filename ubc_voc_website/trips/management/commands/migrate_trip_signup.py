@@ -72,6 +72,8 @@ class Command(BaseCommand):
                 signup.signup_answer = row["answers"]
                 signup.signup_time = datetime.strptime(row['signuptime'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone)
 
+                signup.save()
+
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created signup for user {int(row["memberid"])} for trip {int(row["tripid"])}"))
                 else:
