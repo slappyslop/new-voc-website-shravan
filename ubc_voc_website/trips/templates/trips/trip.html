@@ -514,6 +514,7 @@
             {% elif not request.user.is_authenticated %}
                 <p><a href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">Sign in</a> to sign up for this trip</p>
             {% elif not request.user|is_member %}
+                <hr>
                 <p><a href="{% url 'join'}">Join</a> the VOC to sign up for this trip</p>
             {% endif %}
         {% endif %}

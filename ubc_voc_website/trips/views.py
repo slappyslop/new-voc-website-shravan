@@ -41,6 +41,13 @@ def trips(request):
         else:
             end_time = trip.end_time
 
+        # This is to avoid long term events like "Journal Submissions Open" from cluttering the calendar
+        # Future improvement could be to create a new "Announcements" class for such events so they are not classified as trips
+        # Also, create a better long term solution for "recurring" trips that happen once a week for several months
+        duration = end_time - trip.start_time
+        if duration > datetime.timedelta(days=7):
+            continue
+
         trips_calendar.append({
             "id": trip.id,
             "title": trip.name,
