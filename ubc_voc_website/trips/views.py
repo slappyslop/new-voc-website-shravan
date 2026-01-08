@@ -5,12 +5,12 @@ from django.utils import timezone
 from .forms import TripForm, TripSignupForm
 from .models import Meeting, Trip, TripSignup, TripSignupTypes
 from .utils import is_signup_type_change_valid, signup_type_as_str, valid_signup_changes
-
+from gear.forms import GearHourForm
 from gear.models import CancelledGearHour, GearHour
 from membership.models import Membership, Profile
 from membership.utils import get_membership_type
 from ubc_voc_website.decorators import Members
-from ubc_voc_website.utils import is_member
+from ubc_voc_website.utils import is_exec, is_member
 
 import datetime
 import json
@@ -247,73 +247,96 @@ def mark_as_going(request, trip_id, user_id):
         return redirect(f"/trips/details/{trip_id}")
 
 def clubroom_calendar(request):
-    events_calendar = []
+    if request.POST:
+        if "delete" in request.POST:
+            gear_hour_id = request.POST.get("gear-hour-id")
+            delete_all = request.POST.get("delete-all") == "true"
+            gear_hour = get_object_or_404(GearHour, id=gear_hour_id)
 
-    upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
-        'id', 'name', 'start_time', 'end_time'
-    )
-    for event in upcoming_clubroom_events:
-        events_calendar.append({
-            'id': event['id'],
-            'title': event['name'],
-            'start': event['start_time'].isoformat(),
-            'end': event['end_time'].isoformat(),
-            'color': '#0000FF',
-            'type': "trip"
-        })
+            if delete_all:
+                gear_hour.delete()
+            else:
+                date = request.POST.get("date")
+                CancelledGearHour.objects.create(
+                    gear_hour = gear_hour,
+                    date = date
+                )
+            return redirect('clubroom_calendar')
+        else:
+            form = GearHourForm(request.POST, user=request.user)
+            if form.is_valid():
+                form.save()
+            return redirect('clubroom_calendar')
+    else:
+        events_calendar = []
 
-    upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
-        'id', 'name', 'pretrip_time'
-    )
-    for pretrip in upcoming_clubroom_pretrips:
-        end_time = pretrip['pretrip_time'] + datetime.timedelta(hours=1)
-
-        events_calendar.append({
-            'id': pretrip['id'], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
-            'title': f"Pretrip Meeting - {pretrip['name']}",
-            'start': pretrip['pretrip_time'].isoformat(),
-            'end': end_time.isoformat(),
-            'color': "#00FF00",
-            'type': "pretrip"
-        })
-
-    meeting_sets = Meeting.objects.all()
-    for set in meeting_sets:
-        start_time = set.start_date.astimezone(pacific_timezone)
-        while start_time.date() <= set.end_date:
+        upcoming_clubroom_events = Trip.objects.filter(in_clubroom=True).values(
+            'id', 'name', 'start_time', 'end_time'
+        )
+        for event in upcoming_clubroom_events:
             events_calendar.append({
-                'title': set.name,
-                'start': start_time.isoformat(),
-                'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
-                'color': "#FF0000",
-                'type': "meeting"
+                'id': event['id'],
+                'title': event['name'],
+                'start': event['start_time'].isoformat(),
+                'end': event['end_time'].isoformat(),
+                'color': '#0000FF',
+                'type': "trip"
             })
-            start_time += datetime.timedelta(days=7)
 
-    gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
-    cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
+        upcoming_clubroom_pretrips = Trip.objects.filter(pretrip_location="VOC Clubroom").values(
+            'id', 'name', 'pretrip_time'
+        )
+        for pretrip in upcoming_clubroom_pretrips:
+            end_time = pretrip['pretrip_time'] + datetime.timedelta(hours=1)
 
-    for gear_hour in gear_hours:
-        qm_name = Profile.objects.get(user=gear_hour.qm).first_name
+            events_calendar.append({
+                'id': pretrip['id'], # passing in the trip ID, so clicking the pretrip calendar event will link to trip details page
+                'title': f"Pretrip Meeting - {pretrip['name']}",
+                'start': pretrip['pretrip_time'].isoformat(),
+                'end': end_time.isoformat(),
+                'color': "#00FF00",
+                'type': "pretrip"
+            })
 
-        date = gear_hour.start_date
-        while date <= gear_hour.end_date:
-            if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
-                start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
-                start_datetime = pacific_timezone.localize(start_datetime)
-                end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
-
+        meeting_sets = Meeting.objects.all()
+        for set in meeting_sets:
+            start_time = set.start_date.astimezone(pacific_timezone)
+            while start_time.date() <= set.end_date:
                 events_calendar.append({
-                    'title': f"Gear Hours - {qm_name}",
-                    'start': start_datetime.isoformat(),
-                    'end': end_datetime.isoformat()
+                    'title': set.name,
+                    'start': start_time.isoformat(),
+                    'end': (start_time + datetime.timedelta(minutes=set.duration)).isoformat(),
+                    'color': "#FF0000",
+                    'type': "meeting"
                 })
-            date = date + datetime.timedelta(days=7)
+                start_time += datetime.timedelta(days=7)
 
+        gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
+        cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 
+        for gear_hour in gear_hours:
+            qm_name = Profile.objects.get(user=gear_hour.qm).first_name
 
-    return render(request, 'trips/clubroom_calendar.html', {
-        'trips_calendar': json.dumps(events_calendar)
-    })
+            date = gear_hour.start_date
+            while date <= gear_hour.end_date:
+                if not cancelled_gear_hours.filter(gear_hour=gear_hour, date=date).exists():
+                    start_datetime = datetime.datetime.combine(date, gear_hour.start_time)
+                    start_datetime = pacific_timezone.localize(start_datetime)
+                    end_datetime = start_datetime + datetime.timedelta(minutes=gear_hour.duration)
+
+                    events_calendar.append({
+                        'title': f"Gear Hours - {qm_name}",
+                        'start': start_datetime.isoformat(),
+                        'end': end_datetime.isoformat()
+                    })
+                date = date + datetime.timedelta(days=7)
+
+        if is_exec(request.user):
+            form = GearHourForm(user=request.user)
+
+        return render(request, 'trips/clubroom_calendar.html', {
+            'trips_calendar': json.dumps(events_calendar),
+            'form': form
+        })
 
 
