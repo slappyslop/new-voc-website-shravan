@@ -25,6 +25,14 @@ User = get_user_model()
 
 @login_required
 def join(request):
+    start_date = timezone.localdate()
+    end_date = get_end_date(timezone.localdate())
+
+    # If the user has an existing membership with the same end_date, redirect
+    membership = Membership.objects.filter(user=request.user, end_date=end_date)
+    if membership.exists():
+        return redirect('home')
+
     if request.method == 'POST':
         form = MembershipForm(request.POST, user=request.user)
         if form.is_valid():
@@ -35,8 +43,6 @@ def join(request):
                 return redirect('home')
     else:
         form = MembershipForm(user=request.user)
-        start_date = timezone.localdate()
-        end_date = get_end_date(timezone.localdate())
 
     return render(request, 'membership/join.html', {
         'form': form,
