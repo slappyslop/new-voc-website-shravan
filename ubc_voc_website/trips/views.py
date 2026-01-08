@@ -37,7 +37,7 @@ def trips(request):
     trips_calendar = []
     for trip in trips:
         if not trip.end_time:
-            end_time = trip.start_time = datetime.timedelta(hours=1)
+            end_time = trip.start_time + datetime.timedelta(hours=1)
         else:
             end_time = trip.end_time
 
