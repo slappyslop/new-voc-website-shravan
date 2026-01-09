@@ -114,10 +114,12 @@
         {% if request.user|is_member %}
             {% if signups.interested or signups.committed or signups.going or signups.no_longer_interested or signups.bailed_from_committed or signups.no_longer_going %}
                 <hr>
-                <h5>Signup Lists</h5>
+                <h3>Signup </h3>
+                <p><b>The trip organizer has asked participants to answer the following question:</b></p>
+                <p><i>{{ trip.signup_question }}</i></p>
                 <div id="signup-list">
                     {% if signups.going %}
-                        <p><b>Going:</b></p>
+                        <h5>Going:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.going %}
@@ -165,7 +167,7 @@
                         >Copy Going List Emails</button>
                     {% endif %}
                     {% if signups.committed %}
-                        <p><b>Committed:</b></p>
+                        <h5>Committed:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.committed %}
@@ -229,7 +231,7 @@
                         >Copy Committed List Emails</button>
                     {% endif %}
                     {% if signups.interested %}
-                        <p><b>Interested:</b></p>
+                        <h5>Interested:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.interested %}
@@ -295,7 +297,7 @@
                         >Copy Interested List Emails</button>
                     {% endif %}
                     {% if signups.no_longer_going %}
-                        <p><b>No Longer Going:</b></p>
+                        <h5>Bailed From Going:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.no_longer_going %}
@@ -340,7 +342,7 @@
                         </table>
                     {% endif %}
                     {% if signups.bailed_from_committed %}
-                        <p><b>Bailed From Committed:</b></p>
+                        <h5>Bailed From Committed:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.bailed_from_committed %}
@@ -385,7 +387,7 @@
                         </table>
                     {% endif %}
                     {% if signups.no_longer_interested %}
-                        <p><b>No Longer Interested:</b></p>
+                        <h5>No Longer Interested:</h5>
                         <table class="table table-striped table-hover">
                             <tbody>
                                 {% for signup in signups.no_longer_interested %}
