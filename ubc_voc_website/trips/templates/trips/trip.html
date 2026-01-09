@@ -124,25 +124,32 @@
                                     <tr data-email="{{ signup.email }}" class="align-middle">
                                         <th scope="row">{{ forloop.counter }}</th>
                                         <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
-                                        {% if signup.signup_answer %}
-                                            <td class="text-wrap text-break w-50"><b>Says:</b> {{ signup.signup_answer }}</td>
-                                        {% endif %}
-                                        {% if trip.drivers_required and signup.car_spots > 0 %}
-                                            <td><b>Can drive: </b><span class="badge bg-info">{{ signup.car_spots }}</span></td>
-                                        {% endif %}
-                                        {% if signup.id == request.user.id %}
+                                        <td class="text-wrap text-break w-50">
+                                            {% if signup.signup_answer %}
+                                                <b>Says:</b> {{ signup.signup_answer }}
+                                            {% endif %}
+                                        </td>
+                                        {% if trip.drivers_required %}
                                             <td>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive: </b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            {% if signup.id == request.user.id %}
                                                 <button type="button" class="btn btn-secondary" id="edit-signup-button">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </button>
-                                            </td>
-                                        {% endif %}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                             {% if trip.drivers_required %}
                                 <tfoot>
                                     <tr>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -170,20 +177,22 @@
                                                 <b>Says:</b> {{ signup.signup_answer }}
                                             {% endif %}
                                         </td>
-                                        <td>
-                                            {% if trip.drivers_required and signup.car_spots > 0 %}
-                                                <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
-                                            {% endif %}
-                                        </td>
-                                        {% if signup.id == request.user.id %}
+                                        {% if trip.drivers_required %}
                                             <td>
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
                                             </td>
                                         {% endif %}
                                         <td>
-                                            {% if request.user in trip.organizers.all %}
+                                            {% if signup.id == request.user.id %}
+                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                        {% if request.user in trip.organizers.all %}
+                                            <td>
                                                 <form 
                                                     method="post" 
                                                     action="{% url 'mark_as_going' trip.id signup.id %}" 
@@ -195,8 +204,8 @@
                                                         Add to going list
                                                     </button>
                                                 </form>
-                                            {% endif %}
-                                        </td>
+                                            </td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -207,6 +216,8 @@
                                     <td></td>
                                     <td></td>
                                     <td><b>{{ car_spots.committed }}</b> car spots on this list</td>
+                                    <td></td>
+                                    {% if request.user in trip.organizers.all %}<td></td>{% endif %}
                                 </tr>
                             </tfoot>
                             {% endif %}
@@ -232,18 +243,20 @@
                                                 <b>Says:</b> <i>{{ signup.signup_answer }}</i>
                                             {% endif %}
                                         </td>
-                                        <td>
-                                            {% if trip.drivers_required and signup.car_spots > 0 %}
-                                                <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
-                                            {% endif %}
-                                        </td>
-                                        {% if signup.id == request.user.id %}
+                                        {% if trip.drivers_required %}
                                             <td>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            {% if signup.id == request.user.id %}
                                                 <button type="button" class="btn btn-secondary" id="edit-signup-button">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </button>
-                                            </td>
-                                        {% endif %}
+                                            {% endif %}
+                                        </td>
                                         {% if request.user in trip.organizers.all %}
                                             <td>
                                                 <form 
@@ -269,6 +282,8 @@
                                         <td></td>
                                         <td></td>
                                         <td><b>{{ car_spots.interested }}</b> car spots on this list</td>
+                                        <td></td>
+                                        {% if request.user in trip.organizers.all %}<td></td>{% endif %}
                                     </tr>
                                 </tfoot>
                             {% endif %}
@@ -294,16 +309,34 @@
                                                 <b>Says:</b> <i>{{ signup.signup_answer }}</i>
                                             {% endif %}
                                         </td>
-                                        {% if signup.id == request.user.id %}
+                                        {% if trip.drivers_required %}
                                             <td>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            {% if signup.id == request.user.id %}
                                                 <button type="button" class="btn btn-secondary" id="edit-signup-button">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </button>
-                                            </td>
-                                        {% endif %}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
+                            {% if trip.drivers_required %}
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>{{ car_spots.no_longer_going }}</b> car spots on this list</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            {% endif %}
                         </table>
                     {% endif %}
                     {% if signups.bailed_from_committed %}
@@ -321,16 +354,34 @@
                                                 <b>Says:</b> <i>{{ signup.signup_answer }}</i>
                                             {% endif %}
                                         </td>
-                                        {% if signup.id == request.user.id %}
+                                        {% if trip.drivers_required %}
                                             <td>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            {% if signup.id == request.user.id %}
                                                 <button type="button" class="btn btn-secondary" id="edit-signup-button">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </button>
-                                            </td>
-                                        {% endif %}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
+                            {% if trip.drivers_required %}
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>{{ car_spots.bailed_from_committed }}</b> car spots on this list</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            {% endif %}
                         </table>
                     {% endif %}
                     {% if signups.no_longer_interested %}
@@ -348,16 +399,34 @@
                                                 <b>Says:</b> <i>{{ signup.signup_answer }}</i>
                                             {% endif %}
                                         </td>
-                                        {% if signup.id == request.user.id %}
+                                        {% if trip.drivers_required %}
                                             <td>
+                                                {% if signup.car_spots > 0 %}
+                                                    <b>Can drive:</b><span class="badge bg-info">{{ signup.car_spots }}</span>
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                        <td>
+                                            {% if signup.id == request.user.id %}
                                                 <button type="button" class="btn btn-secondary" id="edit-signup-button">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </button>
-                                            </td>
-                                        {% endif %}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
+                            {% if trip.drivers_required %}
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>{{ car_spots.no_longer_interested }}</b> car spots on this list</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            {% endif %}
                         </table>
                     {% endif %}
                 </div>

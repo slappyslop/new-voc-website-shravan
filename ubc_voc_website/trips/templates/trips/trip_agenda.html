@@ -116,24 +116,23 @@
                         <th>Date</th>
                         <th>Trip</th>
                         <th></th>
-                        {% if request.user|is_exec %}
-                            <th></th>
-                        {% endif %}
                         <th>Tags</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for month, trips in trips_list.items %}
                         <tr>
-                            <td colspan="4" class="fs-5 fw-bold"><strong>{{ month }}</strong></td>
+                            <td colspan="4" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
                         </tr>
                         {% for trip in trips %}
                             <tr data-tags="{{ trip.tags.all|join:','}}">
                                 <td>{{ trip.trip_date_as_str_short }}</td>
                                 <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
-                                {% if request.user|is_exec %}
-                                    <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
-                                {% endif %}
+                                <td>
+                                    {% if request.user|is_exec %}
+                                        <a href="{% url 'trip_edit' trip.id %}">Edit</a>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% for tag in trip.tags.all %}
                                         <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->

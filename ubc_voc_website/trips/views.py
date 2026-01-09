@@ -156,9 +156,9 @@ def trip_details(request, id):
             committed_list, committed_emails, committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.COMMITTED))
             going_list, going_emails, going_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.GOING))
 
-            no_longer_interested_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_INTERESTED))
-            bailed_from_committed_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.BAILED_FROM_COMMITTED))
-            no_longer_going_list, _, _ = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_GOING))
+            no_longer_interested_list, _, no_longer_interested_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_INTERESTED))
+            bailed_from_committed_list, _, bailed_from_committed_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.BAILED_FROM_COMMITTED))
+            no_longer_going_list, _, no_longer_going_car_spots = construct_signup_list(signups.filter(type=TripSignupTypes.NO_LONGER_GOING))
 
             # Create signup form for user
             user_can_signup = trip.use_signup and get_membership_type(request.user) != Membership.MembershipType.INACTIVE_HONOURARY
@@ -178,8 +178,7 @@ def trip_details(request, id):
                     going=going_list,
                     no_longer_interested=no_longer_interested_list,
                     bailed_from_committed=bailed_from_committed_list,
-                    no_longer_going=no_longer_going_list
-                    
+                    no_longer_going=no_longer_going_list,
                 ),
                 "signup_emails": SimpleNamespace(
                     interested=interested_emails,
@@ -193,7 +192,10 @@ def trip_details(request, id):
                 "car_spots": SimpleNamespace(
                     interested=interested_car_spots,
                     committed=committed_car_spots,
-                    going=going_car_spots
+                    going=going_car_spots,
+                    no_longer_interested = no_longer_interested_car_spots,
+                    bailed_from_committed=bailed_from_committed_car_spots,
+                    no_longer_going=no_longer_going_car_spots,
                 ) if trip.drivers_required else None,
             })
 
