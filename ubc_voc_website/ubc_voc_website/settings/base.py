@@ -131,6 +131,8 @@ ACCOUNT_FORMS = {
     "signup": "ubc_voc_website.forms.CustomSignupForm"
 }
 
+ACCOUNT_ADAPTER = "accounts.adapter.CustomAccountAdapter"
+
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"

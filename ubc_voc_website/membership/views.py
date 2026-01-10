@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
 from django.db.models import OuterRef, Subquery
 from django.http import Http404, HttpResponse
 from django.template.loader import render_to_string
@@ -29,18 +31,23 @@ def join(request):
     end_date = get_end_date(timezone.localdate())
 
     # If the user has an existing membership with the same end_date, redirect
-    membership = Membership.objects.filter(user=request.user, end_date=end_date)
-    if membership.exists():
-        return redirect('home')
+    membership = Membership.objects.filter(user=request.user, end_date=end_date).first()
+    if membership:
+        if not hasattr(membership, "waiver"):
+            return redirect("waiver", membership.id)
+        else:
+            return redirect("join_complete")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = MembershipForm(request.POST, user=request.user)
         if form.is_valid():
             membership = form.save()
-            if membership.type != Membership.MembershipType.INACTIVE_HONOURARY:
-                return redirect('waiver', membership.id)
-            else :
-                return redirect('home')
+            if membership.type == Membership.MembershipType.INACTIVE_HONOURARY:
+                # Inactive Honorary members don't need to sign the waiver
+                send_honorary_member_request_email(request)
+                return redirect("home")
+                
+            return redirect("waiver", membership.id)
     else:
         form = MembershipForm(user=request.user)
 
@@ -49,6 +56,10 @@ def join(request):
         'start_date': start_date,
         'end_date': end_date    
     })
+
+@login_required
+def join_complete(request):
+    return render(request, "membership/join_complete.html")
 
 @login_required
 def edit_profile(request):
@@ -68,8 +79,13 @@ def edit_profile(request):
 @login_required
 def waiver(request, membership_id):
     membership = get_object_or_404(Membership, id=membership_id)
+
     if membership.user != request.user:
-        return render(request, 'access_denied.html', status=403)
+        return render(request, "access_denied.html", status=403)
+    
+    # Don't let someone sign the waiver twice for the same membership
+    if hasattr(membership, "waiver"):
+        return render(request, "access_denied.html", status=403)
     
     if request.method == "POST":
         form = WaiverForm(request.POST, user=request.user)
@@ -78,19 +94,24 @@ def waiver(request, membership_id):
             waiver = form.save(commit=False)
             waiver.membership = membership
 
-            signature_data = form.cleaned_data['signature']
-            f, imgstr = signature_data.split(';base64')
+            signature_data = form.cleaned_data["signature"]
+            f, imgstr = signature_data.split(";base64")
             data = ContentFile(base64.b64decode(imgstr))
 
-            waiver.signature.save('signature.png', data, save=False)
+            waiver.signature.save("signature.png", data, save=False)
 
             waiver.save()
-            return redirect('home')
+
+            # If the waiver was for an Active Honorary membership, email the Membership Coordinator
+            if membership.type == Membership.MembershipType.ACTIVE_HONORARY:
+                send_honorary_member_request_email(request)
+
+            return redirect("join_complete")
         
     else:
         form = WaiverForm(user=request.user)
 
-    return render(request, 'membership/waiver.html', {'form': form, 'user_is_minor': is_minor(timezone.localdate(), request.user.profile.birthdate)})
+    return render(request, "membership/waiver.html", {"form": form, "user_is_minor": is_minor(timezone.localdate(), request.user.profile.birthdate)})
 
 @Members
 def member_list(request):

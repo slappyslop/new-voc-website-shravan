@@ -17,6 +17,7 @@
             const calendar = new FullCalendar.Calendar(calendarDiv, {
                 initialView: 'dayGridMonth',
                 events: events,
+                displayEventEnd: true,
                 eventClick: function(info) {
                     document.getElementById('modal-title').textContent = info.event.title;
                     document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
@@ -44,6 +45,12 @@
             });
         });
     </script>
+    <style>
+        .fc-event-time, .fc-event-title {
+            padding: 0 1px;
+            white-space: normal;
+        };
+    </style>
 {% endblock %}
 
 {% block content %}

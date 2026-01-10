@@ -1,0 +1,3 @@
+{{ full_name }} ({{ email }}) has requested an honorary membership that requires review.
+
+{{ admin_url }}

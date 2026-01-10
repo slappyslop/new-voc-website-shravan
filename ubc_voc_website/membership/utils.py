@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.utils import timezone
 from datetime import date
 
@@ -47,3 +50,32 @@ def get_membership_type(user):
         if membership:
             return membership.type
         return None
+    
+def send_honorary_member_request_email(request):
+    context = {
+        "full_name": request.user.get_full_name(),
+        "email": request.user.email,
+        "admin_url": (
+            f"{request.build_absolute_uri('/membership/admin')}?id={request.user.id}"
+        ),
+    }
+
+    subject = "Honorary Membership Request Requires Review"
+
+    text_body = render_to_string(
+        "membership/emails/honorary_membership_request.txt",
+        context
+    )
+    html_body = render_to_string(
+        "membership/emails/honorary_membership_request.html",
+        context
+    )
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=["webmaster@ubc-voc.com"]
+    )
+    email.attach_alternative(html_body, "text/html")
+    email.send()

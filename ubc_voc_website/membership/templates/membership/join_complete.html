@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Join the VOC{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Join the VOC</h2>
+
+        <h5>Your membership is nearly active!</h5>
+        <p>
+            Bring your membership fee in cash to the <a href="{% url 'about' %}">VOC clubroom</a> during <a href="{% url 'clubroom_calendar' %}">gear hours</a>
+            to activate your membership!
+        </p>
+        <p>The membership fee is:</p>
+        <ul>
+            <li>$50 for UBC students</li>
+            <li>$70 for everyone else</li>
+        </ul>
+    </div>
+{% endblock %}

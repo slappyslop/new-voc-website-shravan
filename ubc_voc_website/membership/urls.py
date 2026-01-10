@@ -2,8 +2,9 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [ 
-    path('join/', join, name="join"),
-    path('waiver/<int:membership_id>/', waiver, name="waiver"),
+    path("join/", join, name="join"),
+    path("join-complete", join_complete, name="join_complete"),
+    path("waiver/<int:membership_id>/", waiver, name="waiver"),
     path("members/", member_list, name="members"),
     path("profile/<int:id>/", profile, name="profile"),
     path("edit-profile/", edit_profile, name="edit_profile"),
