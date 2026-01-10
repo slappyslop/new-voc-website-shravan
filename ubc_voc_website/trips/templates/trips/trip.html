@@ -536,7 +536,7 @@
             <hr>
             <h5>Sign Up</h5>
                 {% if trip.valid_signup_types %}
-                    <form method="post" action="{% url 'trip_signup' trip.id %}" class="signup-form">
+                    <form method="post" action="{% url 'trip_signup' trip.id %}" class="signup-form" id="signup-form">
                         {% csrf_token %}
                         <div class="mb-4">
                             {{ form.type.label_tag }} {{ form.type }}
