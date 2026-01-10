@@ -1,0 +1,45 @@
+Dear {{ name }},
+
+Thank you for organizing a trip for the VOC! We truly appreciate you taking the time and effort to make trips available to club members. Whether you are a first-time trip organizer or an experienced veteran, please take a moment to consider the following topics while you are organizing your trip.
+
+1. Choose an emergency contact who will call 911 to report you as missing if you don't return. Give them an itinerary, a list of participants, your plans for checking in with them after the trip, and inReach contact information (if you will have an inReach).
+
+2. Tell participants the nature of the trip so they know what they're getting into. Assume beginners know nothing.
+
+3. Remember, though, that every member has a say in the actions of the group during the trip. In each situation, ask questions rather than making statements to ensure the maximum comfort and safety of the group.
+
+4. Know your participants: gauge their experience, physical fitness, skills, risk tolerance, deadly allergies, and injuries. Discuss in private if you feel that having them on the trip may put them or the group at risk. You have the final say on who can or cannot come onto your trip. Do not take more people than you are equipped to handle.
+
+5. Talk to participants about:
+    - Contingencies. If there is bad weather, is there somewhere else that you can go instead? If the group moves slower than expected, can you switch to an easier objective? If someone gets injured, is there a way to exit the backcountry early?
+    - Decision points. When or where will you regroup to make collective decisions?
+    - Maps. Some people may be unfamiliar with mapping apps and will need help getting set up.
+    - Helpers. Who can help out, and what will their responsibilities be?
+    - First aid. Who has training? Who has a first aid kit?
+    - Gear. What will each person bring? Who will verify that gear is functional? (https://wiki.ubc-voc.com/index.php/Gear_Lists)
+    - Conditions. Weather, etc.
+    - Stats. What distances/elevations/climbing grades should people expect? For how many hours in a day will people be active? When will you get back to Vancouver?
+    - Costs. If there are non-refundable costs, make sure people are willing to pay their share regardless of if they come or not. You may want to take a cash deposit at the pre-trip meeting.
+    - Driving. Participants should pay drivers for gas. Thank the drivers for making the trip happen.
+    - Level of instruction. Remind everyone that you (or the in-trip leader) are not a guide and that people are ultimately responsible for their own safety.
+    - Firearms. They're prohibited on all VOC trips.
+
+6. Consider borrowing an inReach from the VOC for emergency satellite communication (https://wiki.ubc-voc.com/index.php/Gear_Rental#Trip_Leader_Gear)
+
+7. In avalanche terrain, ensure that all participants have avalanche training and equipment. In almost all cases, you should require that everyone has done AST1.
+
+8. If your trip will be visiting a VOC hut, register your group on the VOC Huts website (https://huts.ubc-voc.com) well in advance.
+
+9. Know that trips where alcohol is consumed are not covered by our insurance. Non-members are not allowed to join trips except for events within Vancouver, for insurance reasons.
+
+10. At the end of the trip, debrief with participants. Talk about what went well and what didn't. Report accidents and near misses to the Trips Coordinator [{{ site_url }}/members] and add them to the Accidents page [https://wiki.ubc-voc.com/index.php/Accidents].
+
+11. Send pictures and anecdotes to the VOCene editor (vocene@ubc-voc.com) to have it featured in the VOCene, or tag @ubcvoc on Instagram. Consider writing a trip report for the VOC website and Journal [https://wiki.ubc-voc.com/index.php/Trip_Reports].
+
+More tips can be found on the Trip Guidelines page (https://wiki.ubc-voc.com/index.php/Trip_guidelines). You can also reach out to the Trips Coordinator ({{ site_url }}/members) if you have any questions.
+
+Have a great trip!
+
+Your friendly VOC Exec
+
+NOTE: You can opt out of receiving these email updates by going to your VOC account [{{ site_url }}/profile/edit] and disabling the option.

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>VOC Trip Leader Email</title>
+    </head>
+    <body>
+        <p>
+            Dear {{ name }}
+
+            Thank you for organizing a trip for the VOC! 
+            We truly appreciate you taking the time and effort to make trips available to club members. 
+            Whether you are a first-time trip organizer or an experienced veteran, please take a moment 
+            to consider the following topics while you are organizing your trip.
+        </p>
+
+        <ol>
+            <li>
+                Choose an emergency contact who will call 911 to report you as missing if you don't return. 
+                Give them an itinerary, a list of participants, your plans for checking in with them after the trip, 
+                and inReach contact information (if you will have an inReach).
+            </li>
+            <li>
+                Tell participants the nature of the trip so they know what they're getting into. Assume beginners know nothing.
+            </li>
+            <li>
+                Remember, though, that every member has a say in the actions of the group during the trip. 
+                In each situation, ask questions rather than making statements to ensure the maximum comfort and safety of the group.
+            </li>
+            <li>
+                Know your participants: gauge their experience, physical fitness, skills, risk tolerance, deadly allergies, and injuries. 
+                Discuss in private if you feel that having them on the trip may put them or the group at risk. 
+                You have the final say on who can or cannot come onto your trip. Do not take more people than you are equipped to handle.
+            </li>
+            <li>
+                Talk to participants about...
+                    <ul>
+                        <li>
+                            Contingencies. If there is bad weather, is there somewhere else that you can go instead? 
+                            If the group moves slower than expected, can you switch to an easier objective? 
+                            If someone gets injured, is there a way to exit the backcountry early?
+                        </li>
+                        <li>
+                            Decision points. When or where will you regroup to make collective decisions?
+                        </li>
+                        <li>
+                            Maps. Some people may be unfamiliar with mapping apps and will need help getting set up.
+                        </li>
+                        <li>
+                            Helpers. Who can help out, and what will their responsibilities be?
+                        </li>
+                        <li>
+                            First aid. Who has training? Who has a first aid kit?
+                        </li>
+                        <li>
+                            Gear. What will each person bring? Who will verify that gear is functional? 
+                            (<a href="https://wiki.ubc-voc.com/index.php/Gear_Lists">https://wiki.ubc-voc.com/index.php/Gear_Lists)
+                        </li>
+                        <li>
+                            Conditions. Weather, etc.
+                        </li>
+                        <li>
+                            Stats. What distances/elevations/climbing grades should people expect? 
+                            For how many hours in a day will people be active? When will you get back to Vancouver?
+                        </li>
+                        <li>
+                            Costs. If there are non-refundable costs, make sure people are willing to pay their share regardless of if they come or not. 
+                            You may want to take a cash deposit at the pre-trip meeting.
+                        </li>
+                        <li>
+                            Driving. Participants should pay drivers for gas. Thank the drivers for making the trip happen.
+                        </li>
+                        <li>
+                            Level of instruction. 
+                            Remind everyone that you (or the in-trip leader) are not a guide and that people are ultimately responsible for their own safety.
+                        </li>
+                        <li>
+                            Firearms. They're prohibited on all VOC trips.
+                        </li>
+                    </ul>
+            </li>
+            <li>
+                Consider borrowing an inReach from the VOC for emergency satellite communication 
+                (<a href="">https://wiki.ubc-voc.com/index.php/Gear_Rental#Trip_Leader_Gear</a>)
+            </li>
+            <li>
+                In avalanche terrain, ensure that all participants have avalanche training and equipment. 
+                In almost all cases, you should require that everyone has done AST1.
+            </li>
+            <li>
+                If your trip will be visiting a VOC hut, register your group on the <a href="https://huts.ubc-voc.com">VOC Huts website</a> well in advance.
+            </li>
+            <li>
+                Know that trips where alcohol is consumed are not covered by our insurance. 
+                Non-members are not allowed to join trips except for events within Vancouver, for insurance reasons.
+            </li>
+            <li>
+                At the end of the trip, debrief with participants. Talk about what went well and what didn't. 
+                Report accidents and near misses to the <a href="{% url 'members' %}">Trips Coordinator</a>
+                 and add them to the <a href="https://wiki.ubc-voc.com/index.php/Accidents">Accidents page</a>
+            </li>
+            <li>
+                Send pictures and anecdotes to the VOCene editor (vocene@ubc-voc.com) to have it featured in the VOCene, or tag @ubcvoc on Instagram. 
+                Consider writing a trip report for the VOC website and Journal (<a href="https://wiki.ubc-voc.com/index.php/Trip_Reports">https://wiki.ubc-voc.com/index.php/Trip_Reports</a>).
+            </li>
+        </ol>
+
+        <p>
+            More tips can be found on the <a href="https://wiki.ubc-voc.com/index.php/Trip_guidelines">Trip Guidlines page</a>.
+            You can also reach out to the <a href="{% url 'members' %}">Trips Coordinator</a> if you have any questions.
+        </p>
+
+        <p>
+            Have a great trip!
+        </p>
+
+        <p>
+            Your friendly VOC Exec
+        </p>
+
+        <p>
+            NOTE: You can opt out of receiving these email updates by going to your <a href="{% url 'edit_profile' %}">VOC account</a> and disabling the option.
+        </p>
+    </body>
+</html>
