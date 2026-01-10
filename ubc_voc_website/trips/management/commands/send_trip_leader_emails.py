@@ -15,12 +15,22 @@ class Command(BaseCommand):
     help = "Send trip leader email to organizers whose trips are a week away"
 
     def handle(self, *args, **kwargs):
-        today = timezone.localdate()
-        target_trip_date = today + datetime.timedelta(days=7)
+        pacific_now = timezone.localtime(timezone.now(), pacific_timezone)
+        target_trip_date = (pacific_now + datetime.timedelta(days=7)).date()
+
+        pacific_start = datetime.datetime.combine(target_trip_date, datetime.time.min)
+        pacific_end = datetime.datetime.combine(target_trip_date, datetime.time.max)
+
+        # make timezone-aware in Pacific, then convert to UTC for comparing against stored datetimes
+        pacific_start_aware = timezone.make_aware(pacific_start, pacific_timezone)
+        pacific_end_aware = timezone.make_aware(pacific_end, pacific_timezone)
+
+        start_utc = pacific_start_aware.astimezone(pytz.UTC)
+        end_utc = pacific_end_aware.astimezone(pytz.UTC)
 
         trips = Trip.objects.filter(
-            start_time__gte=pacific_timezone.localize(datetime.datetime.combine(target_trip_date, datetime.time.min)), 
-            start_time__lte=pacific_timezone.localize(datetime.datetime.combine(target_trip_date, datetime.time.max)),
+            start_time__gte=start_utc,
+            start_time__lte=end_utc,
             published=True
         ).exclude(
             status=Trip.TripStatus.CANCELLED
