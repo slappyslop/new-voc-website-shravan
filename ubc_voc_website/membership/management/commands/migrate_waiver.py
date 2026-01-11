@@ -38,7 +38,7 @@ class Command(BaseCommand):
 
             for row in reader:
                 try:
-                    membership = Membership.objects.get(id=int(row["membership_id"]))
+                    membership = Membership.objects.get(old_id=int(row["membership_id"]))
                 except Membership.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"Membership not found with old_id {int(row['membership_id'])}"))
                     continue
