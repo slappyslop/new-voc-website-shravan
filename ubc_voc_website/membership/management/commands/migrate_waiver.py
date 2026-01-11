@@ -30,7 +30,7 @@ class Command(BaseCommand):
             missing_padding = len(data) % 4
             if missing_padding:
                 data += '=' * (4 - missing_padding)
-            return base64.base64decode(data)
+            return base64.b64decode(data)
         
 
         with open(path, newline="", encoding="utf-8") as f:
