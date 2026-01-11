@@ -11,3 +11,4 @@ PyJWT==2.10.1
 python-dateutil==2.9.0
 pytz
 WeasyPrint==63.0
+cairosvg==2.8.2
