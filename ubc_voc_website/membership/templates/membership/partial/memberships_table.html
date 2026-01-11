@@ -27,9 +27,9 @@
             </td>
             <td>
                 {% if membership.mapped_status == 'Active' %}
-                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Deactivate</a>
+                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}?{{ q }}">Deactivate</a>
                 {% elif membership.mapped_status == 'Inactive' %}
-                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}">Activate</a>
+                    <a class="btn btn-secondary btn-sm" href="{% url 'toggle_membership' membership.id %}?{{ q }}">Activate</a>
                 {% endif %}
             </td>
         </tr>

@@ -14,7 +14,7 @@
                 paging: true,
                 perPage: 25,
                 ordering: true,
-                searching: true,
+                searchable: false,
                 labels: {
                     "perPage": "{select} members per page",
                     "noRows": "No members found",
@@ -30,7 +30,7 @@
                 const button = e.target.closest('.show-memberships');
                 if (button) {
                     const userId = button.dataset.userId;
-                    fetch(`/membership/memberships/${userId}/`)
+                    fetch(`/membership/memberships/${userId}/${window.location.search}`)
                         .then(response => response.text())
                         .then(html => {
                             modalBody.innerHTML = html;
@@ -48,30 +48,48 @@
 
 {% block content %}
     <div class="container">
-        <table id="member-table" class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>End Date</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for profile in profiles %}
-                    <tr data-id="{{ profile.user.id }}">
-                        <td>{{ profile.first_name }} {{ profile.last_name }}</td>
-                        <td>{{ profile.user.email }}</td>
-                        <td>{{ profile.phone }}</td>
-                        <td>{{ profile.latest_membership.end_date }}</td>
-                        <td class="dropdown-control" style="cursor: pointer;">
-                            <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
-                        </td>
+        <form method="get" class="mb-3">
+            <input
+                type="text"
+                name="q"
+                value="{{ query|default:'' }}"
+                placeholder="Search a user by name or email"
+                class="form-control"
+            >
+        </form>
+        {% if profiles %}
+            <table id="member-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for profile in profiles %}
+                        <tr data-id="{{ profile.user.id }}">
+                            <td>{{ profile.first_name }} {{ profile.last_name }}</td>
+                            <td>{{ profile.user.email }}</td>
+                            <td>{{ profile.phone }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if profile.is_active %}bg-success
+                                    {% else %}bg-danger
+                                    {% endif %}">
+                                    {% if profile.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td class="dropdown-control" style="cursor: pointer;">
+                                <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
 
         <div class="modal fade" id="membership-modal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">

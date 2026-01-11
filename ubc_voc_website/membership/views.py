@@ -1,27 +1,26 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
-from django.core.mail import send_mail
-from django.db.models import OuterRef, Subquery
+from django.db.models import Q
 from django.http import Http404, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 
 from .forms import MembershipForm, ProfileForm, WaiverForm
 from .models import Exec, Membership, Profile, PSG, Waiver
 from .utils import *
-
 from trips.models import Trip, TripSignup
 from trips.utils import signup_type_as_str
 from ubc_voc_website.decorators import Members, Execs
-from ubc_voc_website.utils import is_member
+from ubc_voc_website.utils import is_exec, is_member
 
 import base64
 import datetime
-from weasyprint import HTML
 from openpyxl import Workbook
+from weasyprint import HTML
 
 User = get_user_model()
 
@@ -202,18 +201,14 @@ def profile(request, id):
 
 @Members
 def view_waiver(request, id):
-    user = get_object_or_404(User, id=request.user.id)
-    membership = get_object_or_404(Membership, id=id)
-    waiver = Waiver.objects.get(membership=membership)
-    exec = Exec.objects.get(user=user)
+    membership = get_object_or_404(Membership.objects.select_related("user"), id=id)
+    waiver = get_object_or_404(Waiver, membership=membership)
 
-    if not waiver:
-        return "<p>No waiver found for this membership</p>"
-    elif not exec and waiver.user != user:
+    if membership.user != request.user and not is_exec(request.user):
         # custom access control - Execs can see all waivers but non-Execs can only see their own
         return render(request, 'access_denied.html', status=403)
     else:
-        form = WaiverForm(user=user, instance=waiver, readonly=True)
+        form = WaiverForm(user=membership.user, instance=waiver, readonly=True)
         html_content = render_to_string('membership/waiver_readonly.html', {'form': form, 'waiver': waiver, 'readonly': True})
         base_url = request.build_absolute_uri('/')
         pdf = HTML(string=html_content, base_url=base_url)
@@ -225,32 +220,48 @@ def view_waiver(request, id):
 
 @Execs
 def manage_memberships(request):
-    today = timezone.now().date()
+    q = request.GET.get("q")
 
-    latest_membership_subquery = Membership.objects.filter(
-        user=OuterRef('user_id'), 
-        end_date__gte=today
-    ).order_by('-end_date').values('id')[:1]
-    profile_queryset = Profile.objects.annotate(
-        latest_membership_id=Subquery(latest_membership_subquery)
-    ).filter(latest_membership_id__isnull=False).select_related('user').order_by('first_name', 'last_name')
-    profile_list = list(profile_queryset)
+    profiles = []
 
-    latest_memberships = Membership.objects.filter(
-        id__in=[p.latest_membership_id for p in profile_list]
-    )
-    membership_map = {m.user_id: m for m in latest_memberships}
+    if q:
+        name_filter = Q()
+        for term in q.strip().split():
+            name_filter &= (
+                Q(first_name__icontains=term) |
+                Q(last_name__icontains=term)
+            )
 
-    for profile in profile_list:
-        profile.latest_membership = membership_map.get(profile.user.id)
+        profiles = (
+            Profile.objects.select_related("user").filter(
+                name_filter |
+                Q(user__email__icontains=q)
+            ).filter(
+                user__in=Membership.objects.all().values("user")
+            ).order_by("first_name", "last_name")
+        )
 
-    return render(request, 'membership/manage_memberships.html', {'profiles': profile_list})
+        for profile in profiles:
+            active_memberships = Membership.objects.filter(
+                user=profile.user,
+                active=True,
+                end_date__gte=timezone.now().date()
+            )
+            profile.is_active = active_memberships.exists()
+
+    return render(request, "membership/manage_memberships.html", {
+        "profiles": profiles,
+        "query": q
+    })
 
 @Execs
 def get_memberships_for_user(request, id):
     user = get_object_or_404(User, id=id)
-    memberships = user.membership_set.order_by('-end_date')
-    return render(request, 'membership/partial/memberships_table.html', {'memberships': memberships})
+    memberships = user.membership_set.order_by("-end_date")
+    return render(request, "membership/partial/memberships_table.html", {
+        "memberships": memberships,
+        "q": request.GET.urlencode()
+    })
 
 @Execs
 def toggle_membership(request, membership_id):
@@ -283,7 +294,11 @@ def toggle_membership(request, membership_id):
         message.attach_alternative(html_body, "text/html")
         message.send()
 
-    return redirect('manage_memberships')
+    query_string = request.GET.urlencode()
+    url = reverse("manage_memberships")
+    if query_string:
+        url = f"{url}?{query_string}"
+    return redirect(url)
 
 @Execs
 def membership_stats(request):
