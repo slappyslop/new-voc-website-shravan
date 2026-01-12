@@ -49,6 +49,8 @@ class Rental(models.Model):
     class Meta:
         abstract = True
 
+    old_id = models.IntegerField(blank=True, null=True)
+
     qm = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete = models.PROTECT,
