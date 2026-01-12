@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from gear.models import BookRental, GearRental
 
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 User = get_user_model()
@@ -62,6 +62,12 @@ class Command(BaseCommand):
                 else:
                     return_date = None
 
+                if row["duedate"] != "0000-00-00":
+                    due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
+                else:
+                    # Seems that old gearmaster allowed empty duedates. There are only about 5 of these, so default to outdate + 1 week
+                    due_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date() + timedelta(weeks=1)
+
                 if row["type"] == "0" or row["type"] == "2": # Gear
                     rental, created = GearRental.objects.get_or_create(
                         member=user,
@@ -70,7 +76,7 @@ class Command(BaseCommand):
                             'qm': qm,
                             'deposit': parse_deposit(row["deposit"]),
                             'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
-                            'due_date': datetime.strptime(row["duedate"], "%Y-%m-%d").date(),
+                            'due_date': due_date,
                             'return_date': return_date,
                             'extensions': int(row["extensions"]),
                             'notes': row["notes"] if row["notes"] else None,
@@ -82,14 +88,18 @@ class Command(BaseCommand):
                         rental.qm = qm
                         rental.deposit = parse_deposit(row["deposit"])
                         rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
-                        rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
+                        rental.due_date = due_date
                         rental.return_date = return_date
                         rental.extensions = int(row["extensions"])
                         rental.notes = row["notes"] if row["notes"] else None
                         rental.lost = row["appropriated"] == "1"
 
                     rental.save()
-                    self.stdout.write(self.style.SUCCESS(f"Created gear rental for user with old_id {user.old_id}"))
+
+                    if created:
+                        self.stdout.write(self.style.SUCCESS(f"Created gear rental for user with old_id {user.old_id}"))
+                    else:
+                        self.stdout.write(f"Updated gear rental for user with old_id {user.old_id}")
 
                 else: #Library
                     rental, created = BookRental.objects.get_or_create(
@@ -99,7 +109,7 @@ class Command(BaseCommand):
                             'qm': qm,
                             'deposit': parse_deposit(row["deposit"]),
                             'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
-                            'due_date': datetime.strptime(row["duedate"], "%Y-%m-%d").date(),
+                            'due_date': due_date,
                             'return_date': return_date,
                             'extensions': int(row["extensions"]),
                             'notes': row["notes"] if row["notes"] else None,
@@ -111,13 +121,17 @@ class Command(BaseCommand):
                         rental.qm = qm
                         rental.deposit = parse_deposit(row["deposit"])
                         rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
-                        rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
+                        rental.due_date = due_date
                         rental.return_date = return_date
                         rental.extensions = int(row["extensions"])
                         rental.notes = row["notes"] if row["notes"] else None
                         rental.lost = row["appropriated"] == "1"
 
                     rental.save()
-                    self.stdout.write(self.style.SUCCESS(f"Created book rental for user with old_id {user.old_id}"))
+                    
+                    if created:
+                        self.stdout.write(self.style.SUCCESS(f"Created book rental for user with old_id {user.old_id}"))
+                    else:
+                        self.stdout.write(f"Updated book rental for user with old_id {user.old_id}")
 
             self.stdout.write(self.style.SUCCESS(f"Gearmaster import completed"))
