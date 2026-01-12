@@ -90,7 +90,7 @@ class Command(BaseCommand):
                     rental, created = BookRental.objects.get_or_create(
                         member=user,
                         what=row["what"],
-                        default={
+                        defaults={
                             'qm': qm,
                             'deposit': parse_deposit(row["deposit"]),
                             'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
