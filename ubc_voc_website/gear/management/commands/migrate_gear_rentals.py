@@ -57,6 +57,11 @@ class Command(BaseCommand):
                         profile__last_name=qm_last_name
                     )
 
+                if row["returndate"] != "NULL":
+                    return_date = datetime.strptime(row["returndate"], "%Y-%m-%d").date()
+                else:
+                    return_date = None
+
                 if row["type"] == "0" or row["type"] == "2": # Gear
                     rental, created = GearRental.objects.get_or_create(
                         member=user,
@@ -66,7 +71,7 @@ class Command(BaseCommand):
                             'deposit': parse_deposit(row["deposit"]),
                             'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
                             'due_date': datetime.strptime(row["duedate"], "%Y-%m-%d").date(),
-                            'return_date': datetime.strptime(row["returndate"], "%Y-%m-%d").date(),
+                            'return_date': return_date,
                             'extensions': int(row["extensions"]),
                             'notes': row["notes"] if row["notes"] else None,
                             'lost': row["appropriated"] == "1"
@@ -78,7 +83,7 @@ class Command(BaseCommand):
                         rental.deposit = parse_deposit(row["deposit"])
                         rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
                         rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
-                        rental.return_date = datetime.strptime(row["returndate"], "%Y-%m-%d").date()
+                        rental.return_date = return_date
                         rental.extensions = int(row["extensions"])
                         rental.notes = row["notes"] if row["notes"] else None
                         rental.lost = row["appropriated"] == "1"
@@ -95,7 +100,7 @@ class Command(BaseCommand):
                             'deposit': parse_deposit(row["deposit"]),
                             'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
                             'due_date': datetime.strptime(row["duedate"], "%Y-%m-%d").date(),
-                            'return_date': datetime.strptime(row["returndate"], "%Y-%m-%d").date(),
+                            'return_date': return_date,
                             'extensions': int(row["extensions"]),
                             'notes': row["notes"] if row["notes"] else None,
                             'lost': row["appropriated"] == "1"
@@ -107,7 +112,7 @@ class Command(BaseCommand):
                         rental.deposit = parse_deposit(row["deposit"])
                         rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
                         rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
-                        rental.return_date = datetime.strptime(row["returndate"], "%Y-%m-%d").date()
+                        rental.return_date = return_date
                         rental.extensions = int(row["extensions"])
                         rental.notes = row["notes"] if row["notes"] else None
                         rental.lost = row["appropriated"] == "1"
