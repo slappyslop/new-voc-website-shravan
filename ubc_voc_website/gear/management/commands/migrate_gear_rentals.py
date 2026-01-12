@@ -90,16 +90,27 @@ class Command(BaseCommand):
                     rental, created = BookRental.objects.get_or_create(
                         member=user,
                         what=row["what"],
+                        default={
+                            'qm': qm,
+                            'deposit': parse_deposit(row["deposit"]),
+                            'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(),
+                            'due_date': datetime.strptime(row["duedate"], "%Y-%m-%d").date(),
+                            'return_date': datetime.strptime(row["returndate"], "%Y-%m-%d").date(),
+                            'extensions': int(row["extensions"]),
+                            'notes': row["notes"] if row["notes"] else None,
+                            'lost': row["appropriated"] == "1"
+                        }
                     )
 
-                    rental.qm = qm
-                    rental.deposit = parse_deposit(row["deposit"])
-                    rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
-                    rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
-                    rental.return_date = datetime.strptime(row["returndate"], "%Y-%m-%d").date()
-                    rental.extensions = int(row["extensions"])
-                    rental.notes = row["notes"] if row["notes"] else None
-                    rental.lost = row["appropriated"] == "1"
+                    if not created:
+                        rental.qm = qm
+                        rental.deposit = parse_deposit(row["deposit"])
+                        rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
+                        rental.due_date = datetime.strptime(row["duedate"], "%Y-%m-%d").date()
+                        rental.return_date = datetime.strptime(row["returndate"], "%Y-%m-%d").date()
+                        rental.extensions = int(row["extensions"])
+                        rental.notes = row["notes"] if row["notes"] else None
+                        rental.lost = row["appropriated"] == "1"
 
                     rental.save()
                     self.stdout.write(self.style.SUCCESS(f"Created book rental for user with old_id {user.old_id}"))
