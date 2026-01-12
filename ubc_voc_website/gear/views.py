@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -11,30 +12,54 @@ import datetime
 
 User = get_user_model()
 
+today = timezone.localdate()
+
 @Execs
 def rentals(request):
-    today = timezone.localdate()
+    q = request.GET.get("q")
+    rentals_from_search = []
 
-    all_gear_rentals = list(GearRental.objects.all())
-    for rental in all_gear_rentals:
+    if q:
+        name_filter = Q()
+        for term in q.strip().split():
+            name_filter &= (
+                Q(profile__first_name__icontains=term) |
+                Q(profile__last_name__icontains=term)
+            )
+
+        users = User.objects.select_related("profile").filter(
+                name_filter |
+                Q(email__icontains=q)
+            )
+        
+        gear_rentals_from_search = list(GearRental.objects.filter(member__in=users))
+        for rental in gear_rentals_from_search:
+            rental.type = "gear"
+
+        book_rentals_from_search = list(BookRental.objects.filter(member__in=users))
+        for rental in book_rentals_from_search:
+            rental.type = "book"
+        
+        rentals_from_search = gear_rentals_from_search + book_rentals_from_search
+
+    current_gear_rentals = list(GearRental.objects.filter(return_date__isnull=True))
+    for rental in current_gear_rentals:
         rental.type = "gear"
-    current_gear_rentals = [rental for rental in all_gear_rentals if not rental.return_date and not rental.lost]
     overdue_gear_rentals = [rental for rental in current_gear_rentals if rental.due_date < today]
-    long_gear_rentals = [rental for rental in overdue_gear_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
+    lost_gear_rentals = [rental for rental in current_gear_rentals if rental.lost]
 
-    all_book_rentals = list(BookRental.objects.all())
-    for rental in all_book_rentals:
+    current_book_rentals = list(BookRental.objects.filter(return_date__isnull=True))
+    for rental in current_book_rentals:
         rental.type = "book"
-    current_book_rentals = [rental for rental in all_book_rentals if not rental.return_date and not rental.lost]
     overdue_book_rentals = [rental for rental in current_book_rentals if rental.due_date < today]
-    long_book_rentals = [rental for rental in overdue_book_rentals if rental.due_date < (today - datetime.timedelta(weeks=3))]
+    lost_book_rentals = [rental for rental in current_book_rentals if rental.lost]
 
     return render(request, 'gear/gearmaster.html', {
         'rentals': {
             'current': current_gear_rentals + current_book_rentals,
             'overdue': overdue_gear_rentals + overdue_book_rentals,
-            'long': long_gear_rentals + long_book_rentals,
-            'all': all_gear_rentals + all_book_rentals
+            'lost': lost_gear_rentals + lost_book_rentals,
+            'search': rentals_from_search
         }
     })
 
