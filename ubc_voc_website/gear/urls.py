@@ -3,9 +3,9 @@ from .views import *
 
 urlpatterns = [
     path('rentals/', rentals, name="rentals"),
-    path('rentals/create/<str:type>/', create_rental, name="create_rental"),
-    path('rentals/edit/<str:type>/<int:pk>/', edit_rental, name="edit_rental"),
-    path('rentals/renew/<str:type>/<int:pk>/', renew_rental, name="renew_rental"),
-    path('rentals/return/<str:type>/<int:pk>/', return_rental, name="return_rental"),
-    path('rentals/mark_lost/<str:type>/<int:pk>/', lost_rental, name="lost_rental")
+    path('rentals/create/', create_rental, name="create_rental"),
+    path('rentals/edit/<int:id>/', edit_rental, name="edit_rental"),
+    path('rentals/renew/<int:id>/', renew_rental, name="renew_rental"),
+    path('rentals/return/<int:id>/', return_rental, name="return_rental"),
+    path('rentals/mark_lost/<int:id>/', lost_rental, name="lost_rental")
 ]

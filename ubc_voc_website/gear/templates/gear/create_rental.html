@@ -27,21 +27,7 @@
 
 {% block content %}
     <div class="container">
-        <div class="d-flex justify-content-between">
-            <h2>Create Rental</h2>
-            <div>
-                <label class="form-label">Rental Type:</label>
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="gear">Gear</label>
-                    <input class="form-check-input" type="radio" name="rentalType" id="gear" value="gear" {% if type == 'gear' %}checked{%endif%}>
-                </div>
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="book">Book</label>
-                    <input class="form-check-input" type="radio" name="rentalType" id="book" value="book" {% if type == 'book' %}checked{%endif%}>
-                </div>
-            </div>
-        </div>
-
+        <h2>Create Rental</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

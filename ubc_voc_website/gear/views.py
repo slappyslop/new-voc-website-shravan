@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
-from .forms import BookRentalForm, GearRentalForm
-from .models import BookRental, GearRental
+from .forms import RentalForm
+from .models import Rental
 from ubc_voc_website.decorators import Execs
 
 import datetime
@@ -16,16 +15,6 @@ today = timezone.localdate()
 
 @Execs
 def rentals(request):
-    def sort_rentals(rentals):
-        return sorted(
-            rentals,
-            key=lambda r: (
-                -(r.due_date.toordinal()),
-                r.member.profile.first_name.lower(),
-                r.member.profile.last_name.lower()
-            )
-        )
-
     q = request.GET.get("q")
     rentals_from_search = []
 
@@ -42,25 +31,9 @@ def rentals(request):
                 Q(email__icontains=q)
             )
         
-        gear_rentals_from_search = list(GearRental.objects.filter(member__in=users))
-        for rental in gear_rentals_from_search:
-            rental.type = "gear"
+        rentals_from_search = list(Rental.objects.filter(member__in=users).order_by("-due_date", "member__profile__first_name", "member__profile__last_name"))
 
-        book_rentals_from_search = list(BookRental.objects.filter(member__in=users))
-        for rental in book_rentals_from_search:
-            rental.type = "book"
-
-        rentals_from_search = sort_rentals(gear_rentals_from_search + book_rentals_from_search)
-
-    current_gear_rentals = list(GearRental.objects.filter(return_date__isnull=True))
-    for rental in current_gear_rentals:
-        rental.type = "gear"
-
-    current_book_rentals = list(BookRental.objects.filter(return_date__isnull=True))
-    for rental in current_book_rentals:
-        rental.type = "book"
-
-    current_rentals = sort_rentals(current_gear_rentals + current_book_rentals)
+    current_rentals = Rental.objects.filter(return_date__isnull=True).order_by("-due_date", "member__profile__first_name", "member__profile__last_name")
     overdue_rentals = [rental for rental in current_rentals if rental.due_date < today]
     lost_rentals = [rental for rental in current_rentals if rental.lost]
 
@@ -74,23 +47,16 @@ def rentals(request):
     })
 
 @Execs
-def create_rental(request, type):
-    if type == "gear":
-        form_type = GearRentalForm
-    elif type == "book":
-        form_type = BookRentalForm
-    else:
-        raise Http404(f"Rental type '${type}' not recognized")
-    
+def create_rental(request):
     if request.method == "POST":
-        form = form_type(request.POST)
+        form = RentalForm(request.POST)
         if form.is_valid():
             rental = form.save(commit=False)
             rental.qm = request.user
             form.save()
             return redirect("rentals")
     else:
-        form = form_type()
+        form = RentalForm()
 
     return render(request, 'gear/create_rental.html', {
         'form': form,
@@ -98,25 +64,16 @@ def create_rental(request, type):
     })
 
 @Execs
-def edit_rental(request, pk, type):
-    if type == "gear":
-        rental_model = GearRental
-        form_type = GearRentalForm
-    elif type == "book":
-        rental_model = BookRental
-        form_type = BookRentalForm
-    else:
-        raise Http404(f"Rental type '${type}' not recognized")
-    
-    rental = get_object_or_404(rental_model, pk=pk)
+def edit_rental(request, id):
+    rental = get_object_or_404(Rental, id=id)
 
     if request.method == "POST":
-        form = form_type(request.POST, instance=rental)
+        form = RentalForm(request.POST, instance=rental)
         if form.is_valid():
             form.save()
             return redirect("rentals")
     else:
-        form = form_type(instance=rental)
+        form = RentalForm(instance=rental)
 
     return render(request, 'gear/edit_rental.html', {
         'form': form,
@@ -124,12 +81,9 @@ def edit_rental(request, pk, type):
     })
 
 @Execs
-def renew_rental(request, pk, type):
+def renew_rental(request, id):
     if request.method == "POST":
-        rental_type = GearRental if type == "gear" else BookRental
-        rental = get_object_or_404(rental_type, pk=pk)
-        print(rental)
-
+        rental = get_object_or_404(Rental, id=id)
         rental.due_date += datetime.timedelta(weeks=1)
         rental.extensions += 1
         rental.save()
@@ -137,22 +91,18 @@ def renew_rental(request, pk, type):
     return redirect('rentals')
 
 @Execs
-def return_rental(request, pk, type):
+def return_rental(request, id):
     if request.method == "POST":
-        rental_type = GearRental if type == "gear" else BookRental
-        rental = get_object_or_404(rental_type, pk=pk)
-
+        rental = get_object_or_404(Rental, id=id)
         rental.return_date = timezone.localdate()
         rental.save()
 
     return redirect('rentals')
 
 @Execs
-def lost_rental(request, pk, type):
+def lost_rental(request, id):
     if request.method == "POST":
-        rental_type = GearRental if type == "gear" else BookRental
-        rental = get_object_or_404(rental_type, pk=pk)
-
+        rental = get_object_or_404(Rental, id=id)
         rental.lost = True
         rental.save()
 

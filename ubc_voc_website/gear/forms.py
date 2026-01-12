@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 from membership.models import Profile
-from .models import BookRental, CancelledGearHour, GearHour, GearRental
+from .models import CancelledGearHour, GearHour, Rental, RentalTypes
 
 from django.contrib.auth import get_user_model
 
@@ -72,73 +72,17 @@ class CancelledGearHourForm(forms.ModelForm):
         required=True
     )
 
-class GearRentalForm(forms.ModelForm):
+class RentalForm(forms.ModelForm):
     class Meta:
-        model = GearRental
+        model = Rental
         fields = (
-            'member',
-            # 'gear',
-            'deposit',
-            'start_date',
-            'due_date',
-            'what',
-            'notes',
-        )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['member'].label_from_instance = self.get_profile_label
-
-    @staticmethod
-    def get_profile_label(user):
-        try:
-            return user.profile.full_name
-        except Profile.DoesNotExist:
-            return user.email
-
-    member = forms.ModelChoiceField(
-        queryset=User.objects.filter(membership__active=True).distinct().exclude(membership__type__in=["H", "I"]), # Exclude both types of honorary members
-        label="Member Name",
-        widget=forms.Select(attrs={"id": "member-select"}),
-        required=True
-    )
-    # TODO make this field required when Gear objects have been added to the database
-    # gear = forms.ModelMultipleChoiceField(
-    #     queryset=Gear.objects.all(),
-    #     label="Item(s) being rented",
-    #     widget=forms.SelectMultiple(attrs={'class': 'choices'})
-    # )
-    # TODO once gear items are added, make the deposit calculation automatic
-    deposit = forms.IntegerField()
-    start_date = forms.DateField(
-        required=True,
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=timezone.localdate()
-    )
-    due_date = forms.DateField(
-        required=True,
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        initial=timezone.localdate() + datetime.timedelta(days=7)
-    )
-    what = forms.CharField(
-        required=True,
-        label="What is being rented"
-    )
-    notes = forms.CharField(
-        required=False
-    )
-
-class BookRentalForm(forms.ModelForm):
-    class Meta:
-        model = BookRental
-        fields = (
-            'member',
-            # 'books',
-            'deposit',
-            'start_date',
-            'due_date',
-            'what',
-            'notes',
+            "type",
+            "member",
+            "deposit",
+            "start_date",
+            "due_date",
+            "what",
+            "notes"
         )
 
     def __init__(self, *args, **kwargs):
@@ -152,19 +96,20 @@ class BookRentalForm(forms.ModelForm):
         except Profile.DoesNotExist:
             return user.email
         
+    type = forms.ChoiceField(
+        choices=RentalTypes.choices,
+        widget=forms.RadioSelect,
+        required=True,
+        initial=RentalTypes.GEAR,
+        label="Rental Type"
+    )
+
     member = forms.ModelChoiceField(
-        queryset=User.objects.filter(membership__active=True).distinct(),
+        queryset=User.objects.filter(membership__active=True).distinct().exclude(membership__type__in=["H", "I"]), # Exclude both types of honorary members
         label="Member Name",
         widget=forms.Select(attrs={"id": "member-select"}),
         required=True
     )
-    # TODO make this field required when books have been added to the database (large project)
-    # books = forms.ModelMultipleChoiceField(
-    #     queryset=Book.objects.all(),
-    #     label="Item(s) being rented",
-    #     widget=forms.SelectMultiple(attrs={'class': 'choices'})
-    # )
-    # TODO once gear items are added, make the deposit calculation automatic
     deposit = forms.IntegerField()
     start_date = forms.DateField(
         required=True,
@@ -183,4 +128,3 @@ class BookRentalForm(forms.ModelForm):
     notes = forms.CharField(
         required=False
     )
-
