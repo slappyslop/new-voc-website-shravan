@@ -1,3 +1,7 @@
+"""
+SELECT message_id, forum_id, thread, user_id, subject, body, datestamp FROM `phorum_messages` WHERE parent_id=0 
+"""
+
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 from django.utils.timezone import make_aware
@@ -51,6 +55,9 @@ class Command(BaseCommand):
                     defaults={
                         "poster": user,
                         "status": Topic.TOPIC_APPROVED,
+
+                        # Since I don't have control over Machina models to add an old_id field, use the unused username field
+                        "poster_username": row["message_id"] 
                     }
                 )
 
