@@ -70,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'machina.apps.forum_permission.middleware.ForumPermissionMiddleware',
+    'ubc_voc_website.middleware.MessageBoardMembershipMiddleware',
 ]
 
 ROOT_URLCONF = 'ubc_voc_website.urls'
