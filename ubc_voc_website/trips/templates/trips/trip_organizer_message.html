@@ -3,20 +3,18 @@
 {% block title %}Organize a Trip{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="alert alert-info">
-            <p>
-                Thank you for organizing a trip for the VOC! 
-                We truly appreciate you taking the time and effort to make trips available to club members. 
-            </p>
-            <p class="mb-0">
-                Whether you are a first-time trip organizer or an experienced veteran, 
-                we encourage you to take a moment to review our 
-                <a href="https://wiki.ubc-voc.com/index.php/Trip_Guidelines" target="_blank">Trip Organizer Guidelines</a>.
-            </p>
-        </div>
-        <div class="d-flex justify-content-end">
-            <a href="{% url 'trip_create' %}" class="btn btn-primary">Continue &rarr;</a>
-        </div>
+    <div class="alert alert-info">
+        <p>
+            Thank you for organizing a trip for the VOC! 
+            We truly appreciate you taking the time and effort to make trips available to club members. 
+        </p>
+        <p class="mb-0">
+            Whether you are a first-time trip organizer or an experienced veteran, 
+            we encourage you to take a moment to review our 
+            <a href="https://wiki.ubc-voc.com/index.php/Trip_Guidelines" target="_blank">Trip Organizer Guidelines</a>.
+        </p>
+    </div>
+    <div class="d-flex justify-content-end">
+        <a href="{% url 'trip_create' %}" class="btn btn-primary">Continue &rarr;</a>
     </div>
 {% endblock %}

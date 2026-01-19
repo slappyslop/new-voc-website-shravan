@@ -3,20 +3,18 @@
 {% block title %}Confirm Your Email Address{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Email confirmation</h2>
+    <h2>Email confirmation</h2>
 
-        {% if confirmation %}
-            <p>Please confirm that {{ confirmation.email_address.email }} is your email address.</p>
+    {% if confirmation %}
+        <p>Please confirm that {{ confirmation.email_address.email }} is your email address.</p>
 
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                    Confirm
-                </button>
-            </form>
-        {% else %}
-            <p>This confirmation link is invalid or has expired.</p>
-        {% endif %}
-    </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                Confirm
+            </button>
+        </form>
+    {% else %}
+        <p>This confirmation link is invalid or has expired.</p>
+    {% endif %}
 {% endblock %}

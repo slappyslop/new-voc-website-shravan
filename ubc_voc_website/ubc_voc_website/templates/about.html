@@ -5,45 +5,43 @@
 {% block title %}About the VOC{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>About the VOC</h2>
+    <h2>About the VOC</h2>
 
-        <br>
+    <br>
 
-        <h4>What is the VOC?</h4>
-        <p>
-            The Varsity Outdoor Club (VOC) is a University of British Columbia student club based in Vancouver, BC 
-            with interest in all human-powered outdoor recreation activities. Although it is run by UBC students, the club is open for anyone to join.
-            VOC trips are member-run, and range from beginner-friendly to experts-only.
-        </p>
+    <h4>What is the VOC?</h4>
+    <p>
+        The Varsity Outdoor Club (VOC) is a University of British Columbia student club based in Vancouver, BC 
+        with interest in all human-powered outdoor recreation activities. Although it is run by UBC students, the club is open for anyone to join.
+        VOC trips are member-run, and range from beginner-friendly to experts-only.
+    </p>
 
-        <br>
+    <br>
 
-        <h4>Membership</h4>
-        <p>
-            VOC memberships are active for a year, expiring on September 30th of the following school year. 
-            Membership cost $50 for students, and $70 for non-student (associate) members.
-            Perks of VOC membership include:
-        </p>
-        <ul>
-            <li>Access to member-run trips</li>
-            <li>The ability to <a href="https://wiki.ubc-voc.com/index.php/Gear_Rental">borrow gear</a> for free</li>
-            <li>Access to our library of maps, guidebooks and other outdoor literature</li>
-        </ul>
-        <p>
-            To join the VOC, <a href="{% url 'account_signup' %}">create an account</a> on this website, fill out the membership form <a href="{% url 'join' %}">here</a>, including signing the waiver,
-            and then bring your membership fee in cash to the VOC clubroom during <a href="{% url 'clubroom_calendar' %}">gear hours</a>
-        </p>
+    <h4>Membership</h4>
+    <p>
+        VOC memberships are active for a year, expiring on September 30th of the following school year. 
+        Membership cost $50 for students, and $70 for non-student (associate) members.
+        Perks of VOC membership include:
+    </p>
+    <ul>
+        <li>Access to member-run trips</li>
+        <li>The ability to <a href="https://wiki.ubc-voc.com/index.php/Gear_Rental">borrow gear</a> for free</li>
+        <li>Access to our library of maps, guidebooks and other outdoor literature</li>
+    </ul>
+    <p>
+        To join the VOC, <a href="{% url 'account_signup' %}">create an account</a> on this website, fill out the membership form <a href="{% url 'join' %}">here</a>, including signing the waiver,
+        and then bring your membership fee in cash to the VOC clubroom during <a href="{% url 'clubroom_calendar' %}">gear hours</a>
+    </p>
 
-        <br>
+    <br>
 
-        <h4>Clubroom</h4>
-        <p>The VOC clubroom is located in the basement of the AMS Nest in room LL201, right beside the Grand Noodle Emporium:</p>
-        <img src="{% static 'ubc_voc_website/clubroom_map.png' %}" alt="VOC Clubroom Map" class="my-5">
-        <p>
-            Anyone, member or otherwise,
-            is welcome in the clubroom. Gear hours and other events happening in the clubroom can be found on the <a href="{% url 'clubroom_calendar' %}">Clubroom Calendar</a>. 
-            Additionally, the clubroom is often open around lunchtime on weekdays. Note that we do not offer gear rental outside of designated gear hours.
-        </p>
-    </div>
+    <h4>Clubroom</h4>
+    <p>The VOC clubroom is located in the basement of the AMS Nest in room LL201, right beside the Grand Noodle Emporium:</p>
+    <img src="{% static 'ubc_voc_website/clubroom_map.png' %}" alt="VOC Clubroom Map" class="my-5">
+    <p>
+        Anyone, member or otherwise,
+        is welcome in the clubroom. Gear hours and other events happening in the clubroom can be found on the <a href="{% url 'clubroom_calendar' %}">Clubroom Calendar</a>. 
+        Additionally, the clubroom is often open around lunchtime on weekdays. Note that we do not offer gear rental outside of designated gear hours.
+    </p>
 {% endblock %}

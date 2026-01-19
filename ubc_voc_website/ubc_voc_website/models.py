@@ -61,12 +61,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     objects = MyUserManager()
 
+    @property
+    def display_name(self):
+        if hasattr(self, "profile"):
+            return self.profile.full_name
+        else:
+            return self.email
+        
+    @property
+    def avatar_url(self):
+        if hasattr(self, "profile") and self.profile.photo:
+            return self.profile.photo.url
+        return None
+        
     def __str__(self):
-        return self.email
-
-    def get_full_name(self):
-        return self.email
-
-    def get_short_name(self):
-        return self.email
+        return self.display_name
+    
+    def get_username(self):
+        return self.display_name
 

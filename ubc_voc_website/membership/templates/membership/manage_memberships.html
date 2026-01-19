@@ -47,60 +47,59 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <form method="get" class="mb-3">
-            <input
-                type="text"
-                name="q"
-                value="{{ query|default:'' }}"
-                placeholder="Search a user by name or email"
-                class="form-control"
-            >
-        </form>
-        {% if profiles %}
-            <table id="member-table" class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th></th>
+    <h2>Membership Admin</h2>
+    <form method="get" class="mb-3">
+        <input
+            type="text"
+            name="q"
+            value="{{ query|default:'' }}"
+            placeholder="Search a user by name or email"
+            class="form-control"
+        >
+    </form>
+    {% if profiles %}
+        <table id="member-table" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in profiles %}
+                    <tr data-id="{{ profile.user.id }}" class="align-middle">
+                        <td class="align-middle">{{ profile.first_name }} {{ profile.last_name }}</td>
+                        <td class="align-middle">{{ profile.user.email }}</td>
+                        <td class="align-middle">{{ profile.phone }}</td>
+                        <td class="align-middle">
+                            <span class="badge 
+                                {% if profile.membership_status == 'Active' %}bg-success
+                                {% elif profile.membership_status == 'Inactive' %}bg-danger
+                                {% else %}bg-secondary
+                                {% endif %}">
+                                {{ profile.membership_status }}
+                            </span>
+                        </td>
+                        <td class="dropdown-control align-middle" style="cursor: pointer;">
+                            <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for profile in profiles %}
-                        <tr data-id="{{ profile.user.id }}" class="align-middle">
-                            <td class="align-middle">{{ profile.first_name }} {{ profile.last_name }}</td>
-                            <td class="align-middle">{{ profile.user.email }}</td>
-                            <td class="align-middle">{{ profile.phone }}</td>
-                            <td class="align-middle">
-                                <span class="badge 
-                                    {% if profile.membership_status == 'Active' %}bg-success
-                                    {% elif profile.membership_status == 'Inactive' %}bg-danger
-                                    {% else %}bg-secondary
-                                    {% endif %}">
-                                    {{ profile.membership_status }}
-                                </span>
-                            </td>
-                            <td class="dropdown-control align-middle" style="cursor: pointer;">
-                                <button class="btn btn-primary show-memberships" data-user-id="{{ profile.user.id }}">Membership Details</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
-        <div class="modal fade" id="membership-modal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Membership Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body"></div>
+    <div class="modal fade" id="membership-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Membership Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+                <div class="modal-body"></div>
             </div>
         </div>
     </div>

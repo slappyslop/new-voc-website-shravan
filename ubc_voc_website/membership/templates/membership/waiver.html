@@ -43,232 +43,230 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container">
-		<h2>VOC Waiver</h2>
+	<h2>VOC Waiver</h2>
 
-		<div id="waiver">
+	<div id="waiver">
 
-			<form method="post">
-				{% csrf_token %}
+		<form method="post">
+			{% csrf_token %}
+		
+			<div class="checkbox-block" style="margin-bottom: 5px">
+				{{ form.checkbox1 }} {{ form.checkbox1.label_tag }}
+			</div>
+		
+			<div class="highlight">
+				<h2>
+					RELEASE OF LIABILITY, WAIVER OF CLAIMS,<br/>
+					ASSUMPTION OF RISKS AND INDEMNITY AGREEMENT<br/>
+				</h2>
+				<h2>
+					BY SIGNING THIS DOCUMENT YOU WILL WAIVE OR GIVE UP CERTAIN LEGAL <br/>
+					RIGHTS, INCLUDING THE RIGHT TO SUE OR<br/>
+					TO CLAIM COMPENSATION FOLLOWING AN ACCIDENT<br/>
+				</h2>
+				<h2 style="margin-bottom:0px;font-style:italic;font-weight:bold;font-size:18pt;">
+					PLEASE READ CAREFULLY!
+				</h2>
+			</div>
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox2 }} {{ form.checkbox2.label_tag }}
+			</div>
+		
+			<p><b>
+				To: <span style="font-weight:normal"> Alma Mater Society of UBC Vancouver, Varsity Outdoor Club (UBC)</span> 
+				(the &ldquo;Club&rdquo;), Federation of Mountain Clubs of 
+				BC, and their respective directors, officers, employees, members, volunteers, agents, independent 
+				contractors and subcontractors, representatives, successors, assigns and all persons acting under their 
+				authority (all of whom are hereinafter collectively referred to as &ldquo;the Releasees&rdquo;)
+			</b></p>
+		
+			<h3>DEFINITION</h3>
+			<p>
+				In this Agreement the term <b>&ldquo;Outdoor Activities&rdquo;</b> shall include but is not limited to: mountaineering (glacier travel; rock, snow, ice 
+				and mixed; roped and un-roped), climbing (indoor, rock, ice, alpine, sport and mountain); backpacking, hiking, trail running, trekking; 
+				backcountry skiing, touring, telemark skiing, snowboarding and snowshoeing; alpine skiing, Nordic or cross-country skiing; cycling, 
+				mountain biking; water sports (swimming, kayaking, canoeing, sailing or boating); trail building, clearing and maintenance; building, 
+				maintaining and operating backcountry huts; and, all activities, services and use of facilities provided, organized or arranged by the 
+				Releasees including orientation, instructional and skill development programs and all travel by or movement around helicopters, 
+				other aircraft or other vehicles.
+			</p>
+		
+			<h3>ASSUMPTION OF RISKS</h3>
+			<p>
+				I am aware that participation in Outdoor Activities involves many risks, dangers and hazards. The terrain used for Outdoor Activities 
+				is uncontrolled, unmarked, not inspected, and involves many risks, dangers and hazards. Avalanches occur frequently in the terrain 
+				used for Outdoor Activities and may be caused by natural forces or by persons travelling through the terrain. I am aware that the 
+				Releasees may fail to predict whether the terrain is safe, and whether avalanche hazards or other dangers or risks may occur. 
+				Risks, dangers and hazards may include but are not limited to: rockfall, icefall, avalanches of snow, ice and rock triggered by natural 
+				forces, by persons travelling through the terrain or other causes; extreme variation in terrain, including hidden or exposed rocks, 
+				boulders, ice, logs, stumps, roots, forest deadfall, treewells, trees and other objects; falling trees; forest fires; concealed or exposed 
+				crevasses, icebridges or bergschrunds; cornices and cornice falls; cliffs; variable and difficult snow or ice conditions, including 
+				unstable snow packs or ice; ungroomed, unmarked and uncontrolled terrain; exposed or concealed holes or depressions on or 
+				below the surface or ground cover; still and moving water; lakes, streams, creeks and rivers, including crossings; cold water
+				immersion; entrapment by trees, logs, rocks or equipment; drowning; limited visibility; variable, severe or rapidly changing weather 
+				with little or no warning including storms, high winds and lightning; dangerous and unpredictable water conditions, including waves, 
+				currents, rapids, white water and waterfalls; hypothermia; hyperthermia; frostbite; loss of balance or control and falls, particularly on 
+				steep, slippery or difficult terrain; difficulty or inability to control one's speed and direction; errors of judgment; lack of preparation; 
+				inadequate, inappropriate, improperly prepared or adjusted equipment; equipment failure, malfunction or loss; loss or damage to 
+				personal property; failure to act safely or within one's ability or within a designated area; impact or collision with vehicles, other 
+				persons or objects; encounters with domestic or wild animals; becoming lost, going off route or becoming separated from one's 
+				party; remote locations with unreliable, delayed or no communication and inability to get rescue or medical assistance quickly or 
+				easily; dangerous driving conditions and travel over poor roads; negligence of other persons; and, <b>NEGLIGENCE ON THE PART 
+				OF THE RELEASEES, INCLUDING THE FAILURE BY THE RELEASEES TO SAFEGUARD OR PROTECT ME FROM THE RISKS, DANGERS AND HAZARDS OF OUTDOOR ACTIVITIES.</b>
+			</p>
+		
+			<p style="margin-bottom:5px"><b class="larger">
+				I AM AWARE OF THE RISKS, DANGERS AND HAZARDS ASSOCIATED WITH OUTDOOR ACTIVITIES AND I 
+				FREELY ACCEPT AND FULLY ASSUME ALL SUCH RISKS, DANGERS AND HAZARDS AND THE 
+				POSSIBILITY OF PERSONAL INJURY, DEATH, PROPERTY DAMAGE AND LOSS RESULTING 
+				THEREFROM. 
+			</b></p>
+		
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox3 }} {{form.checkbox3.label_tag }}
+			</div>
+		
+			<h3>NON-SCHEDULED OR EMERGENCY EVACUATION, RESCUE OR FIRST AID</h3>
+			<p style="margin-bottom:5px">
+				I acknowledge and agree that all expenses associated with non-scheduled or emergency evacuation, rescue or first aid will be my 
+				responsibility and will not be covered by the Releasees.
+			</p>
+		
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox4 }} {{form.checkbox4.label_tag }}
+			</div>
+		
+			<h3>DISCLOSURE OF RESPONSIBILITIES</h3>
+			<p style="margin-bottom:5px">
+				All activities and programs offered by the Releasees which involve Outdoor Activities are entirely self-guided. The directors, 
+				officers, employees, members, volunteers, organizers, agents, representatives, coordinators and all persons acting under the 
+				authority of the Releasees are neither professional guides nor trained first aid attendants. All are volunteers and may have no 
+				formal training in the skills and knowledge required for the Outdoor Activities. The Releasees are not in any way responsible for 
+				travel to or from locations, including transport by public or private motor vehicles. Releasees are not in any way responsible or 
+				liable for driver negligence, conduct or safety, or for insurance of vehicles, even if the vehicle belongs to or is driven by the 
+				Releasees. <b>Participants are responsible for their own medical insurance, accident and disability insurance and third party 
+				liability insurance.</b>
+			</p>
+		
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox5 }} {{ form.checkbox5.label_tag }}
+			</div>
 			
-				<div class="checkbox-block" style="margin-bottom: 5px">
-					{{ form.checkbox1 }} {{ form.checkbox1.label_tag }}
-				</div>
-			
-				<div class="highlight">
-					<h2>
-						RELEASE OF LIABILITY, WAIVER OF CLAIMS,<br/>
-						ASSUMPTION OF RISKS AND INDEMNITY AGREEMENT<br/>
-					</h2>
-					<h2>
-						BY SIGNING THIS DOCUMENT YOU WILL WAIVE OR GIVE UP CERTAIN LEGAL <br/>
-						RIGHTS, INCLUDING THE RIGHT TO SUE OR<br/>
-						TO CLAIM COMPENSATION FOLLOWING AN ACCIDENT<br/>
-					</h2>
-					<h2 style="margin-bottom:0px;font-style:italic;font-weight:bold;font-size:18pt;">
-						PLEASE READ CAREFULLY!
-					</h2>
-				</div>
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox2 }} {{ form.checkbox2.label_tag }}
-				</div>
-			
-				<p><b>
-					To: <span style="font-weight:normal"> Alma Mater Society of UBC Vancouver, Varsity Outdoor Club (UBC)</span> 
-					(the &ldquo;Club&rdquo;), Federation of Mountain Clubs of 
-					BC, and their respective directors, officers, employees, members, volunteers, agents, independent 
-					contractors and subcontractors, representatives, successors, assigns and all persons acting under their 
-					authority (all of whom are hereinafter collectively referred to as &ldquo;the Releasees&rdquo;)
-				</b></p>
-			
-				<h3>DEFINITION</h3>
-				<p>
-					In this Agreement the term <b>&ldquo;Outdoor Activities&rdquo;</b> shall include but is not limited to: mountaineering (glacier travel; rock, snow, ice 
-					and mixed; roped and un-roped), climbing (indoor, rock, ice, alpine, sport and mountain); backpacking, hiking, trail running, trekking; 
-					backcountry skiing, touring, telemark skiing, snowboarding and snowshoeing; alpine skiing, Nordic or cross-country skiing; cycling, 
-					mountain biking; water sports (swimming, kayaking, canoeing, sailing or boating); trail building, clearing and maintenance; building, 
-					maintaining and operating backcountry huts; and, all activities, services and use of facilities provided, organized or arranged by the 
-					Releasees including orientation, instructional and skill development programs and all travel by or movement around helicopters, 
-					other aircraft or other vehicles.
-				</p>
-			
-				<h3>ASSUMPTION OF RISKS</h3>
-				<p>
-					I am aware that participation in Outdoor Activities involves many risks, dangers and hazards. The terrain used for Outdoor Activities 
-					is uncontrolled, unmarked, not inspected, and involves many risks, dangers and hazards. Avalanches occur frequently in the terrain 
-					used for Outdoor Activities and may be caused by natural forces or by persons travelling through the terrain. I am aware that the 
-					Releasees may fail to predict whether the terrain is safe, and whether avalanche hazards or other dangers or risks may occur. 
-					Risks, dangers and hazards may include but are not limited to: rockfall, icefall, avalanches of snow, ice and rock triggered by natural 
-					forces, by persons travelling through the terrain or other causes; extreme variation in terrain, including hidden or exposed rocks, 
-					boulders, ice, logs, stumps, roots, forest deadfall, treewells, trees and other objects; falling trees; forest fires; concealed or exposed 
-					crevasses, icebridges or bergschrunds; cornices and cornice falls; cliffs; variable and difficult snow or ice conditions, including 
-					unstable snow packs or ice; ungroomed, unmarked and uncontrolled terrain; exposed or concealed holes or depressions on or 
-					below the surface or ground cover; still and moving water; lakes, streams, creeks and rivers, including crossings; cold water
-					immersion; entrapment by trees, logs, rocks or equipment; drowning; limited visibility; variable, severe or rapidly changing weather 
-					with little or no warning including storms, high winds and lightning; dangerous and unpredictable water conditions, including waves, 
-					currents, rapids, white water and waterfalls; hypothermia; hyperthermia; frostbite; loss of balance or control and falls, particularly on 
-					steep, slippery or difficult terrain; difficulty or inability to control one's speed and direction; errors of judgment; lack of preparation; 
-					inadequate, inappropriate, improperly prepared or adjusted equipment; equipment failure, malfunction or loss; loss or damage to 
-					personal property; failure to act safely or within one's ability or within a designated area; impact or collision with vehicles, other 
-					persons or objects; encounters with domestic or wild animals; becoming lost, going off route or becoming separated from one's 
-					party; remote locations with unreliable, delayed or no communication and inability to get rescue or medical assistance quickly or 
-					easily; dangerous driving conditions and travel over poor roads; negligence of other persons; and, <b>NEGLIGENCE ON THE PART 
-					OF THE RELEASEES, INCLUDING THE FAILURE BY THE RELEASEES TO SAFEGUARD OR PROTECT ME FROM THE RISKS, DANGERS AND HAZARDS OF OUTDOOR ACTIVITIES.</b>
-				</p>
-			
-				<p style="margin-bottom:5px"><b class="larger">
-					I AM AWARE OF THE RISKS, DANGERS AND HAZARDS ASSOCIATED WITH OUTDOOR ACTIVITIES AND I 
-					FREELY ACCEPT AND FULLY ASSUME ALL SUCH RISKS, DANGERS AND HAZARDS AND THE 
-					POSSIBILITY OF PERSONAL INJURY, DEATH, PROPERTY DAMAGE AND LOSS RESULTING 
-					THEREFROM. 
-				</b></p>
-			
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox3 }} {{form.checkbox3.label_tag }}
-				</div>
-			
-				<h3>NON-SCHEDULED OR EMERGENCY EVACUATION, RESCUE OR FIRST AID</h3>
-				<p style="margin-bottom:5px">
-					I acknowledge and agree that all expenses associated with non-scheduled or emergency evacuation, rescue or first aid will be my 
-					responsibility and will not be covered by the Releasees.
-				</p>
-			
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox4 }} {{form.checkbox4.label_tag }}
-				</div>
-			
-				<h3>DISCLOSURE OF RESPONSIBILITIES</h3>
-				<p style="margin-bottom:5px">
-					All activities and programs offered by the Releasees which involve Outdoor Activities are entirely self-guided. The directors, 
-					officers, employees, members, volunteers, organizers, agents, representatives, coordinators and all persons acting under the 
-					authority of the Releasees are neither professional guides nor trained first aid attendants. All are volunteers and may have no 
-					formal training in the skills and knowledge required for the Outdoor Activities. The Releasees are not in any way responsible for 
-					travel to or from locations, including transport by public or private motor vehicles. Releasees are not in any way responsible or 
-					liable for driver negligence, conduct or safety, or for insurance of vehicles, even if the vehicle belongs to or is driven by the 
-					Releasees. <b>Participants are responsible for their own medical insurance, accident and disability insurance and third party 
-					liability insurance.</b>
-				</p>
-			
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox5 }} {{ form.checkbox5.label_tag }}
-				</div>
-				
-				<h3>RELEASE OF LIABILITY, WAIVER OF CLAIMS AND INDEMNITY AGREEMENT</h3>
-				<p>
-					In consideration of the Releasees allowing me to join the Club, to use Club cabins, and/or to participate in activities, programs, 
-					services or meetings organized, provided or authorized by or on behalf of the Releasees including, but not limited to Club trips, 
-					camps, expeditions, courses or programs involving Outdoor Activities, and for other good and valuable consideration, the receipt 
-					and sufficiency of which is acknowledged, I hereby agree as follows:
-				</p>
-			
-				<div class="highlight">
-					<ol class="highlight-list">
-						<li>
-							<b>TO WAIVE ANY AND ALL CLAIMS</b> that I have or may have in the future against the Releasees and <b>TO RELEASE THE 
-							RELEASEES</b> from any and all liability for any loss, damage, expense, or injury including death that I may suffer, or that my 
-							next of kin may suffer, resulting from or in connection with my membership in the Club, my use of Club cabins or my 
-							participation in any activities, programs, services or meetings organized, provided or authorized by or on behalf of the 
-							Releasees, including, but not limited to Club trips, camps, expeditions, courses or programs involving Outdoor Activities 
-							<b>DUE TO ANY CAUSE WHATSOEVER, INCLUDING NEGLIGENCE, BREACH OF CONTRACT, OR BREACH OF ANY 
-							STATUTORY OR OTHER DUTY OF CARE, INCLUDING ANY DUTY OF CARE UNDER THE OCCUPIERS' LIABILITY 
-							ACT, R.S.B.C. 1996, c. 337, OR ANY APPLICABLE OCCUPIERS LIABILITY LEGISLATION, ON THE PART OF THE 
-							RELEASEES, AND FURTHER INCLUDING THE FAILURE ON THE PART OF THE RELEASEES TO SAFEGUARD OR 
-							PROTECT ME FROM THE RISKS, DANGERS AND HAZARDS OF OUTDOOR ACTIVITIES REFERRED TO ABOVE.</b>
-						</li>
-					</ol>
-				</div>
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox6 }} {{form.checkbox6.label_tag }}
-				</div>
-			
-				<ol start="2" class="ordered-list">
+			<h3>RELEASE OF LIABILITY, WAIVER OF CLAIMS AND INDEMNITY AGREEMENT</h3>
+			<p>
+				In consideration of the Releasees allowing me to join the Club, to use Club cabins, and/or to participate in activities, programs, 
+				services or meetings organized, provided or authorized by or on behalf of the Releasees including, but not limited to Club trips, 
+				camps, expeditions, courses or programs involving Outdoor Activities, and for other good and valuable consideration, the receipt 
+				and sufficiency of which is acknowledged, I hereby agree as follows:
+			</p>
+		
+			<div class="highlight">
+				<ol class="highlight-list">
 					<li>
-						TO HOLD HARMLESS AND INDEMNIFY the Releasees from any and all liability for any property damage or personal injury to 
-						any third party, resulting from any aspect of my membership in the Club, my use of Club cabins or my participation in activities, 
-						programs, services or meetings organized, provided or authorized by or on behalf of the Releasees, including but not limited to Club 
-						trips, camps, expeditions, courses or programs involving Outdoor Activities.
-					</li>
-					<li>
-						This Agreement shall be effective and binding upon my heirs, next of kin, executors, administrators, assigns and representatives, 
-						in the event of my death or incapacity;
-					</li>
-					<li>
-						This Agreement and any rights, duties and obligations as between the parties to this Agreement shall be governed by and 
-						interpreted solely in accordance with the laws of the Province of British Columbia and no other jurisdictions; and
-					</li>
-					<li>
-						Any litigation involving the parties of this Agreement shall be brought solely within the Province of British Columbia and shall be 
-						within the exclusive jurisdiction of the Courts of the Province of British Columbia.
+						<b>TO WAIVE ANY AND ALL CLAIMS</b> that I have or may have in the future against the Releasees and <b>TO RELEASE THE 
+						RELEASEES</b> from any and all liability for any loss, damage, expense, or injury including death that I may suffer, or that my 
+						next of kin may suffer, resulting from or in connection with my membership in the Club, my use of Club cabins or my 
+						participation in any activities, programs, services or meetings organized, provided or authorized by or on behalf of the 
+						Releasees, including, but not limited to Club trips, camps, expeditions, courses or programs involving Outdoor Activities 
+						<b>DUE TO ANY CAUSE WHATSOEVER, INCLUDING NEGLIGENCE, BREACH OF CONTRACT, OR BREACH OF ANY 
+						STATUTORY OR OTHER DUTY OF CARE, INCLUDING ANY DUTY OF CARE UNDER THE OCCUPIERS' LIABILITY 
+						ACT, R.S.B.C. 1996, c. 337, OR ANY APPLICABLE OCCUPIERS LIABILITY LEGISLATION, ON THE PART OF THE 
+						RELEASEES, AND FURTHER INCLUDING THE FAILURE ON THE PART OF THE RELEASEES TO SAFEGUARD OR 
+						PROTECT ME FROM THE RISKS, DANGERS AND HAZARDS OF OUTDOOR ACTIVITIES REFERRED TO ABOVE.</b>
 					</li>
 				</ol>
+			</div>
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox6 }} {{form.checkbox6.label_tag }}
+			</div>
+		
+			<ol start="2" class="ordered-list">
+				<li>
+					TO HOLD HARMLESS AND INDEMNIFY the Releasees from any and all liability for any property damage or personal injury to 
+					any third party, resulting from any aspect of my membership in the Club, my use of Club cabins or my participation in activities, 
+					programs, services or meetings organized, provided or authorized by or on behalf of the Releasees, including but not limited to Club 
+					trips, camps, expeditions, courses or programs involving Outdoor Activities.
+				</li>
+				<li>
+					This Agreement shall be effective and binding upon my heirs, next of kin, executors, administrators, assigns and representatives, 
+					in the event of my death or incapacity;
+				</li>
+				<li>
+					This Agreement and any rights, duties and obligations as between the parties to this Agreement shall be governed by and 
+					interpreted solely in accordance with the laws of the Province of British Columbia and no other jurisdictions; and
+				</li>
+				<li>
+					Any litigation involving the parties of this Agreement shall be brought solely within the Province of British Columbia and shall be 
+					within the exclusive jurisdiction of the Courts of the Province of British Columbia.
+				</li>
+			</ol>
+		
+			<p>
+				Unless the executive of the Club directs otherwise, this Agreement shall apply to all subsequent membership renewals, use of Club 
+				cabins or participation in activities, programs, services or meetings organized, provided or authorized by or on behalf of the 
+				Releasees including but not limited to Club trips, camps, expeditions, courses or programs involving Outdoor Activities.
+			</p>
 			
-				<p>
-					Unless the executive of the Club directs otherwise, this Agreement shall apply to all subsequent membership renewals, use of Club 
-					cabins or participation in activities, programs, services or meetings organized, provided or authorized by or on behalf of the 
-					Releasees including but not limited to Club trips, camps, expeditions, courses or programs involving Outdoor Activities.
-				</p>
-				
-				<p>
-					In entering into this Agreement, I am not relying upon any oral or written representations or statements made by the Releasees with 
-					respect to the safety of Outdoor Activities, Club cabins and activities, programs, services or meetings organized, provided or 
-					authorized by or on behalf of the Releasees, other than what is set forth in this Agreement.
-				</p>
-				
-				<p><b class="larger">
-					I CONFIRM THAT I HAVE READ AND UNDERSTOOD THIS AGREEMENT PRIOR TO SIGNING IT, AND I AM 
-					AWARE THAT BY SIGNING THIS AGREEMENT I AM WAIVING CERTAIN LEGAL RIGHTS WHICH I OR MY 
-					HEIRS, NEXT OF KIN, EXECUTORS, ADMINISTRATORS, ASSIGNS AND REPRESENTATIVES MAY HAVE 
-					AGAINST THE RELEASEES.
-				</b></p>
+			<p>
+				In entering into this Agreement, I am not relying upon any oral or written representations or statements made by the Releasees with 
+				respect to the safety of Outdoor Activities, Club cabins and activities, programs, services or meetings organized, provided or 
+				authorized by or on behalf of the Releasees, other than what is set forth in this Agreement.
+			</p>
 			
-				<div class="checkbox-block" style="margin-bottom: 15px">
-					{{ form.checkbox7 }} {{ form.checkbox7.label_tag }}
+			<p><b class="larger">
+				I CONFIRM THAT I HAVE READ AND UNDERSTOOD THIS AGREEMENT PRIOR TO SIGNING IT, AND I AM 
+				AWARE THAT BY SIGNING THIS AGREEMENT I AM WAIVING CERTAIN LEGAL RIGHTS WHICH I OR MY 
+				HEIRS, NEXT OF KIN, EXECUTORS, ADMINISTRATORS, ASSIGNS AND REPRESENTATIVES MAY HAVE 
+				AGAINST THE RELEASEES.
+			</b></p>
+		
+			<div class="checkbox-block" style="margin-bottom: 15px">
+				{{ form.checkbox7 }} {{ form.checkbox7.label_tag }}
+			</div>
+		
+			<div class="sign-form">
+				<div id="form-inputs">
+					<div>
+						Type 'I AGREE': <span class="note"><br/>(note: case sensitive)</span><br/>
+						{{ form.i_agree_text }}
+					</div>
+					<div>
+						<br/>
+						Full Name:<br/>
+						{{ form.full_name }}
+					</div>
+					<div>
+						<br/>
+						Student Number:<br/>
+						{{ form.student_number }}
+					</div>
+					{% if user_is_minor %}
+						<div>
+							Guardian Name:
+							{{ form.guardian_name }}
+						</div>
+					{% endif %}
 				</div>
-			
-				<div class="sign-form">
-					<div id="form-inputs">
-						<div>
-							Type 'I AGREE': <span class="note"><br/>(note: case sensitive)</span><br/>
-							{{ form.i_agree_text }}
-						</div>
-						<div>
-							<br/>
-							Full Name:<br/>
-							{{ form.full_name }}
-						</div>
-						<div>
-							<br/>
-							Student Number:<br/>
-							{{ form.student_number }}
-						</div>
+				<br/>
+				<div id="signature-pad-container">
+					<div>
 						{% if user_is_minor %}
-							<div>
-								Guardian Name:
-								{{ form.guardian_name }}
-							</div>
+							<label for="canvas">Guardian Signature:</label>
+						{% else %}
+							<label for="canvas">Participant Signature:</label>
 						{% endif %}
+						<canvas id="canvas"></canvas>
 					</div>
-					<br/>
-					<div id="signature-pad-container">
-						<div>
-							{% if user_is_minor %}
-								<label for="canvas">Guardian Signature:</label>
-							{% else %}
-								<label for="canvas">Participant Signature:</label>
-							{% endif %}
-							<canvas id="canvas"></canvas>
-						</div>
-						<div id="signature-pad-buttons">
-							<button type="button" id="reset" class="btn btn-secondary" style="margin:5px;">Reset</button>
-							<button type="button" id="save" class="btn btn-success" style="margin:5px;">Save</button>
-						</div>
-						<input type="hidden" id="signature" name="signature">
+					<div id="signature-pad-buttons">
+						<button type="button" id="reset" class="btn btn-secondary" style="margin:5px;">Reset</button>
+						<button type="button" id="save" class="btn btn-success" style="margin:5px;">Save</button>
 					</div>
-					<div id="submit-button-container">
-						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
-					</div>
+					<input type="hidden" id="signature" name="signature">
 				</div>
-			</form>
-		</div>
+				<div id="submit-button-container">
+					<button type="submit" class="btn btn-primary btn-lg">Submit</button>
+				</div>
+			</div>
+		</form>
 	</div>
 {% endblock %}

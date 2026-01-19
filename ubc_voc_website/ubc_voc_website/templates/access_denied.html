@@ -3,10 +3,8 @@
 {% block title %}No Access{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Access Denied</h2>
-        <p>You do not have permission to view this page.</p>
-        <p>You may be trying to view a page only accessible to VOC members. <a href="{% url 'join' %}">Click here</a> to become a member</p>
-    </div>
+    <h2>Access Denied</h2>
+    <p>You do not have permission to view this page.</p>
+    <p>You may be trying to view a page only accessible to VOC members. <a href="{% url 'join' %}">Click here</a> to become a member</p>
 {% endblock %}
 

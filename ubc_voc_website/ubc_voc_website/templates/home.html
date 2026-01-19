@@ -2,13 +2,64 @@
 
 {% block title %}Home{% endblock %}
 
+{% block head_content %}
+    <style>
+        .carousel-container {
+            height: 100%;
+            min-height: 400px;
+        };
+
+        .carousel-container img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        };
+
+        .text-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        };
+    </style>
+{% endblock %}
+
 {% block content %}
-
-    <div class="container">
-        <p>The Varsity Outdoor Club (VOC) is a student run club of the University of British Columbia (UBC) 
-            in Vancouver, Canada. We are avid outdoors enthusiasts and enjoy hiking, rock climbing, mountaineering, 
-            back-country skiing, paddling, bike-touring and all self-propelled outdoor adventures.
-        </p>
+    <div class="row align-items-center">
+        <div class="col-lg-6 text-section">
+            <h2>UBC Varsity Outdoor Club</h2>
+            <p class="lead text-muted">
+                The Varsity Outdoor Club (VOC) is a student run club of the University of British Columbia (UBC) 
+                in Vancouver, Canada.
+            </p>
+            <p>
+                We are avid outdoors enthusiasts and enjoy hiking, rock climbing, mountaineering, 
+                back-country skiing, paddling, bike-touring and all self-propelled outdoor adventures.
+            </p>
+        </div>
+        <div class="col-lg-6 carousel-container">
+            {% if photos %}
+                <div id="carousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for photo in photos %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ photo.get_display_url }}" class="d-block w-100" alt="{{ photo.title }}">
+                                <div class="carousel-caption d-none">
+                                    <h5>{{ photo.title }}</h5>
+                                    <p>{{ photo.caption }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
     </div>
-
 {% endblock %}

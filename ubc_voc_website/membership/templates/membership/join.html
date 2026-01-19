@@ -3,24 +3,22 @@
 {% block title %}Join the VOC{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Join the VOC</h2>
-        <p><b>Start Date:</b> {{ start_date }}</p>
-        <p><b>End Date:</b> {{ end_date }}</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="alert alert-info" role="alert">
-                <h5 class="alert-heading">Membership Types</h5>
-                <ul>
-                    <li><strong>Regular:</strong> Available to current UBC students</li>
-                    <li><strong>Associate:</strong> Available to everyone - non-UBC affiliated members, UBC alumni, etc. </li>
-                    <li><strong>Active Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and are still interested in leading/attending club trips</li>
-                    <li><strong>Inactive Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and will <strong>not</strong> lead/attend club trips</li>
-                </ul>
-                <p>For more information on membership eligibility, visit the <a href="https://wiki.ubc-voc.com/index.php/Membership">VOC wiki</a>.</p>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    <h2>Join the VOC</h2>
+    <p><b>Start Date:</b> {{ start_date }}</p>
+    <p><b>End Date:</b> {{ end_date }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="alert alert-info" role="alert">
+            <h5 class="alert-heading">Membership Types</h5>
+            <ul>
+                <li><strong>Regular:</strong> Available to current UBC students</li>
+                <li><strong>Associate:</strong> Available to everyone - non-UBC affiliated members, UBC alumni, etc. </li>
+                <li><strong>Active Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and are still interested in leading/attending club trips</li>
+                <li><strong>Inactive Honorary:</strong> Available to individuals who have made significant contributions to the VOC, and will <strong>not</strong> lead/attend club trips</li>
+            </ul>
+            <p>For more information on membership eligibility, visit the <a href="https://wiki.ubc-voc.com/index.php/Membership">VOC wiki</a>.</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 {% endblock %}

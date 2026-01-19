@@ -3,14 +3,10 @@
 {% block title %}Gearmaster{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Edit Rental</h2>
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+    <h2>Edit Rental</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
 {% endblock %}

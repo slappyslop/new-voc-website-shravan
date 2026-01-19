@@ -1,0 +1,11 @@
+{% load forum_member_tags %}
+
+{% if profile.user.avatar_url %}
+    <a href="{% url 'profile' profile.user.id %}">
+        <img class="avatar" src="{{ profile.user.avatar_url}}" alt="{{ profile.user.display_name }}" />
+    </a>
+{% elif show_placeholder %}
+    <span class="avatar empty">
+        <i class="far fa-user fa-4x" ></i>
+    </span>
+{% endif %}

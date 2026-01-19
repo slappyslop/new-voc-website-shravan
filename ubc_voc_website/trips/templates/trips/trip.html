@@ -79,516 +79,514 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="alert alert-warning" role="alert">
-            VOC trips are organized by members like yourself, not professional guides. 
-            The trips go into wilderness areas where assistance is unavailable and unexpected events can occur. 
-            You could be seriously injured or die. You are responsible for your own actions. Please use caution.
-        </div>
-        <h2>{{ trip.name }}</h2>
-        <h5>{{ trip.trip_date_as_str_long }}</h5>
+    <div class="alert alert-warning" role="alert">
+        VOC trips are organized by members like yourself, not professional guides. 
+        The trips go into wilderness areas where assistance is unavailable and unexpected events can occur. 
+        You could be seriously injured or die. You are responsible for your own actions. Please use caution.
+    </div>
+    <h2>{{ trip.name }}</h2>
+    <h5>{{ trip.trip_date_as_str_long }}</h5>
 
-        <!-- {% if request.user|is_member and not user_is_signed_up and user_can_signup %}
-            <a href="#signup-form">Jump to signup form</a>
-        {% endif %} -->
+    <!-- {% if request.user|is_member and not user_is_signed_up and user_can_signup %}
+        <a href="#signup-form">Jump to signup form</a>
+    {% endif %} -->
 
-        <p>
-            <b>Organized by:</b> 
-            {% if request.user|is_member %}
-                {% for organizer in organizers %}
-                    <a href="{% url 'profile' organizer.user__id %}">{{ organizer.first_name }} {{ organizer.last_name }}</a>{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            {% else %}
-                {% for organizer in organizers %}
-                    <a href="{% url 'profile' organizer.user__id %}">this member</a>{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            {% endif %}
-        </p>
-
-        <p>
-            {{ description|safe }}
-        </p>
-
-
-        <!------------------------------- Signup Lists ------------------------------->
+    <p>
+        <b>Organized by:</b> 
         {% if request.user|is_member %}
-            {% if signups.interested or signups.committed or signups.going or signups.no_longer_interested or signups.bailed_from_committed or signups.no_longer_going %}
-                <hr>
-                <h3 class="my-3">Signup</h3>
-                <a href="#signup-form">Jump to signup form</a>
-                <p class="my-0"><b>The trip organizer has asked participants to answer the following question:</b></p>
-                <p><i>{{ trip.signup_question }}</i></p>
-                <div id="signup-list">
-                    {% if signups.going %}
-                        <h5>Going:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.going %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> {{ signup.signup_answer }}
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b></span>
-                                                {% endif %}
-                                            </td>
+            {% for organizer in organizers %}
+                <a href="{% url 'profile' organizer.user__id %}">{{ organizer.first_name }} {{ organizer.last_name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for organizer in organizers %}
+                <a href="{% url 'profile' organizer.user__id %}">this member</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% endif %}
+    </p>
+
+    <p>
+        {{ description|safe }}
+    </p>
+
+
+    <!------------------------------- Signup Lists ------------------------------->
+    {% if request.user|is_member %}
+        {% if signups.interested or signups.committed or signups.going or signups.no_longer_interested or signups.bailed_from_committed or signups.no_longer_going %}
+            <hr>
+            <h3 class="my-3">Signup</h3>
+            <a href="#signup-form">Jump to signup form</a>
+            <p class="my-0"><b>The trip organizer has asked participants to answer the following question:</b></p>
+            <p><i>{{ trip.signup_question }}</i></p>
+            <div id="signup-list">
+                {% if signups.going %}
+                    <h5>Going:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.going %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> {{ signup.signup_answer }}
                                         {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
                                         <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b></span>
                                             {% endif %}
                                         </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>{{ car_spots.going }}</b> car spots on this list</td>
-                                    </tr>
-                                </tfoot>
-                            {% endif %}
-                        </table>
-                        <button 
-                            class="btn btn-sm btn-primary mb-2" 
-                            onclick="copyEmails(this)" 
-                            data-emails="{{ signup_emails.interested|join:',' }}"
-                        >Copy Going List Emails</button>
-                    {% endif %}
-                    {% if signups.committed %}
-                        <h5>Committed:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.committed %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> {{ signup.signup_answer }}
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b></span>
-                                                {% endif %}
-                                            </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
                                         {% endif %}
-                                        <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
-                                            {% endif %}
-                                        </td>
-                                        {% if request.user in trip.organizers.all %}
-                                            <td>
-                                                <form 
-                                                    method="post" 
-                                                    action="{% url 'mark_as_going' trip.id signup.id %}" 
-                                                    class="going-form"
-                                                    data-user-name="{{ signup.name }}"
-                                                >
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-link py-0">
-                                                        Add to going list
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if trip.drivers_required %}
                             <tfoot>
                                 <tr>
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td><b>{{ car_spots.committed }}</b> car spots on this list</td>
+                                    <td></td>
+                                    <td><b>{{ car_spots.going }}</b> car spots on this list</td>
+                                </tr>
+                            </tfoot>
+                        {% endif %}
+                    </table>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)" 
+                        data-emails="{{ signup_emails.interested|join:',' }}"
+                    >Copy Going List Emails</button>
+                {% endif %}
+                {% if signups.committed %}
+                    <h5>Committed:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.committed %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'profile' signup.id %}">{{ signup.name }}</a></td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> {{ signup.signup_answer }}
+                                        {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
+                                        <td>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b></span>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                    {% if request.user in trip.organizers.all %}
+                                        <td>
+                                            <form 
+                                                method="post" 
+                                                action="{% url 'mark_as_going' trip.id signup.id %}" 
+                                                class="going-form"
+                                                data-user-name="{{ signup.name }}"
+                                            >
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link py-0">
+                                                    Add to going list
+                                                </button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if trip.drivers_required %}
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><b>{{ car_spots.committed }}</b> car spots on this list</td>
+                                <td></td>
+                                {% if request.user in trip.organizers.all %}<td></td>{% endif %}
+                            </tr>
+                        </tfoot>
+                        {% endif %}
+                    </table>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)"
+                        data-emails="{{ signup_emails.committed|join:',' }}"
+                    >Copy Committed List Emails</button>
+                {% endif %}
+                {% if signups.interested %}
+                    <h5>Interested:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.interested %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
+                                    </td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> <i>{{ signup.signup_answer }}</i>
+                                        {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
+                                        <td>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                    {% if request.user in trip.organizers.all %}
+                                        <td>
+                                            <form 
+                                                method="post" 
+                                                action="{% url 'mark_as_going' trip.id signup.id %}" 
+                                                class="going-form"
+                                                data-user-name="{{ signup.name }}"
+                                            >
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link py-0">
+                                                    Add to going list
+                                                </button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if trip.drivers_required %}
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{ car_spots.interested }}</b> car spots on this list</td>
                                     <td></td>
                                     {% if request.user in trip.organizers.all %}<td></td>{% endif %}
                                 </tr>
                             </tfoot>
-                            {% endif %}
-                        </table>
-                        <button 
-                            class="btn btn-sm btn-primary mb-2" 
-                            onclick="copyEmails(this)"
-                            data-emails="{{ signup_emails.committed|join:',' }}"
-                        >Copy Committed List Emails</button>
-                    {% endif %}
-                    {% if signups.interested %}
-                        <h5>Interested:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.interested %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>
-                                            <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
-                                        </td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> <i>{{ signup.signup_answer }}</i>
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b>
-                                                {% endif %}
-                                            </td>
+                        {% endif %}
+                    </table>
+                    <button 
+                        class="btn btn-sm btn-primary mb-2" 
+                        onclick="copyEmails(this)"
+                        data-emails="{{ signup_emails.interested|join:',' }}"
+                    >Copy Interested List Emails</button>
+                {% endif %}
+                {% if signups.no_longer_going %}
+                    <h5>Bailed From Going:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.no_longer_going %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
+                                    </td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> <i>{{ signup.signup_answer }}</i>
                                         {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
                                         <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b>
                                             {% endif %}
                                         </td>
-                                        {% if request.user in trip.organizers.all %}
-                                            <td>
-                                                <form 
-                                                    method="post" 
-                                                    action="{% url 'mark_as_going' trip.id signup.id %}" 
-                                                    class="going-form"
-                                                    data-user-name="{{ signup.name }}"
-                                                >
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-link py-0">
-                                                        Add to going list
-                                                    </button>
-                                                </form>
-                                            </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
                                         {% endif %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>{{ car_spots.interested }}</b> car spots on this list</td>
-                                        <td></td>
-                                        {% if request.user in trip.organizers.all %}<td></td>{% endif %}
-                                    </tr>
-                                </tfoot>
-                            {% endif %}
-                        </table>
-                        <button 
-                            class="btn btn-sm btn-primary mb-2" 
-                            onclick="copyEmails(this)"
-                            data-emails="{{ signup_emails.interested|join:',' }}"
-                        >Copy Interested List Emails</button>
-                    {% endif %}
-                    {% if signups.no_longer_going %}
-                        <h5>Bailed From Going:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.no_longer_going %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>
-                                            <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
-                                        </td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> <i>{{ signup.signup_answer }}</i>
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b>
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                        <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>{{ car_spots.no_longer_going }}</b> car spots on this list</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            {% endif %}
-                        </table>
-                    {% endif %}
-                    {% if signups.bailed_from_committed %}
-                        <h5>Bailed From Committed:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.bailed_from_committed %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>
-                                            <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
-                                        </td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> <i>{{ signup.signup_answer }}</i>
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b>
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                        <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>{{ car_spots.bailed_from_committed }}</b> car spots on this list</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            {% endif %}
-                        </table>
-                    {% endif %}
-                    {% if signups.no_longer_interested %}
-                        <h5>No Longer Interested:</h5>
-                        <table class="table table-striped table-hover">
-                            <tbody>
-                                {% for signup in signups.no_longer_interested %}
-                                    <tr data-email="{{ signup.email }}" class="align-middle">
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>
-                                            <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
-                                        </td>
-                                        <td class="text-wrap text-break w-50">
-                                            {% if signup.signup_answer %}
-                                                <b>Says:</b> <i>{{ signup.signup_answer }}</i>
-                                            {% endif %}
-                                        </td>
-                                        {% if trip.drivers_required %}
-                                            <td>
-                                                {% if signup.car_spots > 0 %}
-                                                    Can drive: <b>{{ signup.car_spots }}</b>
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                        <td>
-                                            {% if signup.id == request.user.id %}
-                                                <button type="button" class="btn btn-secondary" id="edit-signup-button">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            {% if trip.drivers_required %}
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>{{ car_spots.no_longer_interested }}</b> car spots on this list</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            {% endif %}
-                        </table>
-                    {% endif %}
-                </div>
-                <button 
-                    class="btn btn-sm btn-primary mb-2" 
-                    onclick="copyEmails(this)"
-                    data-emails="{{ signup_emails.going|join:',' }},{{ signup_emails.committed|join:',' }},{{ signup_emails.interested|join:',' }}"
-                >Copy All Emails</button>
-            {% endif %}
-        {% endif %}
-
-        <!-- Modal to confirm "mark going" -->
-        <div class="modal fade" id="mark-going-modal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to add <span id="modal-user-name"></span> to the going list?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="mark-going-confirm-btn">Confirm</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal to edit own signup -->
-        <div class="modal fade" id="edit-signup-modal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header align-middle">
-                        <h5>Update Signup Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form 
-                            method="post" 
-                            action="{% url 'trip_signup' trip.id %}" 
-                            class="signup-form"
-                        >
-                            {% csrf_token %}
-                            <div class="mb-4">
-                                {{ form.can_drive.label_tag }} {{ form.can_drive }}
-                                {% if form.can_drive.errors %}
-                                    <small>{{ form.can_drive.errors|striptags }}</small>
-                                {% endif %}
-                            </div>
-                            <div class="mb-4 car-spots-div">
-                                {{ form.car_spots.label_tag }} {{ form.car_spots }}
-                                {% if form.car_spots.errors %}
-                                    <small>{{ form.car_spots.errors }}</small>
-                                {% endif %}
-                            </div>
-                            <div class="mb-4">
-                                <p><b>The trip organizer has asked participants to answer the following question:</b></p>
-                                {{ form.signup_answer.label_tag }} <br />
-                                {{ form.signup_answer }}
-                                {% if form.signup_answer.errors %}
-                                    <small>{{ form.signup_answer.errors }}</small>
-                                {% endif %}
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update signup details</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="d-flex gap-2">
-                            {% for type in valid_type_changes %}
-                                {% if type.type < 4 %}
-                                    <form 
-                                        method="post" 
-                                        action="{% url 'change_signup_type' user_signup.id type.type %}" 
-                                        onsubmit="return confirmSignupUpgradeChange('{{ type.name }}');"
-                                    >
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-primary">
-                                            Upgrade to {{ type.name }}
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <form 
-                                        method="post" 
-                                        action="{% url 'change_signup_type' user_signup.id type.type %}" 
-                                        onsubmit="return confirmSignupBail('{{ type.name }}');"
-                                    >
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-danger">
-                                            Bail
-                                        </button>
-                                    </form>
-                                {% endif %}
+                                    </td>
+                                </tr>
                             {% endfor %}
-                        </div>
-                    </div>
+                        </tbody>
+                        {% if trip.drivers_required %}
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{ car_spots.no_longer_going }}</b> car spots on this list</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        {% endif %}
+                    </table>
+                {% endif %}
+                {% if signups.bailed_from_committed %}
+                    <h5>Bailed From Committed:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.bailed_from_committed %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
+                                    </td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> <i>{{ signup.signup_answer }}</i>
+                                        {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
+                                        <td>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if trip.drivers_required %}
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{ car_spots.bailed_from_committed }}</b> car spots on this list</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        {% endif %}
+                    </table>
+                {% endif %}
+                {% if signups.no_longer_interested %}
+                    <h5>No Longer Interested:</h5>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            {% for signup in signups.no_longer_interested %}
+                                <tr data-email="{{ signup.email }}" class="align-middle">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        <a href="{% url 'profile' signup.id %}">{{ signup.name }}</a>
+                                    </td>
+                                    <td class="text-wrap text-break w-50">
+                                        {% if signup.signup_answer %}
+                                            <b>Says:</b> <i>{{ signup.signup_answer }}</i>
+                                        {% endif %}
+                                    </td>
+                                    {% if trip.drivers_required %}
+                                        <td>
+                                            {% if signup.car_spots > 0 %}
+                                                Can drive: <b>{{ signup.car_spots }}</b>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if signup.id == request.user.id %}
+                                            <button type="button" class="btn btn-secondary" id="edit-signup-button">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if trip.drivers_required %}
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>{{ car_spots.no_longer_interested }}</b> car spots on this list</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        {% endif %}
+                    </table>
+                {% endif %}
+            </div>
+            <button 
+                class="btn btn-sm btn-primary mb-2" 
+                onclick="copyEmails(this)"
+                data-emails="{{ signup_emails.going|join:',' }},{{ signup_emails.committed|join:',' }},{{ signup_emails.interested|join:',' }}"
+            >Copy All Emails</button>
+        {% endif %}
+    {% endif %}
+
+    <!-- Modal to confirm "mark going" -->
+    <div class="modal fade" id="mark-going-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to add <span id="modal-user-name"></span> to the going list?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="mark-going-confirm-btn">Confirm</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!------------------------------- Signup form ------------------------------->
-        {% if trip.use_signup %}
-            {% if user_can_signup and not user_signup %} <!-- Excludes inactive honorary members -->
-            <hr>
-            <h5>Sign Up</h5>
-                {% if trip.valid_signup_types %}
-                    <form method="post" action="{% url 'trip_signup' trip.id %}" class="signup-form" id="signup-form">
+    <!-- Modal to edit own signup -->
+    <div class="modal fade" id="edit-signup-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header align-middle">
+                    <h5>Update Signup Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form 
+                        method="post" 
+                        action="{% url 'trip_signup' trip.id %}" 
+                        class="signup-form"
+                    >
                         {% csrf_token %}
-                        <div class="mb-4">
-                            {{ form.type.label_tag }} {{ form.type }}
-                            {% if form.type.errors %}
-                                <small>{{ form.type.errors|striptags }}</small>
-                            {% endif %}
-                        </div>
-
                         <div class="mb-4">
                             {{ form.can_drive.label_tag }} {{ form.can_drive }}
                             {% if form.can_drive.errors %}
                                 <small>{{ form.can_drive.errors|striptags }}</small>
                             {% endif %}
                         </div>
-
                         <div class="mb-4 car-spots-div">
                             {{ form.car_spots.label_tag }} {{ form.car_spots }}
                             {% if form.car_spots.errors %}
                                 <small>{{ form.car_spots.errors }}</small>
                             {% endif %}
                         </div>
-
                         <div class="mb-4">
                             <p><b>The trip organizer has asked participants to answer the following question:</b></p>
-                            {{ form.signup_answer.label_tag }} <br>
+                            {{ form.signup_answer.label_tag }} <br />
                             {{ form.signup_answer }}
                             {% if form.signup_answer.errors %}
                                 <small>{{ form.signup_answer.errors }}</small>
                             {% endif %}
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Update signup details</button>
                     </form>
-                {% else %}
-                    {% if trip.signup_info.interested.0 == 'not_yet_open' %}
-                        <p>The interested list will open on <b>{{ trip.signup_info.interested.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.interested.1|time:"g:i A" }}</b></p>
-                    {% elif trip.signup_info.interested.0 == 'closed' %}
-                        <p>The interested list has already closed</p>
-                    {% endif %}
-
-                    {% if trip.signup_info.committed.0 == 'not_yet_open' %}
-                        <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
-                    {% elif trip.signup_info.committed.0 == 'closed' %}
-                        <p>The committed list has already closed</p>
-                    {% endif %}
-                {% endif %}
-            {% elif not request.user.is_authenticated %}
-                <p><a href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">Sign in</a> to sign up for this trip</p>
-            {% elif not request.user|is_member %}
-                <hr>
-                <p><a href="{% url 'join'}">Join</a> the VOC to sign up for this trip</p>
-            {% endif %}
-        {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex gap-2">
+                        {% for type in valid_type_changes %}
+                            {% if type.type < 4 %}
+                                <form 
+                                    method="post" 
+                                    action="{% url 'change_signup_type' user_signup.id type.type %}" 
+                                    onsubmit="return confirmSignupUpgradeChange('{{ type.name }}');"
+                                >
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        Upgrade to {{ type.name }}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form 
+                                    method="post" 
+                                    action="{% url 'change_signup_type' user_signup.id type.type %}" 
+                                    onsubmit="return confirmSignupBail('{{ type.name }}');"
+                                >
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        Bail
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!------------------------------- Signup form ------------------------------->
+    {% if trip.use_signup %}
+        {% if user_can_signup and not user_signup %} <!-- Excludes inactive honorary members -->
+        <hr>
+        <h5>Sign Up</h5>
+            {% if trip.valid_signup_types %}
+                <form method="post" action="{% url 'trip_signup' trip.id %}" class="signup-form" id="signup-form">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        {{ form.type.label_tag }} {{ form.type }}
+                        {% if form.type.errors %}
+                            <small>{{ form.type.errors|striptags }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.can_drive.label_tag }} {{ form.can_drive }}
+                        {% if form.can_drive.errors %}
+                            <small>{{ form.can_drive.errors|striptags }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4 car-spots-div">
+                        {{ form.car_spots.label_tag }} {{ form.car_spots }}
+                        {% if form.car_spots.errors %}
+                            <small>{{ form.car_spots.errors }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <p><b>The trip organizer has asked participants to answer the following question:</b></p>
+                        {{ form.signup_answer.label_tag }} <br>
+                        {{ form.signup_answer }}
+                        {% if form.signup_answer.errors %}
+                            <small>{{ form.signup_answer.errors }}</small>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            {% else %}
+                {% if trip.signup_info.interested.0 == 'not_yet_open' %}
+                    <p>The interested list will open on <b>{{ trip.signup_info.interested.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.interested.1|time:"g:i A" }}</b></p>
+                {% elif trip.signup_info.interested.0 == 'closed' %}
+                    <p>The interested list has already closed</p>
+                {% endif %}
+
+                {% if trip.signup_info.committed.0 == 'not_yet_open' %}
+                    <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
+                {% elif trip.signup_info.committed.0 == 'closed' %}
+                    <p>The committed list has already closed</p>
+                {% endif %}
+            {% endif %}
+        {% elif not request.user.is_authenticated %}
+            <p><a href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">Sign in</a> to sign up for this trip</p>
+        {% elif not request.user|is_member %}
+            <hr>
+            <p><a href="{% url 'join'}">Join</a> the VOC to sign up for this trip</p>
+        {% endif %}
+    {% endif %}
 {% endblock %}

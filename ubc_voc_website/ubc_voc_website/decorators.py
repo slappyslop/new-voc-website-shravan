@@ -13,20 +13,6 @@ def Members(view_function):
             return render(request, 'access_denied.html', status=403)
     return _view
 
-def MembersAPI(view_function):
-    def _view(request, *args, **kwargs):
-        user = request.user
-
-        if not user.is_authenticated:
-            raise PermissionDenied("Authentication required")
-        
-        if not is_member(user):
-            raise PermissionDenied("This page is restricted to current VOC members")
-        
-        return view_function(request, *args, **kwargs)
-    
-    return _view
-
 def Execs(view_function):
     @login_required
     def _view(request, *args, **kwargs):

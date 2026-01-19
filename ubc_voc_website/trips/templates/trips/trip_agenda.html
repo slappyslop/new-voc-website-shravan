@@ -106,59 +106,57 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>
-            Upcoming Trips
-            <button id="calendar-toggle" class="btn btn-outline-secondary"></button>
-        </h2>
-        <div class="mb-3">
-            <select id="trip-tag-filter" multiple>
-                {% for tag in all_trip_tags %}
-                    <option value="{{ tag.name }}">{{ tag.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div id="list_div">
-            <table id="upcoming-table" class="table table-striped">
-                <thead>
+    <h2>
+        Upcoming Trips
+        <button id="calendar-toggle" class="btn btn-outline-secondary"></button>
+    </h2>
+    <div class="mb-3">
+        <select id="trip-tag-filter" multiple>
+            {% for tag in all_trip_tags %}
+                <option value="{{ tag.name }}">{{ tag.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="list_div">
+        <table id="upcoming-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Trip</th>
+                    <th></th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month, trips in trips_list.items %}
                     <tr>
-                        <th>Date</th>
-                        <th>Trip</th>
-                        <th></th>
-                        <th>Tags</th>
+                        <td colspan="4" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for month, trips in trips_list.items %}
-                        <tr>
-                            <td colspan="4" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
+                    {% for trip in trips %}
+                        <tr data-tags="{{ trip.tags.all|join:','}}">
+                            <td>{{ trip.trip_date_as_str_short }}</td>
+                            <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
+                            <td>
+                                {% if request.user|is_exec %}
+                                    <a href="{% url 'trip_edit' trip.id %}">Edit</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for tag in trip.tags.all %}
+                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                        {{ tag.name }}
+                                    </span>
+                                {% endfor %}
+                            </td>
                         </tr>
-                        {% for trip in trips %}
-                            <tr data-tags="{{ trip.tags.all|join:','}}">
-                                <td>{{ trip.trip_date_as_str_short }}</td>
-                                <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
-                                <td>
-                                    {% if request.user|is_exec %}
-                                        <a href="{% url 'trip_edit' trip.id %}">Edit</a>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% for tag in trip.tags.all %}
-                                        <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
-                                        <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
-                                            {{ tag.name }}
-                                        </span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    
-        <div id="calendar_div">
-            <div id="calendar"></div>
-        </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="calendar_div">
+        <div id="calendar"></div>
     </div>
 {% endblock %}
