@@ -56,5 +56,9 @@ class Command(BaseCommand):
 
                 if not created:
                     self.stdout.write(self.style.WARNING(f"Topic already exists: {row["subject"]}"))
+                else:
+                    self.stdout.write(self.style.SUCCESS(f"Migrated topic: {row["subject"]}"))
 
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time)
+            
+            self.stdout.write(self.style.SUCCESS(f"Message board topic migration complete"))
