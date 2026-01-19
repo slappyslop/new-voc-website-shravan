@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 try:
                     message_id = row["message_id"]
                     forum_id = int(row["forum_id"])
-                    timestamp = int(row["timestamp"])
+                    timestamp = int(row["datestamp"])
                     time = make_aware(datetime.fromtimestamp(timestamp))
                 except (ValueError, TypeError):
                     self.stdout.write(self.style.ERROR(f"Malformed row: {row["subject"]}"))
