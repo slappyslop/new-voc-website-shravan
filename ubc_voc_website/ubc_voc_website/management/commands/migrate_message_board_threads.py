@@ -40,16 +40,25 @@ class Command(BaseCommand):
             ])
 
             for row in reader:
+                if not row["message_id"].isdigit():
+                    continue
+
                 try:
                     user = User.objects.get(id=int(row["user_id"]))
                 except User.DoesNotExist:
                     continue
 
-                time = make_aware(datetime.fromtimestamp(int(row["datestamp"])))
-                forum = forums.get(int(row["forum_id"]))
+                try:
+                    message_id = row["message_id"]
+                    forum_id = int(row["forum_id"])
+                    timestamp = int(row["timestamp"])
+                    time = make_aware(datetime.fromtimestamp(timestamp))
+                except (ValueError, TypeError):
+                    self.stdout.write(self.style.ERROR(f"Malformed row: {row["subject"]}"))
+                    break
 
                 topic, created = Topic.objects.get_or_create(
-                    forum=forum,
+                    forum=forums.get(forum_id),
                     subject=row["subject"],
                     created=time,
                     defaults={
@@ -57,7 +66,7 @@ class Command(BaseCommand):
                         "status": Topic.TOPIC_APPROVED,
 
                         # Since I don't have control over Machina models to add an old_id field, use the unused username field
-                        "poster_username": row["message_id"] 
+                        "poster_username": message_id
                     }
                 )
 
