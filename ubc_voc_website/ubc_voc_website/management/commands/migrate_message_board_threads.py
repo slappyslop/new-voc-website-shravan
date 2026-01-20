@@ -7,7 +7,7 @@ from django.core.management import BaseCommand
 from django.utils.timezone import make_aware
 
 from machina.apps.forum.models import Forum
-from machina.apps.forum_conversation.models import Topic, Post
+from machina.apps.forum_conversation.models import Post, Topic
 
 import csv
 from datetime import datetime
@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         forums = {old_id: Forum.objects.get(id=new_id) for old_id, new_id in FORUMS.items()}
 
-        with open(path, newline="", encoding="utf-8-sig") as f:
+        with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=[
                 "message_id",
                 "forum_id",
