@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         forums = {old_id: Forum.objects.get(id=new_id) for old_id, new_id in FORUMS.items()}
 
-        with open(path, newline="", encoding="utf-8") as f:
+        with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f, fieldnames=[
                 "message_id",
                 "forum_id",
