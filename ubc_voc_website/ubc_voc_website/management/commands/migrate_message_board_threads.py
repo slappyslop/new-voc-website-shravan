@@ -61,7 +61,7 @@ class Command(BaseCommand):
                     created=time,
                     defaults={
                         "type": 0,
-                        "status": 0
+                        "status": 0,
                     }
                 )
 
@@ -79,6 +79,9 @@ class Command(BaseCommand):
                 )
 
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
+                topic.first_post = post
+                topic.last_post = post
+                
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
                 Forum.objects.filter(id=forum.pk).update(last_post_on=time)
 
