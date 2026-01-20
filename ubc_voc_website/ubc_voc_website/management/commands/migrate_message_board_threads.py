@@ -60,6 +60,7 @@ class Command(BaseCommand):
                     created=time,
                     defaults={
                         "poster": user,
+                        "type": 0
                     }
                 )
 
