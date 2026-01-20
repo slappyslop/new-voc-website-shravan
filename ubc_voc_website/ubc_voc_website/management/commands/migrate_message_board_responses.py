@@ -37,6 +37,10 @@ class Command(BaseCommand):
                 
                 time = make_aware(datetime.fromtimestamp(int(row["datestamp"])))
                 parent_post = Post.objects.filter(username=row["thread"]).first()
+                if not parent_post:
+                    self.stdout.write(self.style.WARNING(f"Parent thread not found for old thread id {row["thread"]}"))
+                    continue
+                
                 topic = parent_post.topic
 
                 post, created = Post.objects.get_or_create(
