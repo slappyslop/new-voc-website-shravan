@@ -57,9 +57,8 @@ class Command(BaseCommand):
                 topic, created = Topic.objects.get_or_create(
                     forum=forums.get(forum_id),
                     subject=row["subject"],
-                    created=time,
+                    poster=user,
                     defaults={
-                        "poster": user,
                         "type": 0,
                         "status": 0
                     }
@@ -69,8 +68,8 @@ class Command(BaseCommand):
                 post, post_created = Post.objects.get_or_create(
                     topic=topic,
                     created=time,
+                    poster=user,
                     defaults={
-                        "poster": user,
                         "subject": row["subject"],
                         "content": row["body"],
 
