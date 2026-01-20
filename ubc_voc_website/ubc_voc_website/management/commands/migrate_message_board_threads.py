@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     timestamp = int(row["datestamp"])
                     time = make_aware(datetime.fromtimestamp(timestamp))
                 except (ValueError, TypeError):
-                    self.stdout.write(self.style.ERROR(f"Malformed row: {row["subject"]}"))
+                    self.stdout.write(self.style.ERROR(f"Malformed row: {row["subject"][:30]}"))
                     continue
 
                 topic, created = Topic.objects.get_or_create(
@@ -80,9 +80,6 @@ class Command(BaseCommand):
                 )
 
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
-
-                topic.save()
-                post.save()
 
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created Topic and Post for: {row["subject"][:30]}"))
