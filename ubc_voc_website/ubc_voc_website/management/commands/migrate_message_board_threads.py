@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
             for row in reader:
                 try:
-                    user = User.objects.get(id=int(row["user_id"]))
+                    user = User.objects.get(old_id=int(row["user_id"]))
                 except User.DoesNotExist:
                     continue
 
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 topic.first_post = post
                 topic.last_post = post
-                
+
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
                 Forum.objects.filter(id=forum.pk).update(last_post_on=time)
 
