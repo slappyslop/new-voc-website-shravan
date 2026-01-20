@@ -74,7 +74,7 @@ class Command(BaseCommand):
                         "content": row["body"],
 
                         # Since I don't have control over Machina models to add an old_id field, use the unused username field
-                        "poster_username": message_id
+                        "username": message_id
                     }
                 )
 
