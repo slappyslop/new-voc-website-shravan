@@ -64,7 +64,6 @@ class Command(BaseCommand):
                     }
                 )
 
-                Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 post, post_created = Post.objects.get_or_create(
                     topic=topic,
                     created=time,
@@ -78,6 +77,7 @@ class Command(BaseCommand):
                     }
                 )
 
+                Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
 
                 if created:
