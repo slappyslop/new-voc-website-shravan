@@ -47,7 +47,7 @@ class Command(BaseCommand):
 
                 try:
                     message_id = row["message_id"]
-                    forum_id = int(row["forum_id"])
+                    forum = forums.get(int(row["forum_id"]))
                     timestamp = int(row["datestamp"])
                     time = make_aware(datetime.fromtimestamp(timestamp))
                 except (ValueError, TypeError):
@@ -55,7 +55,7 @@ class Command(BaseCommand):
                     continue
 
                 topic, created = Topic.objects.get_or_create(
-                    forum=forums.get(forum_id),
+                    forum=forum,
                     subject=row["subject"],
                     poster=user,
                     created=time,
@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
                 Topic.objects.filter(pk=topic.pk).update(created=time, updated=time, last_post_on=time)
                 Post.objects.filter(pk=post.pk).update(created=time, updated=time)
-                Forum.objects.filter(id=forums.get(forum_id)).update(last_post_on=time)
+                Forum.objects.filter(id=forum.pk).update(last_post_on=time)
 
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created Topic and Post for: {row["subject"][:30]}"))
