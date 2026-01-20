@@ -60,9 +60,6 @@ class Command(BaseCommand):
                     created=time,
                     defaults={
                         "poster": user,
-
-                        # Since I don't have control over Machina models to add an old_id field, use the unused username field
-                        "poster_username": message_id
                     }
                 )
 
@@ -72,9 +69,11 @@ class Command(BaseCommand):
                     created=time,
                     defaults={
                         "poster": user,
-                        "poster_username": message_id,
                         "subject": row["subject"],
-                        "content": row["body"]
+                        "content": row["body"],
+
+                        # Since I don't have control over Machina models to add an old_id field, use the unused username field
+                        "poster_username": message_id
                     }
                 )
 
