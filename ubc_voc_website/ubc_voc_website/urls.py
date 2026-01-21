@@ -34,4 +34,5 @@ urlpatterns = [
     path("message-board/", include(machina_urls)),
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trips/", include("trips.urls")),
+    path("trip-reports/", include("tripreports.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

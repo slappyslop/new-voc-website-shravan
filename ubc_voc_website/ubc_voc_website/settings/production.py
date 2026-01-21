@@ -82,3 +82,5 @@ LOGGING = {
         }
     }
 }
+
+WAGTAILADMIN_BASE_URL = "https://ubc-voc.com"

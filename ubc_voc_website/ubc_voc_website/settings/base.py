@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'gear',
     'membership',
     'trips',
+    'tripreports',
 
     'colorfield',
     'django_quill',
@@ -58,6 +59,20 @@ INSTALLED_APPS = [
     'machina.apps.forum_tracking',
     'machina.apps.forum_member',
     'machina.apps.forum_permission',
+
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail',
+    'taggit',
+    'modelcluster',
 ]
 
 MIDDLEWARE = [
@@ -178,6 +193,8 @@ HAYSTACK_CONNECTIONS = {
 }
 
 MACHINA_PROFILE_AVATARS_ENABLED = False
+
+WAGTAIL_SITE_NAME = "VOC Trip Reports"
 
 # Custom VOC API (for Discord bot, etc.)
 API_KEY = os.getenv("API_KEY")

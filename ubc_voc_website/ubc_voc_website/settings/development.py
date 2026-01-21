@@ -30,3 +30,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+WAGTAILADMIN_BASE_URL = "http://localhost:8000"
