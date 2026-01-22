@@ -43,7 +43,7 @@ class TripReport(Page):
 
     def serve(self, request):
         if getattr(self, "is_private", False):
-            if not request.user.is_authenticated():
+            if not request.user.is_authenticated:
                 return redirect("/account/login/?next={self.url}")
             elif not is_member(request.user):
                 return render(request, "access_denied.html", status=403)
@@ -89,7 +89,7 @@ class TripReportIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         reports = self.get_children().live().public().specific().order_by("-first_published_at")
-        if not request.user.is_authenticated() or not is_member(request.user):
+        if not request.user.is_authenticated or not is_member(request.user):
             reports = reports.filter(is_private=False)
         context["reports"] = reports
         context["categories"] = TripReportCategory.objects.all()
