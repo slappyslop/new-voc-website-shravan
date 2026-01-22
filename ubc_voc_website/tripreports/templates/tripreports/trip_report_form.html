@@ -13,9 +13,16 @@
             const tripSelect = document.getElementById("trip-select");
             if (tripSelect) {
                 new Choices(tripSelect, {
+                    removeItemButton: true,
                     searchEnabled: true
                 });
             }
+
+            // Setup category dropdown
+            const categorySelector = document.getElementById("id_categories");
+            new Choices(categorySelector, {
+                removeItemButton: true,
+            });
         });
     </script>
 {% endblock %}

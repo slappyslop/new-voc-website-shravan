@@ -5,9 +5,11 @@ from django.template.response import TemplateResponse
 
 from ubc_voc_website.utils import is_member
 
+from modelcluster.fields import ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Page
+from wagtail.snippets.models import register_snippet
 
 class TripReport(Page):
     body = RichTextField(features=["bold", "italic", "link", "image", "ol", "ul"])
@@ -18,6 +20,8 @@ class TripReport(Page):
         on_delete=models.SET_NULL,
         related_name="trip_report"
     )
+
+    categories = ParentalManyToManyField("tripreports.TripReportCategory", blank=True)
 
     content_panels = Page.content_panels + [
         FieldPanel('body'),
@@ -68,4 +72,15 @@ class TripReportIndexPage(Page):
         context = super().get_context(request)
         reports = self.get_children().live().public().specific().order_by("-first_published_at")
         context["reports"] = reports
+        context["categories"] = TripReportCategory.objects.all()
         return context
+    
+@register_snippet
+class TripReportCategory(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name_plural = "Trip Report Categories"

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Comment, TripReport
+from .models import Comment, TripReport, TripReportCategory
 from trips.models import Trip
 
 from django_quill.forms import QuillFormField
@@ -10,7 +10,7 @@ from wagtail.rich_text import RichText
 class TripReportForm(forms.ModelForm):
     class Meta:
         model = TripReport
-        fields = ["title", "body", "trip"]
+        fields = ["title", "body", "trip", "categories"]
 
     def clean_body(self):
         body_data = self.cleaned_data.get("body")
@@ -32,7 +32,13 @@ class TripReportForm(forms.ModelForm):
         label="Trip (optional)",
         required=False
     )
-    body = QuillFormField(label="Trip Report Content")  
+    body = QuillFormField(label="")  
+    categories = forms.ModelMultipleChoiceField(
+        queryset=TripReportCategory.objects.all(),
+        label="Categories",
+        widget=forms.SelectMultiple(attrs={"class": "choices"}),
+        required=False
+    )
 
 class CommentForm(forms.ModelForm):
     class Meta:

@@ -5,6 +5,13 @@
 
 {% block content %}
     <div class="container">
+        {% if page.categories.all %}
+            <div class="trip-categories mb-3">
+                {% for category in page.categories.all %}
+                    <span class="badge rounded-pill bg-outline-primary">{{ category.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
         <article>
             <h2>{{ page.title }}</h2>
             <div>
