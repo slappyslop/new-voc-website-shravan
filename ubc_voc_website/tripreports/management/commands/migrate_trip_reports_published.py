@@ -47,7 +47,7 @@ class Command(BaseCommand):
                     user = User.objects.get(email=row["post_author_email"])
                 except User.DoesNotExist:
                     orphaned_emails.append(row["post_author_email"])
-                    self.stdout.write(self.style.warning(f"User not found with email {row['post_author_email']}"))
+                    self.stdout.write(self.style.WARNING(f"User not found with email {row['post_author_email']}"))
                     continue
 
                 if TripReport.objects.filter(old_id=int(row["ID"])).exists():
@@ -90,4 +90,5 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR(f"Failed to create trip report for '{row["post_title"]}'"))
 
             self.stdout.write(self.style.SUCCESS(f"Published trip report migration complete"))
+            self.stdout.write(self.style.WARNING(f"Orphaned emails: {orphaned_emails}"))
             
