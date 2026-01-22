@@ -45,6 +45,9 @@ class Command(BaseCommand):
                     self.stdout.write(f"Skipping trip report with old_id {int(row["ID"])} - already exists")
                     continue
 
+                if not row["post_content"]: # wagtail doesn't permit empty post content, so don't bother migrating these
+                    continue
+
                 trip_report = TripReport(
                     title=row["post_title"],
                     slug=row["post_name"],
