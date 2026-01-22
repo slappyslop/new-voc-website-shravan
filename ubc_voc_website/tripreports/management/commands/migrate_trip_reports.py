@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 try:
                     user = User.objects.get(email=row["post_author_email"])
                 except User.DoesNotExist:
-                    self.stdout.write(self.style.WARNING(f"User not found with old_id {row["post_author"]}"))
+                    self.stdout.write(self.style.WARNING(f"User not found with email {row["post_author_email"]}"))
                     continue
 
                 if TripReport.objects.filter(old_id=int(row["ID"])).exists():
