@@ -14,7 +14,6 @@ import csv
 from datetime import datetime
 import os
 from wagtail.documents.models import Document
-from wagtail.rich_text import RichText
 from zoneinfo import ZoneInfo
 
 pacific_timezone = ZoneInfo("America/Vancouver")
@@ -75,7 +74,7 @@ class Command(BaseCommand):
                     trip_report = TripReport(
                         title=row["post_title"],
                         slug=slugify(f"{row["post_title"]}-{row["ID"]}"),
-                        body=RichText(""),
+                        body="<p>&nbsp;</p>",
                         owner=user,
                         old_id=int(row["ID"]),
                         first_published_at=datetime.strptime(row["post_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone),
