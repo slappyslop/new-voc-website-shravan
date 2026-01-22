@@ -3,6 +3,7 @@ SELECT ID, post_author, post_date, post_content, post_title, post_name, post_sta
 """
 from django.core.management import BaseCommand
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
 from tripreports.models import TripReport, TripReportIndexPage
 
@@ -30,7 +31,6 @@ class Command(BaseCommand):
                 "post_date",
                 "post_content",
                 "post_title",
-                "post_name",
                 "post_status"
             ])
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
                 trip_report = TripReport(
                     title=row["post_title"],
-                    slug=row["post_name"],
+                    slug=slugify(row["post_title"]),
                     body=RichText(row["post_content"]),
                     owner=user,
                     old_id=int(row["ID"]),
