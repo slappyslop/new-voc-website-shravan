@@ -1,5 +1,5 @@
 """
-SELECT p.ID, u.user_email, p.post_date, p.post_title 
+SELECT p.ID, u.user_email, p.post_date, p.post_title, p.post_status
 FROM `wp_posts` as p inner join `wp_users` as u on p.post_author = u.ID 
 where post_type="post" and post_status="publish"
 """
@@ -37,6 +37,7 @@ class Command(BaseCommand):
                 "post_author_email",
                 "post_date",
                 "post_title",
+                "post_status"
             ])
 
             orphaned_emails = []
@@ -78,7 +79,8 @@ class Command(BaseCommand):
                         owner=user,
                         old_id=int(row["ID"]),
                         first_published_at=datetime.strptime(row["post_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone),
-                        legacy_pdf=pdf
+                        legacy_pdf=pdf,
+                        is_private=row["post_status"] == "private"
                     )
 
                     parent.add_child(trip_report)

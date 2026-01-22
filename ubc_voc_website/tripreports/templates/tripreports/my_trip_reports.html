@@ -23,9 +23,11 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="card-body">
-                            {{ trip_report.body|safe|truncatewords:50 }}
-                        </div>
+                        {% if not trip_report.legacy_pdf %}
+                            <div class="card-body">
+                                {{ trip_report.body|safe|truncatewords:50 }}
+                            </div>
+                        {% endif %}
                         <div class="card-footer text-end">
                             <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
                         </div>

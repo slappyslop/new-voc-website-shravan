@@ -80,9 +80,11 @@
                             </small>
                         </div>
                     </div>
-                    <div class="card-body">
-                        {{ trip_report.body|safe|truncatewords:50 }}
-                    </div>
+                    {% if not trip_report.legacy_pdf %}
+                        <div class="card-body">
+                            {{ trip_report.body|safe|truncatewords:50 }}
+                        </div>
+                    {% endif %}
                     <div class="card-footer text-end">
                         <a href="{{ trip_report.url }}">Read more &rarr;</a>
                     </div>

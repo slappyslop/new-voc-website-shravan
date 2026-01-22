@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 
 from ubc_voc_website.utils import is_member
@@ -26,11 +26,13 @@ class TripReport(Page):
     content_panels = Page.content_panels + [
         FieldPanel('body'),
         FieldPanel('trip'),
+        FieldPanel('is_private'),
         FieldPanel("legacy_pdf")
     ]
     parent_page_types = ['tripreports.TripReportIndexPage']
 
     old_id = models.IntegerField(blank=True, null=True)
+    is_private = models.BooleanField(default=False)
     legacy_pdf = models.ForeignKey(
         "wagtaildocs.Document",
         null=True,
@@ -40,6 +42,12 @@ class TripReport(Page):
     )
 
     def serve(self, request):
+        if getattr(self, "is_private", False):
+            if not request.user.is_authenticated():
+                return redirect("/account/login/?next={self.url}")
+            elif not is_member(request.user):
+                return render(request, "access_denied.html", status=403)
+
         from .forms import CommentForm
         if request.method == "POST":
             if is_member(request.user):
@@ -81,6 +89,8 @@ class TripReportIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         reports = self.get_children().live().public().specific().order_by("-first_published_at")
+        if not request.user.is_authenticated() or not is_member(request.user):
+            reports = reports.filter(is_private=False)
         context["reports"] = reports
         context["categories"] = TripReportCategory.objects.all()
         return context
