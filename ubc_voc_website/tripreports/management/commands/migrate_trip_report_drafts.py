@@ -1,11 +1,11 @@
 """
 SELECT p.ID, u.user_email, p.post_date, p.post_content, p.post_title, p.post_status 
 FROM `wp_posts` as p inner join `wp_users` as u on p.post_author = u.ID 
-where post_type="post" and (post_status="draft" or post_status="pending" or post_status="publish") order by post_status desc 
+where post_type="post" and (post_status="draft" or post_status="pending") order by post_status desc 
 """
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.management import BaseCommand
-from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 
 from tripreports.models import TripReport, TripReportIndexPage
@@ -20,10 +20,10 @@ pacific_timezone = ZoneInfo("America/Vancouver")
 User = get_user_model()
 
 class Command(BaseCommand):
-    help="Migrate trip reports from csv"
+    help="Migrate pending and draft trip reports from csv"
 
     def handle(self, *args, **kwargs):
-        path = "trip_reports.csv"
+        path = "trip_report_drafts.csv"
 
         parent = TripReportIndexPage.objects.first()
 
@@ -82,4 +82,4 @@ class Command(BaseCommand):
                     else:
                         self.stdout.write(self.style.SUCCESS(f"Created draft '{trip_report.title}'"))
 
-            self.stdout.write(self.style.SUCCESS(f"Trip report migration complete"))
+            self.stdout.write(self.style.SUCCESS(f"Draft trip report migration complete"))

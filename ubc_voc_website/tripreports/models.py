@@ -25,11 +25,19 @@ class TripReport(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('body'),
-        FieldPanel('trip')
+        FieldPanel('trip'),
+        FieldPanel("legacy_pdf")
     ]
     parent_page_types = ['tripreports.TripReportIndexPage']
 
     old_id = models.IntegerField(blank=True, null=True)
+    legacy_pdf = models.ForeignKey(
+        "wagtaildocs.Document",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+"
+    )
 
     def serve(self, request):
         from .forms import CommentForm

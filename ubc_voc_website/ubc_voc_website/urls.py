@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import about, contact, home
+from .views import about, contact, home, quill_image_upload
 
 from machina import urls as machina_urls
 
@@ -35,4 +35,5 @@ urlpatterns = [
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("trips/", include("trips.urls")),
     path("trip-reports/", include("tripreports.urls")),
+    path("upload/image/", quill_image_upload, name="quill_image_upload"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

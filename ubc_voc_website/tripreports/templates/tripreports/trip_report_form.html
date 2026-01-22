@@ -23,6 +23,36 @@
             new Choices(categorySelector, {
                 removeItemButton: true,
             });
+
+            // Setup image upload handler for rich text box
+            const quill = document.querySelector(".django-quill-widget").__quill;
+            const toolbar = quill.getModule("toolbar");
+            toolbar.addHandler("image", function () {
+                const input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
+                input.click();
+
+                input.onchange = async () => {
+                    const file = input.files[0];
+                    const formData = new FormData();
+                    formData.append("image", file);
+
+                    const response = await fetch("{% url 'quill_image_upload' %}", {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        }
+                    });
+
+                    const result = await response.json();
+                    if (result.url) {
+                        const range = quill.getSelection();
+                        quill.insertEmbed(range.index, "image", result.url);
+                    }
+                };
+            });
         });
     </script>
 {% endblock %}

@@ -3,6 +3,8 @@
 {% load wagtailcore_tags %}
 {% load role_tags %}
 
+{% block title %}{{ page.title }}{% endblock %}
+
 {% block content %}
     <div class="container">
         {% if page.categories.all %}
@@ -23,7 +25,31 @@
             {% if page.trip %}
                 <a href="{% url 'trip' trip.id %}">View original trip posting</a>
             {% endif %}
-            {{ page.body|safe }}
+            {% if page.legacy_pdf %}
+                <div class="alert alert-info">
+                    <p><strong>Note:</strong> This is an archived trip report from the old VOC website</p>
+                    <a href="{{ page.legacy_pdf.url }}" class="btn btn-sm btn-outline-primary" download>
+                        Download PDF
+                    </a>
+                </div>
+                <div>
+                    <object
+                        data="{{ page.legacy_pdf.url }}"
+                        type="application/pdf"
+                        width="100%"
+                        height="100%"
+                    >
+                        <div class="alert alert-warning">
+                            <p>Your device doesn't support viewing PDFs directly</p>
+                            <a href="{{ page.legacy_pdf.url }}" class="btn btn-primary" target="_blank">
+                                Click here to open the Trip Report in a new
+                            </a>
+                        </div>
+                    </object>
+                </div>
+            {% else %}
+                {{ page.body|safe }}
+            {% endif %}
         </article>
 
         <hr>
