@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 try:
                     trip_report = TripReport(
                         title=row["post_title"],
-                        slug=slugify(row["post_title"]-row["ID"]),
+                        slug=slugify(f"{row["post_title"]}-{row["ID"]}"),
                         body=RichText(""),
                         owner=user,
                         old_id=int(row["ID"]),
