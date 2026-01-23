@@ -65,14 +65,23 @@
             {% for trip_report in reports %}
                 <div 
                     class="card mb-4 shadow-sm trip-report-card"
-                    data-categories="{{ trip_report.categories.all|join:',' }}"
+                    data-categories="{% for cat in trip_report.categories.all %}{{ cat.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                 >
                     <div class="card-header">
-                        <h4 class=card-title">{{ trip_report.title }}</h4>
-                        <div>
-                            <small class="text-muted">
-                                by <a href="{% url 'profile' trip_report.owner.id %}">{{ trip_report.owner.profile.full_name }}</a>
-                            </small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class=card-title">{{ trip_report.title }}</h4>
+                                <small class="text-muted">
+                                    by <a href="{% url 'profile' trip_report.owner.id %}">{{ trip_report.owner.profile.full_name }}</a>
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% for category in trip_report.categories.all %}
+                                    <span class="badge rounded-pill bg-secondary text-dark ms-1">
+                                        {{ category.name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
                         </div>
                         <div>
                             <small class="text-muted">
