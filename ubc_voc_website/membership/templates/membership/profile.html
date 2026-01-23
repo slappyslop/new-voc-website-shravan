@@ -4,6 +4,24 @@
 
 {% block head_content %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .bi-chevron-right {
+            transition: transform 0.2s ease-in-out;
+            display: inline-block;
+        }
+
+        .collapse-trigger:not(.collapsed) .bi-chevron-right {
+            transform: rotate(90deg);
+        }
+
+        .collapse-trigger {
+            cursor: pointer;
+            text-decoration: none !important;
+            color: inherit !important;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -52,92 +70,158 @@
 
     <hr>
 
-    <h4 class="mb-3">Organized Trips</h4>
-    {% if trips.organized %}
-        {% if own_profile %}
-            <p>Unpublished trips are highlighted in <span class="bg-secondary bg-opacity-25 px-2 py-1 rounded">gray</span>. Edit the trip to publish it.</p>
-        {% endif %}
-        <table class="table mb-3">
-            <thead>
-                <th></th>
-                <th></th>
-                {% if own_profile %}
+    <div class="mb-3">
+        <a class="collapse-trigger collapsed h4 mb-0" data-bs-toggle="collapse" href="#organizedTrips" role="button" aria-expanded="false" aria-controls="organizedTrips">
+            Organized Trips 
+            <i class="bi bi-chevron-right ms-2 fs-6"></i>
+        </a>
+    </div>
+    <div class="collapse" id="organizedTrips">
+        {% if trips.organized %}
+            {% if own_profile %}
+                <p>Unpublished trips are highlighted in <span class="bg-secondary bg-opacity-25 px-2 py-1 rounded">gray</span>. Edit the trip to publish it.</p>
+            {% endif %}
+            <table class="table mb-3">
+                <thead>
                     <th></th>
                     <th></th>
-                {% endif %}
-                <th></th>
-            </thead>
-            <tbody>
-                {% for month, trips in trips.organized.items %}
-                    <tr>
-                        <td colspan="4" class="fs-5 fw-bold"><strong>{{ month }}</strong></td>
-                    </tr>
-                    {% for trip in trips %}
-                        <tr class="{% if not trip.published %}table-secondary{% endif %}">
-                            <td>{{ trip.trip_date_as_str_short }}</td>
-                            <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
-                            {% if own_profile and trip.is_future_or_ongoing %}
-                                <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
-                                <td>
-                                    <a 
-                                        class="btn btn-danger" 
-                                        href="{% url 'trip_delete' trip.id%}" 
-                                        onclick="return confirm('Are you sure you want to delete this trip?')"
-                                    >
-                                        Delete
-                                    </a>
-                                </td>
-                            {% endif %}
-                            <td>
-                                {% for tag in trip.tags.all %}
-                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
-                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
-                                        {{ tag.name }}
-                                    </span>
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>This member has not organized any trips yet.</p>
-    {% endif %}
-    <hr>
-    <h4 class="mb-3">Signup History</h4>
-    {% if trips.attended %}
-        <table class="table mb-3">
-            <thead>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </thead>
-            <tbody>
-                {% for month, trips in trips.attended.items %}
-                    <tr>
-                        <td colspan="4" class="fs-5 fw-bold"><strong>{{ month }}</strong></td>
-                    </tr>
-                    {% for trip in trips %}
+                    {% if own_profile %}
+                        <th></th>
+                        <th></th>
+                    {% endif %}
+                    <th></th>
+                </thead>
+                <tbody>
+                    {% for month, trips in trips.organized.items %}
                         <tr>
-                            <td>{{ trip.trip.trip_date_as_str_short }}</td>
-                            <td><a href="{% url 'trip_details' trip.trip.id %}">{{ trip.trip.name }}</a></td>
-                            <td><i>{{ trip.type }}</i></td>
-                            <td>
-                                {% for tag in trip.trip.tags.all %}
-                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
-                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
-                                        {{ tag.name }}
+                            <td colspan="4" class="fs-5 fw-bold"><strong>{{ month }}</strong></td>
+                        </tr>
+                        {% for trip in trips %}
+                            <tr class="{% if not trip.published %}table-secondary{% endif %}">
+                                <td>{{ trip.trip_date_as_str_short }}</td>
+                                <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
+                                {% if own_profile and trip.is_future_or_ongoing %}
+                                    <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
+                                    <td>
+                                        <a 
+                                            class="btn btn-danger" 
+                                            href="{% url 'trip_delete' trip.id%}" 
+                                            onclick="return confirm('Are you sure you want to delete this trip?')"
+                                        >
+                                            Delete
+                                        </a>
+                                    </td>
+                                {% else %}
+                                    <td></td>
+                                    <td></td>
+                                {% endif %}
+                                <td>
+                                    {% for tag in trip.tags.all %}
+                                        <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                        <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                            {{ tag.name }}
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>This member has not organized any trips yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <a class="collapse-trigger collapsed h4 mb-0" data-bs-toggle="collapse" href="#signupHistory" role="button" aria-expanded="false" aria-controls="signupHistory">
+            Signup History 
+            <i class="bi bi-chevron-right ms-2 fs-6"></i>
+        </a>
+    </div>
+    <div class="collapse" id="signupHistory">
+        {% if trips.attended %}
+            <table class="table mb-3">
+                <thead>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    {% for month, trips in trips.attended.items %}
+                        <tr>
+                            <td colspan="4" class="fs-5 fw-bold"><strong>{{ month }}</strong></td>
+                        </tr>
+                        {% for trip in trips %}
+                            <tr>
+                                <td>{{ trip.trip.trip_date_as_str_short }}</td>
+                                <td><a href="{% url 'trip_details' trip.trip.id %}">{{ trip.trip.name }}</a></td>
+                                <td><i>{{ trip.type }}</i></td>
+                                <td>
+                                    {% for tag in trip.trip.tags.all %}
+                                        <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                        <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                            {{ tag.name }}
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>This member has not gone on any trips yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <a class="collapse-trigger collapsed h4 mb-0" data-bs-toggle="collapse" href="#tripReports" role="button" aria-expanded="false" aria-controls="tripReports">
+            Trip Reports
+            <i class="bi bi-chevron-right ms-2 fs-6"></i>
+        </a>
+    </div>
+    <div class="collapse" id="tripReports">
+        {% if trip_reports %}
+            {% for trip_report in trip_reports %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class=card-title">{{ trip_report.title }}</h4>
+                            </div>
+                            <div class="text-end">
+                                {% for category in trip_report.categories.all %}
+                                    <span class="badge rounded-pill bg-secondary ms-1">
+                                        {{ category.name }}
                                     </span>
                                 {% endfor %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>This member has not gone on any trips yet.</p>
-    {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <small class="text-muted">
+                                posted {{ trip_report.first_published_at|date:"M d, Y H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                    {% if not trip_report.legacy_pdf %}
+                        <div class="card-body">
+                            {{ trip_report.body|safe|truncatewords:50 }}
+                        </div>
+                    {% endif %}
+                    <div class="card-footer text-end">
+                        {% if trip_report.live %}
+                            <a href="{{ trip_report.url }}">Read more &rarr;</a>
+                        {% else %}
+                            <a href="{% url 'trip_report_edit' trip_report.id %}">Edit &rarr;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>This member has not published any trip reports yet.</p>
+        {% endif %}
+    </div>
+
 {% endblock %}

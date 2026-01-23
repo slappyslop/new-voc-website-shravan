@@ -12,6 +12,7 @@ from django.utils import timezone
 from .forms import MembershipForm, ProfileForm, WaiverForm
 from .models import Exec, Membership, Profile, PSG, Waiver
 from .utils import *
+from tripreports.models import TripReport
 from trips.models import Trip, TripSignup
 from trips.utils import signup_type_as_str
 from ubc_voc_website.decorators import Members, Execs
@@ -185,6 +186,8 @@ def profile(request, id):
             attended_trips_list[month].append(trip)
         attended_trips_list = dict(sorted(attended_trips_list.items(), key=lambda x: datetime.datetime.strptime(x[0], '%B %Y'), reverse=True))
 
+        trip_reports = TripReport.objects.filter(owner=profile.user, live=True).order_by("-first_published_at")
+
         exec = Exec.objects.filter(user=user).first()
         exec_role = exec.exec_role if exec else None
 
@@ -195,6 +198,7 @@ def profile(request, id):
                 'organized': organized_trips_list,
                 'attended': attended_trips_list
             },
+            'trip_reports': trip_reports,
             'own_profile': user == request.user,
             'exec_role': exec_role
         })

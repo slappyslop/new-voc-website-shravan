@@ -18,7 +18,8 @@ def trip_report_create(request):
             revision = trip_report.save_revision(user=request.user)
 
             if "submit" in request.POST: # Submit for approval
-                revision.submit_for_moderation()
+                workflow = trip_report.get_workflow()
+                workflow.start(trip_report, request.user)
 
             return redirect("my_trip_reports")
     else:
@@ -46,7 +47,9 @@ def trip_report_edit(request, id):
             revision = trip_report.save_revision(user=request.user)
 
             if "submit" in request.POST: # Submit for approval
-                revision.submit_for_moderation()
+                workflow = trip_report.get_workflow()
+                workflow.start(trip_report, request.user)
+                
             return redirect("my_trip_reports")
     else:
         form = TripReportForm(instance=trip_report)
