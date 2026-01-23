@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     user=user,
                     timestamp=datetime.strptime(row["comment_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone),
                     defaults={
-                        "content": row["comment_content"]
+                        "body": row["comment_content"]
                     }
                 )
 
