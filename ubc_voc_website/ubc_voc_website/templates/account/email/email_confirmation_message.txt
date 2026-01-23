@@ -1,0 +1,6 @@
+Hello {{ user.display_name }},
+
+{% block content %}{% autoescape off %}You're receiving this email because you or someone else has used your email address to register an account on {{ current_site.domain }}.
+
+If this was you, go to {{ activate_url }} to verify your email address{% endautoescape %}{% endblock content %}.
+Otherwise, you may safely ignore this email.
