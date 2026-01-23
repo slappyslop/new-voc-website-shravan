@@ -17,7 +17,7 @@
         <article>
             <h2>{{ page.title }}</h2>
             <div>
-                <small class="text-muted">by {{ page.owner.profile.full_name }}</small>
+                <small class="text-muted">by <a href="{% url 'profile' page.owner.id %}">{{ page.owner.profile.full_name }}</a></small>
             </div>
             <div>
                 <small class="text-muted">posted {{ page.first_published_at|date:"M d, Y H:i" }}</small>
