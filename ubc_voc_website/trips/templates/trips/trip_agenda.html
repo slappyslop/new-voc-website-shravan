@@ -137,7 +137,7 @@
                             <td>{{ trip.trip_date_as_str_short }}</td>
                             <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
                             <td>
-                                {% if request.user|is_exec %}
+                                {% if request.user in trip.organizers.all %}
                                     <a href="{% url 'trip_edit' trip.id %}">Edit</a>
                                 {% endif %}
                             </td>

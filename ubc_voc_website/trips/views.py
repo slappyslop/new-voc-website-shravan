@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from .forms import TripForm, TripSignupForm
@@ -16,13 +18,18 @@ import datetime
 import json
 import pytz
 from types import SimpleNamespace
+from weasyprint import HTML
 
 User = get_user_model()
 
 pacific_timezone = pytz.timezone("America/Vancouver")
 
 def trips(request):
-    trips = Trip.objects.filter(start_time__gt=timezone.now(), published=True).order_by("start_time", "end_time", "name")
+    trips = Trip.objects.filter(
+        start_time__gt=timezone.now(), published=True
+    ).only(
+        "id", "name", "start_time", "end_time", "tags"
+    ).order_by("start_time", "end_time", "name")
     trips_list = {}
     all_trip_tags = set()
     for trip in trips:
@@ -198,6 +205,8 @@ def trip_details(request, id):
                     no_longer_going=no_longer_going_car_spots,
                 ) if trip.drivers_required else None,
             })
+    else:
+        trip.members_only_info = None
 
     return render(request, "trips/trip.html", {
         "trip": trip,
@@ -232,8 +241,8 @@ def change_signup_type(request, signup_id, new_type):
 
 @Members
 def mark_as_going(request, trip_id, user_id):
-    user = User.objects.get(id=user_id)
-    trip = Trip.objects.get(id=trip_id)
+    user = get_object_or_404(User, id=user_id)
+    trip = get_object_or_404(Trip, id=trip_id)
 
     if not trip.organizers.filter(pk=request.user.pk).exists():
         return render(request, "access_denied.html", status=403)
@@ -248,6 +257,42 @@ def mark_as_going(request, trip_id, user_id):
         trip_signup.save()
 
         return redirect(f"/trips/details/{trip_id}")
+    
+@Members
+def download_participant_list(request, trip_id):
+    trip = get_object_or_404(Trip, id=trip_id)
+    if request.user not in trip.organizers.all() and not is_exec(request.user):
+        return redirect(f"/trips/details/{trip_id}")
+
+    if trip.use_signup:
+        participants = TripSignup.objects.filter(
+            trip=trip, type=TripSignupTypes.GOING,
+        ).exclude(
+            user__in=trip.organizers.all()
+        ).select_related(
+            "user", "user__profile"
+        ).order_by("user__profile__first_name", "user__profile__last_name")
+
+        organizers = trip.organizers.all().select_related("profile").order_by("profile__first_name", "profile__last_name")
+        print(organizers.first().email)
+
+        html_content = render_to_string("trips/participant_list.html", {
+            "trip": trip,
+            "organizers": organizers,
+            "participants": participants,
+            "headcount": len(organizers) + len(participants),
+            "now": timezone.now()
+        })
+
+        base_url = request.build_absolute_uri("/")
+        pdf_file = HTML(string=html_content, base_url=base_url).write_pdf()
+
+        response = HttpResponse(pdf_file, content_type="application/pdf")
+        filename = f"{trip.name.replace(' ', '_')}_participants.pdf"
+        response["Content-Disposition"] = f"attachment; filename='{filename}'"
+        return response
+
+    return redirect(f"/trips/details/{trip_id}")
 
 def clubroom_calendar(request):
     if request.POST:

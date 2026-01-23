@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Participant List - {{ trip.name }}</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 1.5cm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #7f8c8d;
+            }
+            @bottom-left {
+                content: "Generated on {{ now|date:'Y-m-d H:i' }}";
+                font-size: 9pt;
+                color: #7f8c8d;
+            }
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 5px;
+        }
+
+        .header-section {
+            margin-bottom: 20px;
+            display: flex;
+            width: 100%;
+        }
+
+        .info-box {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-size: 8pt;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 11pt;
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: bold;
+            text-align: left;
+            border: 1px solid #dee2e6;
+            padding: 10px 8px;
+            font-size: 9pt;
+        }
+
+        td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            font-size: 9pt;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #95a5a6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Trip Participant List: {{ trip.name }}</h1>
+
+    <div class="header-section">
+        <div class="info-box">
+            <span class="info-label">Trip Schedule</span>
+            <div class="info-value">
+                <strong>Start:</strong> {{ trip.start_time|date:"D, M d, Y @ g:i A" }}<br>
+                <strong>End:</strong> {{ trip.end_time|date:"D, M d, Y @ g:i A" }}<br>
+                <strong>Headcount:</strong> {{ headcount }}
+            </div>
+        </div>
+    </div>
+
+    <h4>Trip Organizer</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">Name</th>
+                <th style="width: 20%;">Email</th>
+                <th style="width: 12%;">Phone</th>
+                <th style="width: 13%;">InReach</th>
+                <th style="width: 40%;">Emergency Contact & Medical Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in organizers %}
+                <tr>
+                    <td>{{ o.profile.full_name_with_pronouns }}</td>
+                    <td>{{ o.email }}</td>
+                    <td>{{ o.profile.phone|default:"-" }}</td>
+                    <td>{{ o.profile.inreach_address|default:"-" }}</td>
+                    <td>
+                        {{ o.profile.emergency_info|default:"-"|linebreaksbr }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Trip Participants</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">Name</th>
+                <th style="width: 20%;">Email</th>
+                <th style="width: 12%;">Phone</th>
+                <th style="width: 13%;">InReach</th>
+                <th style="width: 40%;">Emergency Contact & Medical Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in participants %}
+                <tr>
+                    <td>{{ p.user.profile__full_name_with_pronouns }}</td>
+                    <td>{{ p.user.email }}</td>
+                    <td>{{ p.user.profile__phone|default:"-" }}</td>
+                    <td>{{ p.user.profile__inreach_address|default:"-" }}</td>
+                    <td>
+                        {{ p.user.profile__emergency_info|default:"-"|linebreaksbr }}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="no-data">No participants have signed up for this trip yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

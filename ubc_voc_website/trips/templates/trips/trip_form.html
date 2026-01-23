@@ -124,6 +124,9 @@
             flatpickr('.flatpickr', {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
+                locale: {
+                    "firstDayOfWeek": 1
+                }
             });
 
             // Setup publish confirmation modal
@@ -184,6 +187,8 @@
         {% render_form_field form.tags %}
 
         {% render_form_field form.description %}
+
+        {% render_form_field form.members_only_info %}
 
         {% render_form_field form.use_pretrip %}
 

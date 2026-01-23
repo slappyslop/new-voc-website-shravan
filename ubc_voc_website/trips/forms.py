@@ -31,6 +31,7 @@ class TripForm(forms.ModelForm):
             'in_clubroom',
             'status',
             'description',
+            'members_only_info',
             'use_signup',
             'signup_question',
             'max_participants',
@@ -247,13 +248,18 @@ class TripForm(forms.ModelForm):
     description = QuillFormField(
         label="Trip Description"
     )
+    members_only_info = forms.CharField(
+        max_length=1024,
+        required=False,
+        label="Info that should be shown only to VOC Members (eg. WhatsApp group link, spreadsheet, etc.)"
+    )
     use_signup = forms.BooleanField(
         initial=True,
         required=False,
         label="Use the trip signup tools"
     )
     signup_question = forms.CharField(
-        max_length=256, 
+        max_length=1024, 
         required=False,
         label="Question to ask participants when they sign up"
     )

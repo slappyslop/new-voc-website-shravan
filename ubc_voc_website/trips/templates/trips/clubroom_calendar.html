@@ -41,7 +41,10 @@
 
             // Setup date/time pickers
             flatpickr('.flatpickr-date', {
-                dateFormat: "Y-m-d"
+                dateFormat: "Y-m-d",
+                locale: {
+                    "firstDayOfWeek": 1
+                }
             });
             flatpickr('.flatpickr-timeonly', {
                 noCalendar: true,

@@ -62,6 +62,7 @@ class Trip(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
     in_clubroom = models.BooleanField(default=False)
     description = models.TextField(blank=True, null=True)
+    members_only_info = models.CharField(max_length=1024, blank=True, null=True)
     use_signup = models.BooleanField(default=False)
     signup_question = models.CharField(max_length=1024, blank=True, null=True)
     max_participants = models.IntegerField(blank=True, null=True)
