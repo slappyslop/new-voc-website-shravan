@@ -33,7 +33,7 @@
                         <a href="{{ page.legacy_pdf.url }}" target="_blank">open it in a new tab</a>
                     </p>
                 </div>
-                <object data="{{ page.legacy_pdf.url }}"></object>
+                <object data="{{ page.legacy_pdf.url }}" width="100%"></object>
             {% else %}
                 {{ page.body|safe }}
             {% endif %}
