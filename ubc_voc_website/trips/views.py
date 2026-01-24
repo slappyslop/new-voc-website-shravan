@@ -358,7 +358,7 @@ def clubroom_calendar(request):
                 })
                 start_time += datetime.timedelta(days=7)
 
-        gear_hours = GearHour.objects.filter(start_date__lte=timezone.localdate(), end_date__gte=timezone.localdate())
+        gear_hours = GearHour.objects.filter(end_date__gte=timezone.localdate())
         cancelled_gear_hours = CancelledGearHour.objects.filter(gear_hour__in=gear_hours)
 
         for gear_hour in gear_hours:
