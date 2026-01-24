@@ -270,7 +270,7 @@ class TripForm(forms.ModelForm):
     interested_start_choice = forms.ChoiceField(
         choices=SIGNUP_START_CHOICES,
         widget=forms.RadioSelect,
-        initial="now"
+        initial="custom"
     ) 
     interested_start = forms.DateTimeField(
         required=False,
@@ -280,7 +280,7 @@ class TripForm(forms.ModelForm):
     interested_end_choice = forms.ChoiceField(
         choices=SIGNUP_END_CHOICES,
         widget=forms.RadioSelect,
-        initial="pretrip"
+        initial="custom"
     )
     interested_end = forms.DateTimeField(
         required=False,
@@ -290,7 +290,7 @@ class TripForm(forms.ModelForm):
     committed_start_choice = forms.ChoiceField(
         choices=SIGNUP_START_CHOICES,
         widget=forms.RadioSelect,
-        initial="now"
+        initial="custom"
     ) 
     committed_start = forms.DateTimeField(
         required=False,
@@ -300,7 +300,7 @@ class TripForm(forms.ModelForm):
     committed_end_choice = forms.ChoiceField(
         choices=SIGNUP_END_CHOICES,
         widget=forms.RadioSelect,
-        initial="pretrip"
+        initial="custom"
     )
     committed_end = forms.DateTimeField(
         required=False,
@@ -320,7 +320,7 @@ class TripForm(forms.ModelForm):
     going_end_choice = forms.ChoiceField(
         choices=SIGNUP_END_CHOICES,
         widget=forms.RadioSelect,
-        initial="pretrip"
+        initial="custom"
     )
     going_end = forms.DateTimeField(
         required=False,

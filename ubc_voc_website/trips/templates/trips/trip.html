@@ -100,6 +100,12 @@
         {% endif %}
     </p>
 
+    {% if trip.status == "T" %}
+        <div class="alert alert-info">This trip has been marked as tentative by the organizer</div>
+    {% elif trip.status == "C" %}
+        <div class="alert alert-danger">This trip has been cancelled</div>
+    {% endif %}
+
     <p>
         {{ description|safe }}
     </p>
@@ -547,8 +553,8 @@
     {% if trip.use_signup %}
         {% if user_can_signup and not user_signup %} <!-- Excludes inactive honorary members -->
         <hr>
-        <h5>Sign Up</h5>
-            {% if trip.valid_signup_types %}
+        {% if trip.valid_signup_types %}
+            <h5>Sign Up</h5>
                 <form method="post" action="{% url 'trip_signup' trip.id %}" class="signup-form" id="signup-form">
                     {% csrf_token %}
                     <div class="mb-4">
