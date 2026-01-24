@@ -1,5 +1,5 @@
 """
-SELECT p.ID, u.user_email, p.post_date, p.post_title, p.post_status
+SELECT p.ID, u.user_email, p.post_date, p.post_title, p.post_status, p.post_content
 FROM `wp_posts` as p inner join `wp_users` as u on p.post_author = u.ID 
 where post_type="post" and (post_status="publish" or post_status="private")
 """
@@ -36,7 +36,8 @@ class Command(BaseCommand):
                 "post_author_email",
                 "post_date",
                 "post_title",
-                "post_status"
+                "post_status",
+                "post_content"
             ])
 
             orphaned_emails = set()
@@ -77,7 +78,7 @@ class Command(BaseCommand):
                     trip_report = TripReport(
                         title=row["post_title"],
                         slug=slugify(f"{row["post_title"]}-{row["ID"]}"),
-                        body="<p>&nbsp;</p>",
+                        body=row["post_content"], # Important so the content of old trip reports is searchable, even if it is weirdly formatted
                         owner=user,
                         old_id=int(row["ID"]),
                         first_published_at=datetime.strptime(row["post_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=pacific_timezone),
