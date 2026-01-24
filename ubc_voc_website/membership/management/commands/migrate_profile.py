@@ -1,3 +1,6 @@
+"""
+select id, firstname, lastname, phone, blurb, birthdate, acc, studentnumber, vocene, emergency_info, spot_url, trip_email, pronouns from members_table
+"""
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from membership.models import Profile

@@ -390,8 +390,8 @@ class TripSignupForm(forms.ModelForm):
         if self.instance.pk:
             signup.type = self.instance.type
         else:
-            signup.type = self.cleaned_data.get("type")
-            if signup.type not in signup.trip.valid_signup_types:
+            signup.type = int(self.cleaned_data.get("type"))
+            if int(signup.type) not in signup.trip.valid_signup_types:
                 raise forms.ValidationError("The selected signup option is not currently available for this trip")
 
         fields = ["can_drive", "car_spots", "signup_answer"]

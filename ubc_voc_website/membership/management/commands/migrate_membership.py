@@ -1,3 +1,6 @@
+"""
+select id, member_id, startdate, enddate, type_id, active from memberships 
+"""
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from membership.models import Membership
