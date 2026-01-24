@@ -35,8 +35,16 @@ def contact(request):
 @csrf_exempt
 @Members
 def quill_image_upload(request):
+    MAX_FILE_SIZE = 2097152
+
     if request.method == "POST" and request.FILES.get("image"):
         image_file = request.FILES["image"]
+
+        if image_file.size > MAX_FILE_SIZE:
+            return JsonResponse({
+                "error": "File too large. Please keep images under 2MB"
+            }, status=400)
+
         image = Image(
             title=image_file.name,
             file=image_file,

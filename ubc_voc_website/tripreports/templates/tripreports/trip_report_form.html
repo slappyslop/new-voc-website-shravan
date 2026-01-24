@@ -49,9 +49,13 @@
                     });
 
                     const result = await response.json();
-                    if (result.url) {
+
+                    if (response.ok) {
                         const range = quill.getSelection();
                         quill.insertEmbed(range.index, "image", result.url);
+                    }
+                    else {
+                        alert("Upload failed: " + (result.error || "Unknown error"));
                     }
                 };
             });
