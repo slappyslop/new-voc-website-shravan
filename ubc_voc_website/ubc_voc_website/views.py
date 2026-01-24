@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .decorators import Members
 from photologue.models import Gallery, Photo
+from wagtail.images.models import Image
 
 PHOTO_CONTEST_ALBUM = "photo-contest-2025"
 
@@ -36,7 +37,13 @@ def contact(request):
 def quill_image_upload(request):
     if request.method == "POST" and request.FILES.get("image"):
         image_file = request.FILES["image"]
-        path = default_storage.save(f"uploads/quill/{image_file.name}", image_file)
-        url = default_storage.url(path)
-        return JsonResponse({"url": url})
+        image = Image(
+            title=image_file.name,
+            file=image_file,
+            collection_id=2,
+            uploaded_by_user=request.user
+        )
+        image.save()
+        rendition = image.get_rendition("width-1000")
+        return JsonResponse({"url": rendition.url})
     return JsonResponse({"error": "Failed to upload image"}, status=403)
