@@ -53,7 +53,7 @@
         }
 
         .feature-card {
-            height: 300px; /* Essential: Gives the card a physical size */
+            height: 280px !important;
             overflow: hidden;
             transition: transform 0.3s ease;
         }
@@ -65,7 +65,7 @@
         .feature-card .card-img {
             height: 100%;
             width: 100%;
-            object-fit: cover; /* Ensures image fills the 300px height without stretching */
+            object-fit: cover;
         }
 
         .custom-gradient {
@@ -120,7 +120,7 @@
                 <div class="col-md-6 col-lg-3">
                     <a href="/about/">
                         <div class="card h-100 border-0 shadow feature-card">
-                            <img src="{{ about.get_display_url }}" class="card-img">
+                            <img src="{{ about.image.url }}" class="card-img">
                             <div class="card-img-overlay d-flex flex-column justify-content-end custom-gradient">
                                 <h3 class="card-title text-white fw-bold">About the VOC</h3>
                             </div>
@@ -131,7 +131,7 @@
                 <div class="col-md-6 col-lg-3">
                     <a href="{% url 'join' %}">
                         <div class="card h-100 border-0 shadow feature-card">
-                            <img src="{{ join.get_display_url }}" class="card-img">
+                            <img src="{{ join.image.url }}" class="card-img">
                             <div class="card-img-overlay d-flex flex-column justify-content-end custom-gradient">
                                 <h3 class="card-title text-white fw-bold">Become a Member</h3>
                             </div>
@@ -142,9 +142,9 @@
                 <div class="col-md-6 col-lg-3">
                     <a href="{% url 'trips' %}">
                         <div class="card h-100 border-0 shadow feature-card">
-                            <img src="{{ trips.get_display_url }}" class="card-img">
+                            <img src="{{ trips.image.url }}" class="card-img">
                             <div class="card-img-overlay d-flex flex-column justify-content-end custom-gradient">
-                                <h3 class="card-title text-white fw-bold">Trips</h3>
+                                <h3 class="card-title text-white fw-bold">Upcoming Trips</h3>
                             </div>
                         </div>
                     </a>
@@ -153,7 +153,7 @@
                 <div class="col-md-6 col-lg-3">
                     <a href="https://huts.ubc-voc.com">
                         <div class="card h-100 border-0 shadow feature-card">
-                            <img src="{{ huts.get_display_url }}" class="card-img">
+                            <img src="{{ huts.image.url }}" class="card-img">
                             <div class="card-img-overlay d-flex flex-column justify-content-end custom-gradient">
                                 <h3 class="card-title text-white fw-bold">Huts</h3>
                             </div>
