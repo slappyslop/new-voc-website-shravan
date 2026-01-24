@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load role_tags %}
+
 {% block title %}Trip Reports{% endblock %}
 
 {% block head_content %}
@@ -14,53 +16,38 @@
                 placeholderValue: "Filter by Category",
                 removeItemButton: true
             });
-
-            const tripReportCards = document.querySelectorAll(".trip-report-card");
-            const noResultsMessage = document.getElementById("no-results");
-
-            function applyFilters() {
-                const selectedCategories = categoryChoices.getValue(true);
-                let visibleCount = 0;
-                tripReportCards.forEach(card => {
-                    const cardCategories = card.dataset.categories ? card.dataset.categories.split(',') : [];
-                    const isVisible = (selectedCategories.length === 0) || selectedCategories.some(category => cardCategories.includes(category));
-                    if (isVisible) {
-                        card.style.display = "";
-                        visibleCount++;
-                    }
-                    else {
-                        card.style.display = "none";
-                    }
-                });
-
-                if (noResultsMessage) {
-                    noResultsMessage.style.display = (visibleCount === 0) ? "block" : "none";
-                }
-            }
-
-            categoryFilter.addEventListener("change", applyFilters);
         });
     </script>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        {% if request.user.is_authenticated %}
-            <div class="d-flex justify-content-between align-items-center my-4">
-                <h2>Trip Reports</h2>
+        <div class="d-flex justify-content-between align-items-center my-4">
+            <h2>Trip Reports</h2>
+            {% if request.user|is_member %}
                 <div class="d-flex">
                     <a href="{% url 'my_trip_reports' %}" class="btn btn-secondary mx-2">My Trip Reports</a>
                     <a href="{% url 'trip_report_create' %}" class="btn btn-primary mx-2">+ Write a trip report</a>
                 </div>
-            </div>   
-        {% endif %}
-        <div class="mb-3">
-            <select id="category-filter" multiple>
-                {% for category in categories %}
-                    <option value="{{ category.name }}">{{ category.name }}</option>
-                {% endfor %}
-            </select>
+            {% endif %}
         </div>
+        <form method="get" class="row mb-4 d-flex align-items-center">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control" placeholder="Search" value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-4">
+                <select name="category" id="category-filter" class="form-select" multiple>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-info w-100">Apply Filters</button>
+            </div>
+        </form>
         <div class="list-group">
             {% for trip_report in reports %}
                 <div 
@@ -102,5 +89,21 @@
                 <p id="no-results">No trip reports found</p>
             {% endfor %}
         </div>
+
+        {% if reports.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if reports.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ reports.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&laquo;</a></li>
+                    {% endif %}
+
+                    <li class="page-item disabled"><span class="page-link">Page {{ reports.number }} of {{ reports.paginator.num_pages }}</span></li>
+
+                    {% if reports.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ reports.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 {% endblock %}

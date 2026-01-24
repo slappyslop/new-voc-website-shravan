@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import models
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
@@ -90,9 +91,28 @@ class TripReportIndexPage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        reports = TripReport.objects.child_of(self).live().public().order_by("-first_published_at")
+        reports = TripReport.objects.child_of(self).live().public().select_related("owner__profile").prefetch_related("categories").order_by("-first_published_at")
+
         if not request.user.is_authenticated or not is_member(request.user):
             reports = reports.filter(is_private=False)
+
+        q = request.GET.get("q")
+        if q:
+            reports = reports.filter(models.Q(title__icontains=q) | models.Q(body__icontains=q))
+
+        category_id = request.GET.get("category")
+        if category_id and category_id != "all":
+            reports = reports.filter(categories__id=category_id)
+
+        page = request.GET.get("page")
+        paginator = Paginator(reports, 20)
+        try:
+            reports = paginator.page(page)
+        except PageNotAnInteger:
+            reports = paginator.page(1)
+        except EmptyPage:
+            reports = paginator.page(paginator.num_pages)
+
         context["reports"] = reports
         context["categories"] = TripReportCategory.objects.all()
         return context
