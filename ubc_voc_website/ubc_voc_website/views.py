@@ -4,14 +4,26 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from .decorators import Members
-from photologue.models import Gallery
+from photologue.models import Gallery, Photo
 
 PHOTO_CONTEST_ALBUM = "photo-contest-2025"
 
 def home(request):
     gallery = Gallery.objects.filter(slug="homepage").first()
-    photos = gallery.public() if gallery else []
-    return render(request, "home.html", {"photos": photos})
+    gallery_photos = gallery.public() if gallery else []
+
+    about_photo = Photo.objects.get(slug="about")
+    join_photo = Photo.objects.get(slug="join")
+    trips_photo = Photo.objects.get(slug="trips")
+    huts_photo = Photo.objects.get(slug="huts")
+
+    return render(request, "home.html", {
+        "photos": gallery_photos,
+        "about": about_photo,
+        "join": join_photo,
+        "trips": trips_photo,
+        "huts": huts_photo
+    })
 
 def about(request):
     return render(request, "about.html")
