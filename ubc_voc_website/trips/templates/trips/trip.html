@@ -441,6 +441,17 @@
                 data-emails="{{ signup_emails.going|join:',' }},{{ signup_emails.committed|join:',' }},{{ signup_emails.interested|join:',' }}"
             >Copy All Emails</button>
         {% endif %}
+        {% if trip.signup_info.interested.0 == 'not_yet_open' %}
+            <p>The interested list will open on <b>{{ trip.signup_info.interested.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.interested.1|time:"g:i A" }}</b></p>
+        {% elif trip.signup_info.interested.0 == 'closed' %}
+            <p>The interested list has already closed</p>
+        {% endif %}
+
+        {% if trip.signup_info.committed.0 == 'not_yet_open' %}
+            <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
+        {% elif trip.signup_info.committed.0 == 'closed' %}
+            <p>The committed list has already closed</p>
+        {% endif %}
     {% endif %}
 
     <!-- Modal to confirm "mark going" -->
@@ -572,18 +583,6 @@
 
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
-            {% else %}
-                {% if trip.signup_info.interested.0 == 'not_yet_open' %}
-                    <p>The interested list will open on <b>{{ trip.signup_info.interested.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.interested.1|time:"g:i A" }}</b></p>
-                {% elif trip.signup_info.interested.0 == 'closed' %}
-                    <p>The interested list has already closed</p>
-                {% endif %}
-
-                {% if trip.signup_info.committed.0 == 'not_yet_open' %}
-                    <p>The committed list will open on <b>{{ trip.signup_info.committed.1|date:"M. j, Y"  }}</b> at <b>{{ trip.signup_info.committed.1|time:"g:i A" }}</b></p>
-                {% elif trip.signup_info.committed.0 == 'closed' %}
-                    <p>The committed list has already closed</p>
-                {% endif %}
             {% endif %}
         {% elif not request.user.is_authenticated %}
             <p><a href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">Sign in</a> to sign up for this trip</p>

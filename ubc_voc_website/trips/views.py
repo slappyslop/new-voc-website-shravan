@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import render_to_string
@@ -26,7 +27,10 @@ pacific_timezone = pytz.timezone("America/Vancouver")
 
 def trips(request):
     trips = Trip.objects.filter(
-        start_time__gt=timezone.now(), published=True
+        Q(published=True) & (
+            Q(end_time__isnull=False, end_time__gt=timezone.now()) | 
+            Q(end_time__isnull=True, start_time__gte=timezone.now())
+        )
     ).only(
         "id", "name", "start_time", "end_time", "tags"
     ).order_by("start_time", "end_time", "name")
