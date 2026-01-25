@@ -6,6 +6,7 @@ class MembershipAdmin(admin.ModelAdmin):
     list_display = ('user__email', 'start_date', 'end_date', 'type', 'active')
     search_fields = ('user__email',)
     list_filter = ('start_date', 'end_date')
+    readonly_fields = ("user",)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
