@@ -32,11 +32,14 @@
                     <h3 class="mb-0">{{ profile.first_name }} {{ profile.last_name }} {% if profile.pronouns %}({{profile.pronouns}}){% endif %}</h3>
                 </div>
                 {% if own_profile %}
-                    <div class="col-auto">
+                    <div class="col-auto d-flex align-items-center gap-3">
                         <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary"><i class="bi bi-pencil-fill me-2"></i> Edit My Profile</a>
                     </div>
                 {% endif %}
             </div>
+            {% if own_profile %}
+                <p><b>User ID:</b> {{ profile.user.id }}</p>
+            {% endif %}
             {% if exec_role %}
                 <p><b>Exec Role:</b> {{ exec_role }}</p>
             {% endif %}
