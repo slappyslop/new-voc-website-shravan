@@ -25,7 +25,7 @@ def membership_verification(request):
         return JsonResponse({"error": "Invalid or missing user ID"}, status=400)
     user_id = int(user_id)
 
-    membership = Membership.objects.filter(member__user__id=user_id, active=True).select_related("user").order_by("-enddate").first()
+    membership = Membership.objects.filter(membership__user__id=user_id, active=True).select_related("user").order_by("-enddate").first()
 
     if not membership or membership.end_date < timezone.now().date():
         return JsonResponse({"error": "User is not a current VOC member"}, status=400)
