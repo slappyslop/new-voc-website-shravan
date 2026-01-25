@@ -76,6 +76,10 @@
 {% endblock %}
 
 {% block content %}
+    <div class="alert alert-info">
+        <p>Welcome to the new VOC website! Before you log in for the first time, you will need to <a href="{% url 'account_reset_password' %}">reset your password</a>.</p>
+        <p>You may reuse your previous password, but we also encourage you to take this opportunity to ensure that you are using a strong password!</p>
+    </div>
     <div class="row align-items-center">
         <div class="col-lg-6 text-section">
             <h2>UBC Varsity Outdoor Club</h2>
