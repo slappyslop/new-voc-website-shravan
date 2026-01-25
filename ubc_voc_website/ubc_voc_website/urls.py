@@ -26,6 +26,7 @@ from machina import urls as machina_urls
 urlpatterns = [
     path("", home, name="home"),
     path("about/", about, name="about"),
+    path("api/", include("api.urls")),
     path("contact", contact, name="contact"),
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
