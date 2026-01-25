@@ -131,7 +131,7 @@
             <tbody>
                 {% for month, trips in trips_list.items %}
                     <tr>
-                        <td colspan="4" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
+                        <td colspan="5" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
                     </tr>
                     {% for trip in trips %}
                         <tr data-tags="{{ trip.tags.all|join:','}}">
