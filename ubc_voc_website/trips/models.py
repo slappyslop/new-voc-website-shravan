@@ -83,8 +83,8 @@ class Trip(models.Model):
         if self.end_time:
             end = self.end_time.astimezone(pacific_timezone)
             if end.date() > start.date():
-                return f"{start.strftime('%a %d')} - {end.strftime('%a %d')}"
-        return start.strftime('%a %d')
+                return f"{start.strftime('%a %b %d')} - {end.strftime('%a %b %d')}"
+        return start.strftime('%a %b %d')
         
     @property
     def trip_date_as_str_with_year(self):
