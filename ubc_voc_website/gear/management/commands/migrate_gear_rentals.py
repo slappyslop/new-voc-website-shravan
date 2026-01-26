@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 rental, created = Rental.objects.get_or_create(
                     old_id=int(row["id"]),
                     defaults={
-                        'type': RentalTypes.GEAR if row["type"] == 0 or row["type"] == 2 else RentalTypes.LIBRARY,
+                        'type': RentalTypes.GEAR if row["type"] == "0" or row["type"] == "2" else RentalTypes.LIBRARY,
                         'member': user,
                         'what': row["what"],
                         'start_date': datetime.strptime(row["outdate"], "%Y-%m-%d").date(), 
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 )
 
                 if not created:
-                    rental.type = RentalTypes.GEAR if row["type"] == 0 or row["type"] == 2 else RentalTypes.LIBRARY
+                    rental.type = RentalTypes.GEAR if row["type"] == "0" or row["type"] == "2" else RentalTypes.LIBRARY
                     rental.member = user
                     rental.what = row["what"]
                     rental.start_date = datetime.strptime(row["outdate"], "%Y-%m-%d").date()
