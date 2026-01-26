@@ -104,7 +104,7 @@
                             <tr class="{% if not trip.published %}table-secondary{% endif %}">
                                 <td>{{ trip.trip_date_as_str_short }}</td>
                                 <td><a href="{% url 'trip_details' trip.id %}">{{ trip.name }}</a></td>
-                                {% if own_profile and trip.is_future_or_ongoing %}
+                                {% if own_profile %}
                                     <td><a href="{% url 'trip_edit' trip.id %}">Edit</a></td>
                                     <td>
                                         <a 
