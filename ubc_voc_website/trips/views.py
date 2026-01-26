@@ -178,7 +178,7 @@ def trip_details(request, id):
                 form = TripSignupForm(user=request.user, trip=trip, instance=signup)
                 valid_type_changes = valid_signup_changes(signup.type, trip.valid_signup_types) if signup else []
                 valid_type_changes = [{"type": type, "name": signup_type_as_str(type)} for type in valid_type_changes]
-            
+
             return render(request, "trips/trip.html", {
                 "trip": trip, 
                 "organizers": organizers,

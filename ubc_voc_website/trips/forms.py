@@ -253,7 +253,7 @@ class TripForm(forms.ModelForm):
     signup_question = forms.CharField(
         max_length=1024, 
         required=False,
-        label="Question to ask participants when they sign up"
+        label="Question to ask participants when they sign up",
     )
     max_participants = forms.IntegerField(
         required=False,

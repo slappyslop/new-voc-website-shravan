@@ -123,8 +123,10 @@
             <hr>
             <h3 class="my-3">Signup</h3>
             <a href="#signup-form">Jump to signup form</a>
-            <p class="my-0"><b>The trip organizer has asked participants to answer the following question:</b></p>
-            <p><i>{{ trip.signup_question }}</i></p>
+            {% if trip.signup_question %}
+                <p class="my-0"><b>The trip organizer has asked participants to answer the following question:</b></p>
+                <p><i>{{ trip.signup_question }}</i></p>
+            {% endif %}
             <div id="signup-list">
                 {% if signups.going %}
                     <h5>Going:</h5>
@@ -505,14 +507,16 @@
                                 <small>{{ form.car_spots.errors }}</small>
                             {% endif %}
                         </div>
-                        <div class="mb-4">
-                            <p><b>The trip organizer has asked participants to answer the following question:</b></p>
-                            {{ form.signup_answer.label_tag }} <br />
-                            {{ form.signup_answer }}
-                            {% if form.signup_answer.errors %}
-                                <small>{{ form.signup_answer.errors }}</small>
-                            {% endif %}
-                        </div>
+                        {% if trip.signup_question %}
+                            <div class="mb-4">
+                                <p><b>The trip organizer has asked participants to answer the following question:</b></p>
+                                {{ form.signup_answer.label_tag }} <br />
+                                {{ form.signup_answer }}
+                                {% if form.signup_answer.errors %}
+                                    <small>{{ form.signup_answer.errors }}</small>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                         <button type="submit" class="btn btn-primary">Update signup details</button>
                     </form>
                 </div>
@@ -578,14 +582,16 @@
                         {% endif %}
                     </div>
 
-                    <div class="mb-4">
-                        <p><b>The trip organizer has asked participants to answer the following question:</b></p>
-                        {{ form.signup_answer.label_tag }} <br>
-                        {{ form.signup_answer }}
-                        {% if form.signup_answer.errors %}
-                            <small>{{ form.signup_answer.errors }}</small>
-                        {% endif %}
-                    </div>
+                    {% if trip.signup_question %}
+                        <div class="mb-4">
+                            <p><b>The trip organizer has asked participants to answer the following question:</b></p>
+                            {{ form.signup_answer.label_tag }} <br>
+                            {{ form.signup_answer }}
+                            {% if form.signup_answer.errors %}
+                                <small>{{ form.signup_answer.errors }}</small>
+                            {% endif %}
+                        </div>
+                    {% endif %}
 
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

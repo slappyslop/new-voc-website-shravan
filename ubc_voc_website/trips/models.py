@@ -176,7 +176,7 @@ class Trip(models.Model):
                     OR end_date is null and start_date today
         """
         now = timezone.now()
-        if now < self.start_time or now < self.end_time:
+        if now < self.start_time or (self.end_time) and now < self.end_time:
             return True
         elif not self.end_time and now.date() == self.start_time.date():
             return True
