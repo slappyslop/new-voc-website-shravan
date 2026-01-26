@@ -112,7 +112,7 @@
                             <button type="submit" class="btn btn-outline-secondary py-2 py-lg-0">Log Out</button>
                         </form>
                     {% else %}
-                        <a href="{% url 'account_login' %}">
+                        <a href="{% url 'account_login' %}?next={{ request.path }}">
                             <button class="btn btn-outline-secondary py-2 py-lg-0">Log In</button>
                         </a>
                     {% endif %}
