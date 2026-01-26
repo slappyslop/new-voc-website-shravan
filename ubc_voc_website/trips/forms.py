@@ -116,7 +116,7 @@ class TripForm(forms.ModelForm):
                     else:
                         cleaned_data["interested_end"] = interested_end_custom
 
-            committed_start_choice = cleaned_data.get("committed_start_choice")
+            committed_start_choice = cleaned_data.get("committed_start_choice", "never")
             if committed_start_choice == "never":
                 cleaned_data["committed_start"] = None
             elif committed_start_choice == "now":
