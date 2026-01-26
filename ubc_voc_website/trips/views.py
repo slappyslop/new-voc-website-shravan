@@ -379,7 +379,8 @@ def clubroom_calendar(request):
                         "id": f"{gear_hour.id}:{date.isoformat()}",
                         "title": f"Gear Hours - {qm_name}",
                         "start": start_datetime.isoformat(),
-                        "end": end_datetime.isoformat()
+                        "end": end_datetime.isoformat(),
+                        "type": "gear_hour"
                     })
                 date = date + datetime.timedelta(days=7)
 

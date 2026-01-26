@@ -15,10 +15,10 @@
             const events = JSON.parse('{{ trips_calendar|escapejs }}');
 
             const calendar = new FullCalendar.Calendar(calendarDiv, {
-                initialView: window.innerWidth < 768 ? 'listMonth' : 'dayGridMonth', // List view is MUCH better for mobile
+                initialView: window.innerWidth < 768 ? 'listMonth' : 'dayGridMonth',
                 events: events,
                 displayEventEnd: true,
-                height: 'auto', // Important: allows the calendar to grow with wrapped text
+                height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -30,15 +30,24 @@
                     meridiem: 'short' // "am/pm" takes less space than "AM/PM"
                 },
                 eventClick: function(info) {
-                    document.getElementById('modal-title').textContent = info.event.title;
-                    document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+                    const eventType = info.event.extendedProps.type;
+                    if (eventType === "gear_hour") {
+                        document.getElementById('modal-title').textContent = info.event.title;
+                        document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
 
-                    document.getElementById('delete-gear-hour-id').value = info.event._def.publicId.split(':')[0];
-                    document.getElementById('delete-gear-hour-date').value = info.event.start.toISOString().split("T")[0];
-                    document.getElementById('delete-all-checkbox').checked = false;
+                        document.getElementById('delete-gear-hour-id').value = info.event._def.publicId.split(':')[0];
+                        document.getElementById('delete-gear-hour-date').value = info.event.start.toISOString().split("T")[0];
+                        document.getElementById('delete-all-checkbox').checked = false;
 
-                    const modal = new bootstrap.Modal(document.getElementById('modal'));
-                    modal.show();
+                        const modal = new bootstrap.Modal(document.getElementById('modal'));
+                        modal.show();
+                    }
+                    else if (eventType === 'trip' || eventType === 'pretrip') {
+                        window.location.href = '/trips/details/' + info.event.id;
+
+                    } else if (eventType === 'meeting') {
+                        info.jsEvent.preventDefault();
+                    }
                 },
                 firstDay: 1,
                 timeZone: 'local'
