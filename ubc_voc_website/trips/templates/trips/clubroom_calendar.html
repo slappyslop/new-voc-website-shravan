@@ -36,7 +36,12 @@
                         document.getElementById('modal-body').innerHTML = `${info.event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${info.event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
 
                         document.getElementById('delete-gear-hour-id').value = info.event._def.publicId.split(':')[0];
-                        document.getElementById('delete-gear-hour-date').value = info.event.start.toISOString().split("T")[0];
+
+                        const start = info.event.start;
+                        const offset = start.getTimezoneOffset();
+                        const localDate = new Date(start.getTime() - (offset * 60 * 1000));
+                        document.getElementById('delete-gear-hour-date').value = localDate.toISOString().split('T')[0];
+
                         document.getElementById('delete-all-checkbox').checked = false;
 
                         const modal = new bootstrap.Modal(document.getElementById('modal'));

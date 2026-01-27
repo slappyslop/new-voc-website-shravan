@@ -6,6 +6,7 @@ from .models import CancelledGearHour, GearHour, Rental, RentalTypes
 from django.contrib.auth import get_user_model
 
 import datetime
+import pytz
 
 User = get_user_model()
 
@@ -23,6 +24,10 @@ class GearHourForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.gear_hour = gear_hour
+
+        now = timezone.now().astimezone(pytz.timezone("America/Vancouver"))
+        self.fields["start_date"].initial = now.date()
+        self.fields["start_time"].initial = now.strftime('%I:%M %p')
 
     def save(self, commit=True):
         gear_hour = super().save(commit=False)

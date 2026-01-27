@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 from .forms import TripForm, TripSignupForm
 from .models import Meeting, Trip, TripSignup, TripSignupTypes
@@ -307,10 +308,11 @@ def clubroom_calendar(request):
             if delete_all:
                 gear_hour.delete()
             else:
-                date = request.POST.get("date")
+                date_str = request.POST.get("date")
+                dt = parse_datetime(date_str).astimezone(pytz.timezone("America/Vancouver"))
                 CancelledGearHour.objects.create(
                     gear_hour = gear_hour,
-                    date = date
+                    date = dt.date()
                 )
             return redirect("clubroom_calendar")
         else:
