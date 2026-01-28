@@ -201,3 +201,7 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Custom VOC API (for Discord bot, etc.)
 API_KEY = os.getenv("API_KEY")
+
+# Settings for MailChimp integration
+MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
+MAILCHIMP_LIST_ID = os.getenv("MAILCHIMP_LIST_ID")
