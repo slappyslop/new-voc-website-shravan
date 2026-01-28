@@ -69,6 +69,13 @@ class TripForm(forms.ModelForm):
         ie. signup related fields are required if and only if use_signup == True
         """
         cleaned_data = super().clean()
+
+        start_time = cleaned_data.get("start_time", None)
+        end_time = cleaned_data.get("end_time", None)
+        if start_time and end_time:
+            if end_time <= start_time:
+                self.add_error("end_time", "End time cannot be before start time")
+
         in_clubroom, use_signup, use_pretrip = cleaned_data.get('in_clubroom'), cleaned_data.get('use_signup'), cleaned_data.get('use_pretrip')
 
         if in_clubroom:
@@ -371,7 +378,6 @@ class TripSignupForm(forms.ModelForm):
         cleaned_data = super().clean()
         if cleaned_data.get('can_drive') and not cleaned_data.get('car_spots'):
             self.add_error('car_spots', "This field is required when 'Can drive' is selected")
-        return cleaned_data
 
     def save(self, commit=True):
         signup = super().save(commit=False)
