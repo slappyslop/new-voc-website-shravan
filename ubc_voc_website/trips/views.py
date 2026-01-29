@@ -93,7 +93,7 @@ def previous_trips(request):
         trips = trips.filter(Q(name__icontains=q) | Q(description__icontains=q))
 
     page = request.GET.get("page")
-    paginator = Paginator(trips, 50)
+    paginator = Paginator(trips, 5)
 
     try:
         previous_trips_page = paginator.page(page)

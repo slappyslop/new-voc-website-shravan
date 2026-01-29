@@ -94,13 +94,13 @@
             <nav class="mt-4">
                 <ul class="pagination justify-content-center">
                     {% if reports.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page={{ reports.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&laquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ reports.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&laquo;</a></li>
                     {% endif %}
 
                     <li class="page-item disabled"><span class="page-link">Page {{ reports.number }} of {{ reports.paginator.num_pages }}</span></li>
 
                     {% if reports.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ reports.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&raquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ reports.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">&raquo;</a></li>
                     {% endif %}
                 </ul>
             </nav>
