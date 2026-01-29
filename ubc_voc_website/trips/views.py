@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -16,6 +17,7 @@ from membership.utils import get_membership_type
 from ubc_voc_website.decorators import Members
 from ubc_voc_website.utils import is_exec, is_member
 
+from collections import OrderedDict
 import datetime
 import json
 import pytz
@@ -76,6 +78,41 @@ def trips(request):
         "all_trip_tags": list(all_trip_tags),
         "trips_list": trips_list, 
         "trips_calendar": json.dumps(trips_calendar)
+    })
+
+def previous_trips(request):
+    trips = Trip.objects.filter(
+        Q(published=True) & (
+            Q(end_time__isnull=False, end_time__lte=timezone.now()) |
+            Q(end_time__isnull=True, start_time__lt=timezone.now())
+        )
+    ).order_by("-start_time")
+
+    q = request.GET.get("q")
+    if q:
+        trips = trips.filter(Q(name__icontains=q) | Q(description__icontains=q))
+
+    page = request.GET.get("page")
+    paginator = Paginator(trips, 50)
+
+    try:
+        previous_trips_page = paginator.page(page)
+    except PageNotAnInteger:
+        previous_trips_page = paginator.page(1)
+    except EmptyPage:
+        previous_trips_page = paginator.page(paginator.num_pages)
+
+    grouped_trips = OrderedDict()
+    for trip in previous_trips_page.object_list:
+        month_key = trip.start_time.strftime("%B %Y")
+        if month_key not in grouped_trips:
+            grouped_trips[month_key] = []
+        grouped_trips[month_key].append(trip)
+
+    return render(request, "trips/previous_trips.html", {
+        "trips": grouped_trips,
+        "page_obj": previous_trips_page,
+        "q": q
     })
 
 @Members

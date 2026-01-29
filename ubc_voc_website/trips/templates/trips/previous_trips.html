@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Previous Trips{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Previous Trips</h2>
+            <form method="get" action="" class="d-flex">
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control me-2"
+                    placeholder="Search..."
+                    value="{{ q|default:'' }}"
+                >
+                <button type="submit" class="btn btn-primary">Search</button>
+                {% if q %}
+                    <a href="{% url 'previous_trips' %}" class="btn btn-outline-secondary ms-2">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Trip</th>
+                    <th></th>
+                    <th>Status</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month, trips in trips.items %}
+                    <tr>
+                        <td colspan="5" class="fs-5 fw-bold bg-primary bg-opacity-10"><strong>{{ month }}</strong></td>
+                    </tr>
+                    {% for trip in trips %}
+                        <tr data-tags="{{ trip.tags.all|join:','}}">
+                            <td>{{ trip.trip_date_as_str_short }}</td>
+                            <td><a href="{% url 'trip_details' trip.id %}" {% if trip.status == 'C' %}style="text-decoration: line-through underline;"{% endif %}>{{ trip.name }}</a></td>
+                            <td>
+                                {% if request.user in trip.organizers.all %}
+                                    <a href="{% url 'trip_edit' trip.id %}">Edit</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if trip.status == "T" %}
+                                    <i>Tentative</i>
+                                {% elif trip.status == "C" %}
+                                    <i>Cancelled</i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for tag in trip.tags.all %}
+                                    <!-- VS Code may detect errors here... ignore them THIS SYNTAX WORKS!!! -->
+                                    <span class="badge badge-pill" style="background-color: {{ tag.colour }}; color: white;">
+                                        {{ tag.name }}
+                                    </span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
