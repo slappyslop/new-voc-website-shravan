@@ -47,11 +47,20 @@
                 }
             }));
 
-            // const isMobile = () => window.innerWidth < 768;
+            const isMobile = () => window.innerWidth < 768;
 
             calendar = new FullCalendar.Calendar(calendar, {
-                // initialView: isMobile() ? "dayGridWeek" : "dayGridMonth",
-                initialView: "dayGridMonth",
+                initialView: isMobile() ? "timeGridThreeDay" : "dayGridMonth",
+                views: {
+                    timeGridThreeDay: {
+                        type: "timeGrid",
+                        duration: { "days": 3 },
+                        buttonText: "3 Day"
+                    }
+                },
+                slotMinTime: "05:00:00",
+                slotMaxTime: "24:00:00",
+                scrollTime: "08:00:00",
                 events: extendedEvents,
                 eventClick: function(info) {
                     window.location.href = '/trips/details/' + info.event._def.publicId;
@@ -66,7 +75,7 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: ''
+                    right: isMobile() ? "timeGridThreeDay,dayGridMonth" : "dayGridMonth,timeGridWeek"
                 },
             });
 
