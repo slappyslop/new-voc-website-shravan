@@ -199,6 +199,14 @@ MACHINA_PROFILE_AVATARS_ENABLED = False
 WAGTAIL_SITE_NAME = "VOC Trip Reports"
 X_FRAME_OPTIONS = "SAMEORIGIN"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+WAGTAILADMIN_RICH_TEXT_EDITORS = {
+   'default': {
+        'WIDGET': 'wagtail.admin.rich_text.DraftailRichTextArea',
+        'OPTIONS': {
+            'features': ['image', 'link', 'h2', 'h3', 'bold', 'italic']
+        }
+    } 
+}
 
 # Custom VOC API (for Discord bot, etc.)
 API_KEY = os.getenv("API_KEY")
