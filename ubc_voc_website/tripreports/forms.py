@@ -24,6 +24,15 @@ class TripReportForm(forms.ModelForm):
             return RichText(cleaned_html)
         except (ValueError, KeyError, TypeError):
             raise forms.ValidationError("Invalid trip report body format")
+        
+    def save(self):
+        trip_report = super().save(commit=False)
+        if "categories" in self.cleaned_data:
+            trip_report.categories.clear()
+            for category in self.cleaned_data["categories"]:
+                trip_report.categories.add(category)
+        
+        return trip_report
 
     title = forms.CharField(
         widget=forms.TextInput(attrs={
