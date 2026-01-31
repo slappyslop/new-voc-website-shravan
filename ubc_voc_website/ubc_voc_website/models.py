@@ -6,6 +6,10 @@ from django.contrib.auth.models import BaseUserManager
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+import logging
+import traceback
+logger = logging.getLogger(__name__)
+
 class MyUserManager(BaseUserManager):
     """
     A custom user manager to deal with emails as unique identifiers for auth
@@ -79,4 +83,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def get_username(self):
         return self.display_name
+    
+    def save(self, *args, **kwargs):
+        old_email = self.__class__.objects.filter(pk=self.pk).first().email if self.pk else None
+        self.email = self.email.lower().strip()
+        super().save(*args, **kwargs)
+        if old_email and old_email != self.email:
+            logger.warning(f"Email changed from {old_email} to {self.email}")
+            logger.warning("Stack trace:")
+            logger.warning(''.join(traceback.format_stack()))
 
