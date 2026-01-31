@@ -77,11 +77,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         if hasattr(self, "profile") and self.profile.photo:
             return self.profile.photo.url
         return None
-        
-    def __str__(self):
-        return self.display_name
     
     def get_username(self):
+        return self.email
+    
+    def get_full_name(self):
+        return self.display_name
+    
+    def get_short_name(self):
+        if hasattr(self, "profile") and self.profile.first_name:
+            return self.profile.first_name
+        return self.email
+        
+    def __str__(self):
         return self.display_name
     
     def save(self, *args, **kwargs):
