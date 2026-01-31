@@ -35,7 +35,7 @@
                 </div>
                 <object data="{{ page.legacy_pdf.url }}" width="100%" style="height: 80vh;"</object>></object>
             {% else %}
-                {{ page.get_body_html|truncatewords:50 }}
+                {{ page.get_body_html }}
             {% endif %}
         </article>
 
