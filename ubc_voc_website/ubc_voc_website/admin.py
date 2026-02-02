@@ -15,6 +15,7 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
+        ('Legacy Info', {'fields': ('old_id',)}),
         (('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (('Important dates'), {'fields': ('last_login',)}),
     )
