@@ -63,13 +63,15 @@ LOGGING = {
     },
     "handlers": {
         "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": "/home/ubc_voc_website/logs/django.log",
             "formatter": "verbose",
+            "maxBytes": 1024 * 1024 * 100,
+            "backupCount": 5,
         },
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose"
         }
@@ -77,7 +79,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["file", "console"],
-            "level": "DEBUG",
+            "level": "INFO",
             "propagate": True
         }
     }

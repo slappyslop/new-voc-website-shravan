@@ -1,8 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 
 from allauth.account.models import EmailAddress
 
