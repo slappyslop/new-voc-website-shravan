@@ -6,7 +6,7 @@ class TripAdmin(admin.ModelAdmin):
     list_display = ('name', 'start_time', 'end_time')
     search_fields = ('name',)
     list_filter = ('start_time', 'end_time')
-    readonly_fields = ('organizer',)
+    readonly_fields = ('organizers',)
 
 @admin.register(TripSignup)
 class TripSignupAdmin(admin.ModelAdmin):
