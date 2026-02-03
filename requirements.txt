@@ -12,5 +12,5 @@ Pillow==10.4.0
 psycopg[binary]
 python-dateutil==2.9.0
 pytz
-wagtail==7.2.1
+wagtail==7.3
 WeasyPrint==68.0
