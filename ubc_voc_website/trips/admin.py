@@ -12,6 +12,7 @@ class TripAdmin(admin.ModelAdmin):
 class TripSignupAdmin(admin.ModelAdmin):
     list_display = ('trip__name', 'user__email', 'type')
     search_fields = ('trip__name', "user__email")
+    readonly_fields = ('trip', 'user')
 
 @admin.register(TripTag)
 class TripTagAdmin(admin.ModelAdmin):
