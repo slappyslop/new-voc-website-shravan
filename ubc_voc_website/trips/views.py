@@ -143,15 +143,14 @@ def trip_edit(request, id):
         if request.method == "POST":
             form = TripForm(request.POST, instance=trip, user=request.user)
             if form.is_valid():
-                trip = form.save(commit=False, user=request.user)
                 action = request.POST.get("action")
+                trip = form.save(commit=True, user=request.user)
+
                 if action == "publish":
                     trip.published = True
+                    trip.save()
 
-                trip.save()
                 return redirect("trips")
-            else:
-                print(form.errors)
         else:
             form = TripForm(instance=trip, user=request.user)
         return render(request, "trips/trip_form.html", {

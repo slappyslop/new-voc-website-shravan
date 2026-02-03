@@ -188,14 +188,13 @@ class TripForm(forms.ModelForm):
 
     def save(self, commit=True, user=None):
         trip = super().save(commit=False)
+        if "tags" in self.cleaned_data:
+            trip.tags.set(self.cleaned_data["tags"])
+
+        trip.organizers.add(user)
+
         if commit:
             trip.save()
-            if 'tags' in self.cleaned_data:
-                trip.tags.set(self.cleaned_data['tags'])
-            # if 'organizers' in self.cleaned_data:
-            #     trip.organizers.set(self.cleaned_data['organizers'])
-
-            trip.organizers.add(user)
 
         return trip
 
