@@ -20,13 +20,15 @@
 
 6. Navigate to localhost8000/admin. <br>
 
-   This is the Django admin site, which lets you manually edit the contents of the database table. <br> Now: <br>
+   This is the Django admin site, which lets you manually edit the contents of the database tables.
+   
+   Now: <br>
        1. Ensure that your superuser email is in Accounts -> email addresses <br>
-       2. Then, add a profile to Membership-> profiles with the same email<br>
+       2. Add a profile to Membership -> profiles with the same email<br>
        3. Add a member to Membership -> membership<br>
        4. And finally, add the member to Membership -> Execs with priority 1.<br>
 
-8. Navigate to http://localhost:8000/membership/manage-memberships/, search up your super user email, and activate your membership!
+8. Navigate to localhost8000/membership/manage-memberships/, search up your super user email, and activate your membership!
 
 ## Development ##
 For mode code changes, the web server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
