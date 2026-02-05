@@ -17,6 +17,12 @@
     Navigate to localhost:8000/membership/manage-roles and add your superuser as an Exec. <br>
     If your change requires testing with a user that has lower privileges than an Exec, you can create their login on the website and activate their "Membership" with your Exec login.
 
+5. Run the development server:
+   ```sh
+    python manage.py runserver
+   ```
+   Log in, then check the running terminal for the link to verify your email. 
+
 ## Development ##
 For mode code changes, the web server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
 ```sh
