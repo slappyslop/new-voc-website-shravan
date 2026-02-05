@@ -10,7 +10,7 @@
    ```sh
     python manage.py createsuperuser
    ```
-   Follow the prompts to set an email and password. T
+   Follow the prompts to set an email and password.
 
 5. Run the development server:
    ```sh
@@ -18,9 +18,15 @@
    ```
    Log in, then check the running terminal for the link to verify your email.
 
-6. Add your superuser as an Exec
-   Navigate to localhost:8000/membership/manage-memberships and make your superuser an Exec. <br>
-   If your change requires testing with a user that has lower privileges than an Exec, you can create their login on the website and activate their "Membership" with your Exec login.
+6. Navigate to localhost8000/admin. <br>
+
+   This is the Django admin site, which lets you manually edit the contents of the database table. <br> Now: <br>
+       1. Ensure that your superuser email is in Accounts -> email addresses <br>
+       2. Then, add a profile to Membership-> profiles with the same email<br>
+       3. Add a member to Membership -> membership<br>
+       4. And finally, add the member to Membership -> Execs with priority 1.<br>
+
+8. Navigate to http://localhost:8000/membership/manage-memberships/, search up your super user email, and activate your membership!
 
 ## Development ##
 For mode code changes, the web server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
