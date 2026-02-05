@@ -6,16 +6,29 @@
     ```
     pip install -r requirements.txt
     ```
-4. Create a superuser (admin) login and add them as a VOC Exec
+4. Create a superuser (admin) login
    ```sh
     python manage.py createsuperuser
    ```
-   Follow the prompts to set an email and password. Then, run the development server:
+   Follow the prompts to set an email and password.
+
+5. Run the development server:
    ```sh
     python manage.py runserver
    ```
-    Navigate to localhost:8000/membership/manage-roles and add your superuser as an Exec. <br>
-    If your change requires testing with a user that has lower privileges than an Exec, you can create their login on the website and activate their "Membership" with your Exec login.
+   Log in, then check the running terminal for the link to verify your email.
+
+6. Navigate to localhost8000/admin. <br>
+
+   This is the Django admin site, which lets you manually edit the contents of the database tables.
+   
+   Now: <br>
+       1. Ensure that your superuser email is in Accounts -> email addresses <br>
+       2. Add a profile to Membership -> profiles with the same email<br>
+       3. Add a member to Membership -> membership<br>
+       4. And finally, add the member to Membership -> Execs with priority 1.<br>
+
+8. Navigate to localhost8000/membership/manage-memberships/, search up your super user email, and activate your membership!
 
 ## Development ##
 For mode code changes, the web server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
