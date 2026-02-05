@@ -185,7 +185,7 @@
                     <button 
                         class="btn btn-sm btn-primary mb-2" 
                         onclick="copyEmails(this)" 
-                        data-emails="{{ signup_emails.interested|join:',' }}"
+                        data-emails="{{ signup_emails.going|join:',' }}"
                     >Copy Going List Emails</button>
                 {% endif %}
                 {% if signups.committed %}
