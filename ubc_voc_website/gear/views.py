@@ -35,7 +35,7 @@ def rentals(request):
 
     current_rentals = Rental.objects.filter(return_date__isnull=True)
     overdue_rentals = [rental for rental in current_rentals if rental.due_date < today]
-    lost_rentals = [rental for rental in current_rentals if rental.lost]
+    lost_rentals = Rental.objects.filter(lost=True)
 
     return render(request, 'gear/gearmaster.html', {
         'rentals': {
