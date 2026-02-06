@@ -185,16 +185,17 @@ class TripForm(forms.ModelForm):
                     self.add_error(field, "This field is required when 'Use pretrip' is selected")
 
         return cleaned_data
-
+    
     def save(self, commit=True, user=None):
         trip = super().save(commit=False)
-        if "tags" in self.cleaned_data:
-            trip.tags.set(self.cleaned_data["tags"])
-
-        trip.organizers.add(user)
 
         if commit:
             trip.save()
+
+            if "tags" in self.cleaned_data:
+                trip.tags.set(self.cleaned_data["tags"])
+
+            trip.organizers.add(user)
 
         return trip
 
