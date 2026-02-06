@@ -31,7 +31,7 @@
 8. Navigate to localhost8000/membership/manage-memberships/, search up your super user email, and activate your membership!
 
 ## Development ##
-For mode code changes, the web server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
+For most code changes, the development server will automatically restart to include the updated code. If you have to change anything in a `models.py` file, you will have to migrate the change to the database schema:
 ```sh
 python manage.py makemigrations
 python manage.py migrate
