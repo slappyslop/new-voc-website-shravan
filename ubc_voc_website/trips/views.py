@@ -303,6 +303,20 @@ def mark_as_going(request, trip_id, user_id):
         return redirect(f"/trips/details/{trip_id}")
     
 @Members
+def remove_from_going(request, trip_id, user_id):
+    user = get_object_or_404(User, id=user_id)
+    trip = get_object_or_404(Trip, id=trip_id)
+
+    if not trip.organizers.filter(pk=request.user.pk).exists():
+        return render(request, "access_denied.html", status=403)
+    else:
+        trip_signup = get_object_or_404(TripSignup, user=user, trip=trip)
+        trip_signup.type = TripSignupTypes.NO_LONGER_GOING
+        trip_signup.signup_time = timezone.now()
+        trip_signup.save()
+        return redirect(f"/trips/details/{trip_id}")
+    
+@Members
 def download_participant_list(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)
     if request.user not in trip.organizers.all() and not is_exec(request.user):

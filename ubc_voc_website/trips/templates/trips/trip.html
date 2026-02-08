@@ -22,27 +22,52 @@
             });
 
             // Setup "mark as going" buttons
-            const forms = document.querySelectorAll('.going-form');
+            const goingForms = document.querySelectorAll('.going-form');
             const markGoingModal = new bootstrap.Modal(document.getElementById('mark-going-modal'));
-            const modalUserName = document.getElementById('modal-user-name');
-            const confirmBtn = document.getElementById('mark-going-confirm-btn');
+            const markGoingModalUserName = document.getElementById('mark-going-modal-user-name');
+            const markGoingConfirmBtn = document.getElementById('mark-going-confirm-btn');
 
-            let currentForm = null;
+            let currentMarkGoingForm = null;
 
-            forms.forEach(form => {
+            goingForms.forEach(form => {
                 form.addEventListener('submit', (event) => {
                     event.preventDefault();
-                    currentForm = form;
-                    modalUserName.textContent = form.dataset.userName || 'this user';
+                    currentMarkGoingForm = form;
+                    markGoingModalUserName.textContent = form.dataset.userName || 'this user';
                     markGoingModal.show();
                 });
             });
 
-            confirmBtn.addEventListener('click', () => {
-                if (currentForm) {
-                    currentForm.submit();
-                    currentForm = null;
+            markGoingConfirmBtn.addEventListener('click', () => {
+                if (currentMarkGoingForm) {
+                    currentMarkGoingForm.submit();
+                    currentMarkGoingForm = null;
                     markGoingModal.hide();
+                }
+            });
+
+            // Setup "remove from going" buttons
+            const removeGoingForms = document.querySelectorAll('.remove-going-form');
+            const removeGoingModal = new bootstrap.Modal(document.getElementById('remove-going-modal'));
+            const removeGoingModalUserName = document.getElementById('remove-going-modal-user-name');
+            const removeGoingConfirmBtn = document.getElementById('remove-going-confirm-btn');
+
+            let currentRemoveGoingForm = null;
+
+            removeGoingForms.forEach(form => {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    currentRemoveGoingForm = form;
+                    removeGoingModalUserName.textContent = form.dataset.userName || 'this user';
+                    removeGoingModal.show()
+                });
+            })
+
+            removeGoingConfirmBtn.addEventListener('click', () => {
+                if (currentRemoveGoingForm) {
+                    currentRemoveGoingForm.submit();
+                    currentRemoveGoingForm = null;
+                    removeGoingModal.hide();
                 }
             });
 
@@ -176,6 +201,21 @@
                                             </button>
                                         {% endif %}
                                     </td>
+                                    {% if request.user in trip.organizers.all %}
+                                        <td>
+                                            <form 
+                                                method="post" 
+                                                action="{% url 'remove_from_going' trip.id signup.id %}" 
+                                                class="remove-going-form"
+                                                data-user-name="{{ signup.name }}"
+                                            >
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-link py-0">
+                                                    Remove from going list
+                                                </button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -490,7 +530,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to add <span id="modal-user-name"></span> to the going list?
+                    Are you sure you want to add <span id="mark-going-modal-user-name"></span> to the going list?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -499,6 +539,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Model to confirm "remove from going" -->
+     <div class="modal fade" id="remove-going-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove <span id="remove-going-modal-user-name"></span> from the going list?
+                    They will be marked as "Bailed from Going"
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="remove-going-confirm-btn">Confirm</button>
+                </div>
+            </div>
+        </div>
+     </div>
 
     <!-- Modal to edit own signup -->
     <div class="modal fade" id="edit-signup-modal" tabindex="-1" aria-hidden="true">
