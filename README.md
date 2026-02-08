@@ -40,7 +40,8 @@ For most code changes, the development server will automatically restart to incl
 python manage.py makemigrations
 python manage.py migrate
 ```
-This will automatically generate a new file in the `migrations` folder of the app whose models you have updated. Ensure to include this file when you commit your change.
+This will automatically generate a new file in the `migrations` folder of the app whose models you have updated. Ensure to include this file when you commit your change. 
+When you deploy the code, you will need to run `python manage.py migrate` to update the production database schema according to the changes in the migration file.
 
 ## Deployment ##
 To deploy the website to production:
