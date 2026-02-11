@@ -22,7 +22,7 @@
    ```
    Log in, then check the running terminal for the link to verify your email.
 
-7. Navigate to localhost8000/admin. <br>
+7. Navigate to localhost:8000/admin. <br>
 
    This is the Django admin site, which lets you manually edit the contents of the database tables.
    
