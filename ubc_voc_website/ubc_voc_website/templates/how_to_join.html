@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}How To Join{% endblock %}
+
+{% block content %}
+    <h2>How To Join</h2>
+    <ol>
+        <li class="mb-4">
+            <a href="{% url 'account_signup' %}">Create an account</a> on this website if you haven't already. 
+            The first time you log in, you will receive an email, and must confirm your email address before you continue.
+        </li>
+        <li class="mb-4">
+            Fill out the <a href="{% url 'join' %}">membership form</a>.
+        </li>
+        <li class="mb-4">
+            After completing the form, you will be redirected to the waiver.
+            If you navigated away from the waiver before signing it, you can find it again <a href="{% url 'join' %}">here</a>.
+        </li>
+        <li>
+            After signing the waiver, bring your membership fee to the clubroom during <a href="{% url 'clubroom_calendar' %}">Gear Hours</a>. 
+            Membership is $50 for UBC students and $70 for everyone else.
+            The VOC clubroom is located in the basement of the AMS Nest in room LL201, right beside the Grand Noodle Emporium:
+        </li>
+    </ol>
+    <img src="{% static 'ubc_voc_website/clubroom_map.png' %}" alt="VOC Clubroom Map" class="my-5">
+{% endblock %}

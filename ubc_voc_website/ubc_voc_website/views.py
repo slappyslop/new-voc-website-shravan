@@ -35,6 +35,9 @@ def home(request):
 def about(request):
     return render(request, "about.html")
 
+def how_to_join(request):
+    return render(request, "how_to_join.html")
+
 def contact(request):
     return render(request, "contact.html")
 
