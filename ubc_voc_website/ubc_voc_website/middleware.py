@@ -26,7 +26,7 @@ class AdminPageMiddleware:
         if request.path.startswith("/admin"):
             if not request.user.is_authenticated:
                 return redirect(reverse("home"))
-            if not (request.user):
+            if not is_exec(request.user):
                 return redirect(reverse("home"))
 
         return self.get_response(request)
