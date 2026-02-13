@@ -10,13 +10,19 @@ from wagtail.images.models import Image
 PHOTO_CONTEST_ALBUM = "photo-contest-2025"
 
 def home(request):
-    gallery = Gallery.objects.filter(slug="homepage").first()
-    gallery_photos = gallery.public() if gallery else []
-
-    about_photo = Photo.objects.get(slug="about")
-    join_photo = Photo.objects.get(slug="join")
-    trips_photo = Photo.objects.get(slug="trips")
-    huts_photo = Photo.objects.get(slug="huts")
+    try:
+        gallery = Gallery.objects.filter(slug="homepage").first()
+        gallery_photos = gallery.public() if gallery else []
+        about_photo = Photo.objects.get(slug="about")
+        join_photo = Photo.objects.get(slug="join")
+        trips_photo = Photo.objects.get(slug="trips")
+        huts_photo = Photo.objects.get(slug="huts")
+    except Exception:
+        gallery_photos = None
+        about_photo = None
+        join_photo = None
+        trips_photo = None
+        huts_photo = None
 
     return render(request, "home.html", {
         "photos": gallery_photos,
@@ -28,6 +34,9 @@ def home(request):
 
 def about(request):
     return render(request, "about.html")
+
+def how_to_join(request):
+    return render(request, "how_to_join.html")
 
 def contact(request):
     return render(request, "contact.html")

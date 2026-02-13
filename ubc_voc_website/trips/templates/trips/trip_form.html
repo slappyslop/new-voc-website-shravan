@@ -25,19 +25,6 @@
             });
 
             // Setup image upload handler for description rich text box
-            const quill = document.querySelector(".django-quill-widget");
-            if (quill && quill.__quill) {
-                intializeQuill(quilWidget.__quill);
-            } else {
-                const checkQuill = setInterval(() => {
-                    const retryWidget = document.querySelector(".django-quill-widget");
-                    if (retryWidget && retryWidget.__quill) {
-                        initializeQuill(retryWidget.__quill);
-                        clearInterval(checkQuill);
-                    }
-                }, 50); 
-            }
-
             function initializeQuill(quill) {
                 const toolbar = quill.getModule("toolbar");
                 toolbar.addHandler("image", function () {
@@ -70,6 +57,19 @@
                         }
                     };
                 });
+            }
+
+            const quill = document.querySelector(".django-quill-widget");
+            if (quill && quill.__quill) {
+                initializeQuill(quill.__quill);
+            } else {
+                const checkQuill = setInterval(() => {
+                    const retryWidget = document.querySelector(".django-quill-widget");
+                    if (retryWidget && retryWidget.__quill) {
+                        initializeQuill(retryWidget.__quill);
+                        clearInterval(checkQuill);
+                    }
+                }, 50); 
             }
 
             // Setup signup tools checkbox

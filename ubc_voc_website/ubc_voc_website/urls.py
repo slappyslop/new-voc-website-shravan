@@ -19,18 +19,19 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import about, contact, home, quill_image_upload
+from .views import about, contact, home, how_to_join, quill_image_upload
 
 from machina import urls as machina_urls
 
 urlpatterns = [
     path("", home, name="home"),
     path("about/", about, name="about"),
+    path("accounts/", include("allauth.urls")),
+    path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("contact", contact, name="contact"),
-    path("admin/", admin.site.urls),
-    path("accounts/", include("allauth.urls")),
     path("gear/", include("gear.urls")),
+    path('how-to-join/', how_to_join, name="how_to_join"),
     path("membership/", include("membership.urls")),
     path("message-board/", include(machina_urls)),
     path("photologue/", include("photologue.urls", namespace="photologue")),
